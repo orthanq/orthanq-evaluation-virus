@@ -4,6 +4,8 @@ rule orthanq_candidates:
         directory("results/orthanq/candidates"),
     log:
         "logs/orthanq_candidates/candidates_virus.log",
+    conda:
+        "../envs/orthanq.yaml"
     shell:
         "orthanq candidates virus --output {output} 2> {log}"
 
@@ -14,6 +16,8 @@ rule orthanq_preprocess:
     output: "results/orthanq/preprocess/{sample}.bcf,
     log:
         "logs/orthanq_preprocess/{sample}.log",
+    conda:
+        "../envs/orthanq.yaml"
     shell:
         " orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]}"
 
@@ -25,6 +29,8 @@ rule orthanq_quantify:
         directory("results/orthanq/calls/{sample}")
     log:
         "logs/orthanq_call/{sample}.log"
+    conda:
+        "../envs/orthanq.yaml"
     params:
         prior="uniform"
     shell:
