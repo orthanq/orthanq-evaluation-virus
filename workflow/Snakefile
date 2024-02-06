@@ -1,0 +1,27 @@
+#set the environment variable to conda library folder to prevent libhdf5 not being found by snakemake
+LD_LIBRARY_PATH = "$CONDA_PREFIX/lib"
+shell.prefix("""
+set -euo pipefail;
+export LD_LIBRARY_PATH=\"{LD_LIBRARY_PATH}\";
+""".format(LD_LIBRARY_PATH=LD_LIBRARY_PATH))
+
+configfile: "config/config.yaml"
+
+ruleorder: orthanq_candidates > orthanq_preprocess
+
+if config["simulation"]:
+
+    include: "rules/common.smk"
+    include: "rules/simulation.smk"
+    include: "rules/quantification-orthanq.smk"
+
+    rule all:
+        input:
+            [
+                f"results/fractions/{row['sample_name']}-{row['lineage']}-{row['num_reads']}_1.fq"
+                for _, row in simulated_sample.iterrows()
+            ],
+            "results/orthanq/candidates/candidates.vcf.gz.tbi",
+            expand("results/orthanq/calls/{sample}/{sample}.tsv", sample=simulated_sample.sample_name.unique())
+
+#todo: implement the other case
