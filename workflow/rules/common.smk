@@ -4,7 +4,7 @@ configfile: "config/config.yaml"
 n_reads = config["n_reads"]
 
 #in case of simulation:
-lineages = pd.read_csv(config["viruses"], sep ="\t")
+lineages = pd.read_csv(config["lineages"], sep ="\t")
 
 # input function for simulation sample
 def create_sample(): #n: number of samples in the end, k: number of fractions
