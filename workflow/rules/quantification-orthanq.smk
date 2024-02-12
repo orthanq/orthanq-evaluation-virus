@@ -2,6 +2,7 @@
 rule orthanq_candidates:
     output:
         directory("results/orthanq/candidates"),
+        candidates="results/orthanq/candidates/candidates.vcf",
     log:
         "logs/orthanq_candidates/candidates_virus.log",
     conda:
@@ -19,7 +20,7 @@ rule orthanq_preprocess:
     conda:
         "../envs/orthanq.yaml"
     shell:
-        "/home/uzuner/Documents/orthanq/target/debug/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]}"
+        "/home/uzuner/Documents/orthanq/target/debug/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 rule orthanq_quantify:
     input:
