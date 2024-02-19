@@ -8,7 +8,7 @@ rule orthanq_candidates:
     conda:
         "../envs/orthanq.yaml"
     shell:
-        "/home/uzuner/Documents/orthanq/target/debug/orthanq candidates virus --output {output} 2> {log}"
+        "/home/uzuner/Documents/orthanq/target/release/orthanq candidates virus --output {output} 2> {log}"
 
 rule orthanq_preprocess:
     input:
@@ -20,14 +20,14 @@ rule orthanq_preprocess:
     conda:
         "../envs/orthanq.yaml"
     shell:
-        "/home/uzuner/Documents/orthanq/target/debug/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "/home/uzuner/Documents/orthanq/target/release/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 rule orthanq_quantify:
     input:
         candidates="results/orthanq/candidates",
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
-        directory("results/orthanq/calls/{sample}")
+        "results/orthanq/calls/{sample}.tsv"
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
@@ -35,4 +35,4 @@ rule orthanq_quantify:
     params:
         prior="uniform"
     shell:
-        "/home/uzuner/Documents/orthanq/target/debug/orthanq call virus --candidates-folder {input.candidates} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
+        "/home/uzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
