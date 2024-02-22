@@ -8,7 +8,7 @@ simulation: True
 #samples: config/samples.tsv
 
 #number of total reads in the sample
-n_reads: 2000
+n_reads: 50000
 
 ##tool configurations
 #art simulation

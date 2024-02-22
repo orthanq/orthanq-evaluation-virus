@@ -1,18 +1,45 @@
-rule art_simulation:
+# rule art_simulation:
+#     input:
+#         "resources/lineages/{lineage}.fasta"
+#     output:
+#         "results/art/{lineage}_1.fq",
+#         "results/art/{lineage}_2.fq"
+#     log:
+#         "logs/art/{lineage}.log",
+#     #threads: config["threads"]["art"]
+#     conda:
+#         "../envs/art.yaml"
+#     params: config["f_coverage"]
+#     shell:
+#         "art_illumina -ss HS25 -i {input} -p -l 150 -s 100 -m 200 -f {params} --noALN --rndSeed 31303889 -o"
+#         " results/art/{wildcards.lineage}_ 2> {log}"
+
+# rule wgsim:
+#     input:
+#         ref="resources/lineages/{lineage}.fasta"
+#     output:
+#         read1="results/art/{lineage}_1.fq",
+#         read2="results/art/{lineage}_2.fq"
+#     log:
+#         "logs/wgsim/{lineage}.log"
+#     params:
+#         "-X 0 -R 0 -r 0 -h"
+#     wrapper:
+#         "v3.3.6/bio/wgsim"
+
+
+rule mason:
     input:
-        "resources/lineages/{lineage}.fasta"
+        ref="resources/lineages/{lineage}.fasta"
     output:
-        "results/art/{lineage}_1.fq",
-        "results/art/{lineage}_2.fq"
+        read1="results/art/{lineage}_1.fq",
+        read2="results/art/{lineage}_2.fq"
     log:
-        "logs/art/{lineage}.log",
-    #threads: config["threads"]["art"]
+        "logs/mason/{lineage}.log"
     conda:
-        "../envs/art.yaml"
-    params: config["f_coverage"]
+        "../envs/mason.yaml"
     shell:
-        "art_illumina -ss HS25 -i {input} -p -l 150 -s 10 -m 200 -f {params} --noALN --rndSeed 31303889 -o"
-        " results/art/{wildcards.lineage}_ 2> {log}"
+        "mason_simulator -ir {input.ref} -n 10000 -o {output.read1} -or {output.read2} --read-name-prefix {wildcards.lineage}"
 
 rule get_fractions:
     input:
