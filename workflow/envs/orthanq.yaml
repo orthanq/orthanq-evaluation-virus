@@ -14,3 +14,4 @@ dependencies:
   - minimap2=2.24
   - bwa=0.7.17
   - htslib
+  - seqtk

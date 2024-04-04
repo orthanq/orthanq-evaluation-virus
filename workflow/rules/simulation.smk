@@ -38,6 +38,8 @@ rule mason:
         "logs/mason/{lineage}.log"
     conda:
         "../envs/mason.yaml"
+    benchmark:    
+        "benchmarks/mason/{lineage}.tsv" 
     shell:
         "mason_simulator -ir {input.ref} -n 10000 -o {output.read1} -or {output.read2} --read-name-prefix {wildcards.lineage}"
 
@@ -54,6 +56,8 @@ rule get_fractions:
         "{num}"
     conda:
         "../envs/seqtk.yaml"
+    benchmark:    
+        "benchmarks/get_fractions/{sample}-{lineage}-{num}.tsv" 
     shell:
         "seqtk sample -s100 {input.fq1} {params} > {output.out_fq1}; "
         "seqtk sample -s100 {input.fq2} {params} > {output.out_fq2} 2> {log}"
@@ -75,6 +79,8 @@ rule concat_fractions:
         out_fq2="results/mixed/{sample}_2.fq"
     log:
         "logs/mixed/{sample}.log",
+    benchmark:    
+        "benchmarks/concat_fractions/{sample}.tsv" 
     shell:
         "cat {input.fq1} > {output.out_fq1}; "
         "cat {input.fq2} > {output.out_fq2}"

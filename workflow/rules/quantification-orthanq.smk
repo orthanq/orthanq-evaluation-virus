@@ -7,8 +7,10 @@ rule orthanq_candidates:
         "logs/orthanq_candidates/candidates_virus.log",
     conda:
         "../envs/orthanq.yaml"
+    benchmark:    
+        "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
     shell:
-        "/home/uzuner/Documents/orthanq/target/release/orthanq candidates virus --output {output} 2> {log}"
+        "/projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --output {output} 2> {log}"
 
 rule orthanq_preprocess:
     input:
@@ -19,8 +21,10 @@ rule orthanq_preprocess:
         "logs/orthanq_preprocess/{sample}.log",
     conda:
         "../envs/orthanq.yaml"
+    benchmark:    
+        "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "/home/uzuner/Documents/orthanq/target/release/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "/projects/koesterlab/orthanq/orthanq/target/release/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 rule orthanq_quantify:
     input:
@@ -34,5 +38,7 @@ rule orthanq_quantify:
         "../envs/orthanq.yaml"
     params:
         prior="uniform"
+    benchmark:    
+        "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "/home/uzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
+        "/projects/koesterlab/orthanq/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
