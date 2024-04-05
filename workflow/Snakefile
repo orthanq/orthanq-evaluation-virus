@@ -17,10 +17,11 @@ if config["simulation"]:
 
     rule all:
         input:
-            [
-                f"results/fractions/{row['sample_name']}-{row['lineage']}-{row['num_reads']}_1.fq"
-                for _, row in simulated_sample.iterrows()
-            ],
-            expand("results/orthanq/calls/{sample}.tsv", sample=simulated_sample.sample_name.unique())
+            # [
+            #     f"results/fractions/{row['sample_name']}-{row['lineage']}-{row['num_reads']}_1.fq"
+            #     for _, row in simulated_sample.iterrows()
+            # ],
+            # expand("results/orthanq/calls/{sample}.tsv", sample=simulated_sample.sample_name.unique()),
+            "results/simulation_input/perCountryDataCaseCountsFinal.csv"
 
 #todo: implement the other case

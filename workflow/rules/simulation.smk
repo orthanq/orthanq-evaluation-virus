@@ -27,6 +27,26 @@
 #     wrapper:
 #         "v3.3.6/bio/wgsim"
 
+rule download_country_data:
+    output:
+        "results/download_country_data/perCountryDataCaseCounts.json"
+    log:
+        "logs/download_country_data/download_country_data.log"
+    shell:
+        "wget -c https://raw.githubusercontent.com/hodcroftlab/covariants/master/web/public/data/perCountryDataCaseCounts.json -O {output}"
+
+rule create_simulation_input:
+    input:
+        per_country_data_json="results/download_country_data/perCountryDataCaseCounts.json"
+    output:
+        per_country_data_csv_raw="results/simulation_input/perCountryDataCaseCountsRaw.csv",
+        per_country_data_csv_final="results/simulation_input/perCountryDataCaseCountsFinal.csv",
+    log:
+        "logs/create_simulation_input/create_simulation_input.log"
+    benchmark:
+        "benchmarks/create_simulation_input/create_simulation_input.tsv" 
+    script:
+        "../scripts/create_simulation_input.py"
 
 rule mason:
     input:
