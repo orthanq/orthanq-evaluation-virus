@@ -1,32 +1,3 @@
-# rule art_simulation:
-#     input:
-#         "resources/lineages/{lineage}.fasta"
-#     output:
-#         "results/art/{lineage}_1.fq",
-#         "results/art/{lineage}_2.fq"
-#     log:
-#         "logs/art/{lineage}.log",
-#     #threads: config["threads"]["art"]
-#     conda:
-#         "../envs/art.yaml"
-#     params: config["f_coverage"]
-#     shell:
-#         "art_illumina -ss HS25 -i {input} -p -l 150 -s 100 -m 200 -f {params} --noALN --rndSeed 31303889 -o"
-#         " results/art/{wildcards.lineage}_ 2> {log}"
-
-# rule wgsim:
-#     input:
-#         ref="resources/lineages/{lineage}.fasta"
-#     output:
-#         read1="results/art/{lineage}_1.fq",
-#         read2="results/art/{lineage}_2.fq"
-#     log:
-#         "logs/wgsim/{lineage}.log"
-#     params:
-#         "-X 0 -R 0 -r 0 -h"
-#     wrapper:
-#         "v3.3.6/bio/wgsim"
-
 rule download_country_data:
     output:
         "results/download_country_data/perCountryDataCaseCounts.json"
@@ -48,9 +19,22 @@ rule create_simulation_input:
     script:
         "../scripts/create_simulation_input.py"
 
+checkpoint create_sample_compositions:
+    input:
+        per_country_data_csv_final="results/simulation_input/perCountryDataCaseCountsFinal.csv",
+    output:
+        synthetic_samples = expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list)
+    log:
+        "logs/create_sample_compositions/create_sample_compositions.log"
+    benchmark:
+        "benchmarks/create_sample_compositions/create_sample_compositions.tsv" 
+    params: n_of_samples=config["number_of_samples"]
+    script:
+        "../scripts/create_sample_compositions.py"
+
 rule mason:
     input:
-        ref="resources/lineages/{lineage}.fasta"
+        ref="results/orthanq/candidates/sequences/{lineage}.fasta"
     output:
         read1="results/art/{lineage}_1.fq",
         read2="results/art/{lineage}_2.fq"
@@ -84,16 +68,21 @@ rule get_fractions:
  
 rule concat_fractions: 
     input:
-        fq1=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_1.fq",
-            zip,
-            lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
-            num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
-            ),
-        fq2=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_2.fq",
-            zip,
-            lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
-            num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
-            ),
+        # fq1=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_1.fq",
+        #     zip,
+        #     lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
+        #     num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
+        #     ),
+        # fq2=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_2.fq",
+        #     zip,
+        #     lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
+        #     num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
+        #     ),
+        fq1=aggregate_input_concat_fractions_fq1,
+        fq2=aggregate_input_concat_fractions_fq2,
+
+        # fq1="results/fractions/{{sample}}-{lineage}-{num}_1.fq",
+        # fq2="results/fractions/{{sample}}-{lineage}-{num}_2.fq"
     output:
         out_fq1="results/mixed/{sample}_1.fq",
         out_fq2="results/mixed/{sample}_2.fq"

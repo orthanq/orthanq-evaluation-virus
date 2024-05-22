@@ -5,6 +5,7 @@ lineages: config/lineages.tsv
 simulation: True
 
 #samples
+number_of_samples: 3
 #samples: config/samples.tsv
 
 #number of total reads in the sample

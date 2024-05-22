@@ -11,6 +11,7 @@ from pathlib import Path
 import json
 import os
 from random import sample 
+import random
 
 with open(snakemake.log[0], "w") as f:
     sys.stderr = sys.stdout = f
@@ -64,14 +65,14 @@ with open(snakemake.log[0], "w") as f:
                                     'new_stand_estimated_cases': new_clades_with_freqs, 
                                     'stand_total_cases': new_stand_clade_cases})
     new_usa_dist_df = pd.DataFrame(new_usa_dist)
-    print(new_usa_dist_df)
+    # print(new_usa_dist_df)
 
     #then, remove stand_total_cases less than 100
     for index, row in new_usa_dist_df.iterrows():
         if row['stand_total_cases'] < 100:
             new_usa_dist_df.drop(index=[index], inplace=True)
 
-    print(new_usa_dist_df)
+    # print(new_usa_dist_df)
 
     #then, remove the clade from clades dict if it has 0.0
     for index, row in new_usa_dist_df.iterrows():
@@ -79,7 +80,7 @@ with open(snakemake.log[0], "w") as f:
         for clade in clades.copy():
             if clades[clade] == 0.0:
                 clades.pop(clade, None)
-    print(new_usa_dist_df)
+    # print(new_usa_dist_df)
 
     #then, only select rows with clades size not more than 6
     for index, row in new_usa_dist_df.iterrows():
@@ -87,17 +88,7 @@ with open(snakemake.log[0], "w") as f:
         if len(clades) > 6:
             new_usa_dist_df.drop(index=[index], inplace=True)
 
-    print(new_usa_dist_df)
-
-    #sample 20 sets
-    list_of_freqs = []
-    for index, row in new_usa_dist_df.iterrows():
-        clades = row['new_stand_estimated_cases']
-        list_of_freqs.append(clades.values())
-
-    n_of_samples=15 #can be configured
-
-    print(sample(list_of_freqs,n_of_samples)) 
-
+    # print(new_usa_dist_df)
+ 
     #write distributions to tabular file after updating the clade values with frequencies
     new_usa_dist_df.to_csv(snakemake.output.per_country_data_csv_final, index=False)

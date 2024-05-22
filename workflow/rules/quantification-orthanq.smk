@@ -1,20 +1,7 @@
 #wrappers should be used once they are ready
-rule orthanq_candidates:
-    output:
-        directory("results/orthanq/candidates"),
-        candidates="results/orthanq/candidates/candidates.vcf",
-    log:
-        "logs/orthanq_candidates/candidates_virus.log",
-    conda:
-        "../envs/orthanq.yaml"
-    benchmark:    
-        "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
-    shell:
-        "/projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --output {output} 2> {log}"
-
 rule orthanq_preprocess:
     input:
-        candidates="results/orthanq/candidates",
+        candidates_folder="results/orthanq/candidates",
         reads=get_fastq_input
     output: "results/orthanq/preprocess/{sample}.bcf",
     log:
@@ -24,11 +11,12 @@ rule orthanq_preprocess:
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "/projects/koesterlab/orthanq/orthanq/target/release/orthanq preprocess virus --candidates-folder {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq preprocess virus --candidates-folder {input.candidates_folder} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
+#wrappers should be used once they are ready
 rule orthanq_quantify:
     input:
-        candidates="results/orthanq/candidates",
+        candidates_folder="results/orthanq/candidates",
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
         "results/orthanq/calls/{sample}.tsv"
@@ -41,4 +29,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "/projects/koesterlab/orthanq/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
