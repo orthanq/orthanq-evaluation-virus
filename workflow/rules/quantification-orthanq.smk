@@ -19,7 +19,7 @@ rule orthanq_quantify:
         candidates_folder="results/orthanq/candidates",
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
-        "results/orthanq/calls/{sample}.tsv"
+        "results/orthanq/calls/{sample}/{sample}.tsv"
     log:
         "logs/orthanq_call/{sample}.log"
     conda:

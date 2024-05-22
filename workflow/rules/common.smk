@@ -67,3 +67,12 @@ def aggregate_input_concat_fractions_fq2(wildcards):
         )
     return fq2
 
+# input function to retrieve fastq samples
+def get_fastq_input(wildcards):
+    if config["simulation"] == False:
+        sample = samples.loc[wildcards.sample]
+        return [sample["fq1"], sample["fq2"]]
+    else:
+        sample = wildcards.sample
+        simulated = ["results/mixed/{sample}_1.fq", "results/mixed/{sample}_2.fq"]
+        return simulated

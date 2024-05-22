@@ -20,6 +20,6 @@ if config["simulation"]:
         input:
             # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
-            expand("results/orthanq/calls/SimulatedSample{num}.tsv", num=num_list)
+            expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.tsv", num=num_list)
 
 #todo: implement the other case
