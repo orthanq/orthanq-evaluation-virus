@@ -15,11 +15,13 @@ if config["simulation"]:
     include: "rules/candidate-and-sequence-generation.smk"
     include: "rules/simulation.smk"
     include: "rules/quantification-orthanq.smk"
+    include: "rules/vega.smk"
 
     rule all:
         input:
             # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
-            expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.tsv", num=num_list)
+            expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.tsv", num=num_list),
+            expand("results/orthanq/calls/SimulatedSample{num}/viral_solutions.html", num=num_list)
 
 #todo: implement the other case

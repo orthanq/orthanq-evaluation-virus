@@ -6,7 +6,8 @@ n_reads = config["n_reads"]
 
 num_samples = config["number_of_samples"]
 
-orthanq_sequences = ['23D', '20F', '22F', '21A', '23E', '21G', '21J', '22E', '24B', '20I', '21L', '23B', '21I', '22B', '20G', '23I', '21E', '20D', '20E', '21K', '23F', '22A', '21F', '23A', '20H', '22D', '23G', '23H', '24A', '20A', '21B', '21H', '22C', '20B', '21C', '20J', '23C', '21D', '19A', '20C', '21M', '19B']
+#removed 22F temporarily
+orthanq_sequences = ['23D', '20F', '21A', '23E', '21G', '21J', '22E', '24B', '20I', '21L', '23B', '21I', '22B', '20G', '23I', '21E', '20D', '20E', '21K', '23F', '22A', '21F', '23A', '20H', '22D', '23G', '23H', '24A', '20A', '21B', '21H', '22C', '20B', '21C', '20J', '23C', '21D', '19A', '20C', '21M', '19B']
 
 num_list = [num+1 for num in range(num_samples)]
 

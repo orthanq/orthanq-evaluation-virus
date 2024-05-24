@@ -19,7 +19,10 @@ rule orthanq_quantify:
         candidates_folder="results/orthanq/candidates",
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
-        "results/orthanq/calls/{sample}/{sample}.tsv"
+        tsv="results/orthanq/calls/{sample}/{sample}.tsv",
+        solutions="results/orthanq/calls/{sample}/viral_solutions.json",
+        final_solution="results/orthanq/calls/{sample}/final_solution.json",
+        lp_solution="results/orthanq/calls/{sample}/lp_solution.json",
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
@@ -29,4 +32,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output} 2> {log}"
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"

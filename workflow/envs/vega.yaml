@@ -1,0 +1,5 @@
+channels:
+  - conda-forge
+dependencies:
+  - vega-lite-cli =5.16.1
+  - vl-convert =1.2.0
