@@ -45,7 +45,7 @@ rule mason:
     benchmark:    
         "benchmarks/mason/{lineage}.tsv" 
     shell:
-        "mason_simulator -ir {input.ref} -n 10000 -o {output.read1} -or {output.read2} --read-name-prefix {wildcards.lineage}"
+        "mason_simulator -ir {input.ref} -n 100000 -o {output.read1} -or {output.read2} --read-name-prefix {wildcards.lineage}"
 
 rule get_fractions:
     input:
@@ -65,7 +65,7 @@ rule get_fractions:
     shell:
         "seqtk sample -s100 {input.fq1} {params} > {output.out_fq1}; "
         "seqtk sample -s100 {input.fq2} {params} > {output.out_fq2} 2> {log}"
- 
+
 rule concat_fractions: 
     input:
         # fq1=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_1.fq",
@@ -78,8 +78,8 @@ rule concat_fractions:
         #     lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
         #     num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
         #     ),
-        fq1=aggregate_input_concat_fractions_fq1,
-        fq2=aggregate_input_concat_fractions_fq2,
+        fq1=lambda wildcards: get_concat_fractions_input(wildcards)[0],
+        fq2=lambda wildcards: get_concat_fractions_input(wildcards)[1]
 
         # fq1="results/fractions/{{sample}}-{lineage}-{num}_1.fq",
         # fq2="results/fractions/{{sample}}-{lineage}-{num}_2.fq"
