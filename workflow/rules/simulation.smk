@@ -37,7 +37,8 @@ rule mason:
         ref="results/orthanq/candidates/sequences/{lineage}.fasta"
     output:
         read1="results/art/{lineage}_1.fq",
-        read2="results/art/{lineage}_2.fq"
+        read2="results/art/{lineage}_2.fq",
+        alignment="results/art/{lineage}.sam"
     log:
         "logs/mason/{lineage}.log"
     conda:
@@ -45,7 +46,7 @@ rule mason:
     benchmark:    
         "benchmarks/mason/{lineage}.tsv" 
     shell:
-        "mason_simulator -ir {input.ref} -n 100000 -o {output.read1} -or {output.read2} --read-name-prefix {wildcards.lineage}"
+        "mason_simulator -ir {input.ref} -n 50000 --illumina-read-length 150 -o {output.read1} -or {output.read2} --out-alignment {output.alignment} --read-name-prefix {wildcards.lineage}"
 
 rule get_fractions:
     input:
