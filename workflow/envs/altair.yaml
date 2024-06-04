@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+dependencies:
+  - altair
+  - pandas
+  - polars
+  - vl-convert-python
+  - pyarrow

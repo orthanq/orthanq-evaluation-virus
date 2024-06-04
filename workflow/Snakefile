@@ -15,12 +15,13 @@ if config["simulation"]:
     include: "rules/candidate-and-sequence-generation.smk"
     include: "rules/simulation.smk"
     include: "rules/quantification-orthanq.smk"
+    include: "rules/evaluation.smk"
     include: "rules/vega.smk"
 
     rule all:
         input:
             # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
-            get_results
-
+            get_results,
+            "results/evaluation/scatter_plot.svg"
 #todo: implement the other case
