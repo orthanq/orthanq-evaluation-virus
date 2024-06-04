@@ -1,5 +1,7 @@
 #scatterplot for all points
-#this plot is not very informative as we throw all data points together with the fractions and some lineages might be represented in different lineages. ex. 21I:0.5 in simulated sample 1 but another prediction by orthanq: 21:0.5 in simulated sample 2.
+#in this plot we throw all data points together with the fractions 
+#and each sample is read alphabetically (e.g. SimulatedSample1, SimulatedSample2 etc.) for both predictions and simulations
+#in the end, each datapoint for the corresponding lineage is paired to each other.
 
 # import pandas as pd
 import polars as pl
