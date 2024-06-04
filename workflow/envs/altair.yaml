@@ -6,3 +6,4 @@ dependencies:
   - polars
   - vl-convert-python
   - pyarrow
+  - scipy

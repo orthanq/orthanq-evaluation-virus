@@ -12,6 +12,7 @@ import os
 import json
 import sys
 import collections
+import scipy.stats
 
 with open(snakemake.log[0], "w") as f:
     sys.stderr = sys.stdout = f
@@ -163,4 +164,9 @@ with open(snakemake.log[0], "w") as f:
 
     #export 
     plot.save(snakemake.output.plot)
+
+    #calculate spearman correlation
+    spearman=scipy.stats.spearmanr(flatten(ordered_predicted_fractions_copy.values()), flatten(ordered_simulated_fractions.values()))   # Spearman's rho
+    print(spearman)
+    
     # df.write_csv(snakemake.output.foo)
