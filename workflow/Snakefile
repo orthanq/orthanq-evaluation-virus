@@ -15,6 +15,7 @@ if config["simulation"]:
     include: "rules/candidate-and-sequence-generation.smk"
     include: "rules/simulation.smk"
     include: "rules/quantification-orthanq.smk"
+    include: "rules/pangolin.smk"
     include: "rules/evaluation.smk"
     include: "rules/vega.smk"
 
@@ -24,5 +25,7 @@ if config["simulation"]:
             aggregate_input_get_fractions,
             get_results,
             "results/evaluation/scatter_plot.svg",
-            "results/evaluation/validation.tsv"
+            "results/evaluation/validation.tsv",
+            # expand("results/bcftools_call/SimulatedSample{num}.vcf.gz", num=num_list),
+            expand("results/pangolin/SimulatedSample{num}_lineage_report.csv", num=num_list)
 #todo: implement the other case
