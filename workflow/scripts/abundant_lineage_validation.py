@@ -67,10 +67,10 @@ with open(snakemake.log[0], "w") as f:
         if pred==sim:
             n_correct+=1
 
-    accuracy=n_correct/len(orthanq_predictions) #it can also be the lenght of simulated samples, but since they're the same, it doesn't matter which of them is used here
-   
+    accuracy=n_correct/len(orthanq_predictions)*100 #it can also be the lenght of simulated samples, but since they're the same, it doesn't matter which of them is used here
+    print(accuracy)
     #convert to dataframe and write
-    data = {"n_samples": len(orthanq_predictions),"call_rate": call_rate, "accuracy": call_rate}
+    data = {"n_samples": len(orthanq_predictions),"call_rate": call_rate, "accuracy": accuracy}
     df = pl.DataFrame(data)
     print(df)
     df.write_csv(snakemake.output.validation)
