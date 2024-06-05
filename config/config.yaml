@@ -18,3 +18,4 @@ n_reads: 50000
 f_coverage: 50
 
 bwa_threads: 1
+kallisto_index_threads: 1

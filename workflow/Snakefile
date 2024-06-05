@@ -16,6 +16,7 @@ if config["simulation"]:
     include: "rules/simulation.smk"
     include: "rules/quantification-orthanq.smk"
     include: "rules/pangolin.smk"
+    include: "rules/kallisto.smk"
     include: "rules/evaluation.smk"
     include: "rules/vega.smk"
 
@@ -27,5 +28,7 @@ if config["simulation"]:
             "results/evaluation/scatter_plot.svg",
             "results/evaluation/validation.tsv",
             # expand("results/bcftools_call/SimulatedSample{num}.vcf.gz", num=num_list),
-            expand("results/pangolin/SimulatedSample{num}_lineage_report.csv", num=num_list)
+            expand("results/pangolin/SimulatedSample{num}_lineage_report.csv", num=num_list),
+            expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
+
 #todo: implement the other case
