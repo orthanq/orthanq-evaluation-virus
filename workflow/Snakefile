@@ -23,5 +23,6 @@ if config["simulation"]:
             # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
             get_results,
-            "results/evaluation/scatter_plot.svg"
+            "results/evaluation/scatter_plot.svg",
+            "results/evaluation/validation.tsv"
 #todo: implement the other case
