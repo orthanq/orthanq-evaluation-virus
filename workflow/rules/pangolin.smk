@@ -10,7 +10,7 @@ rule bwa_index:
     log:
         "logs/bwa_index/MN908947.log"
     params:
-        prefix="results/bwa-index/MN908947",
+        prefix=lambda w, output: os.path.splitext(output[0])[0],
         algorithm="bwtsw",
     wrapper:
         "v2.0.0/bio/bwa/index" 
