@@ -17,5 +17,7 @@ n_reads: 50000
 #art simulation
 f_coverage: 50
 
+#threads for tools
 bwa_threads: 1
 kallisto_index_threads: 1
+kallisto_quant_threads: 1

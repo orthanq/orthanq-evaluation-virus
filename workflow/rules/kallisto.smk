@@ -21,8 +21,10 @@ rule kallisto_index:
     log:
         "logs/kallisto_index/kallisto_index.log",
     threads: config["kallisto_index_threads"]
-    wrapper:
-        "v3.11.0/bio/kallisto/index"
+    conda:
+        "../envs/kallisto.yaml"
+    shell:
+        "kallisto index -i {output} {input}"
 
 rule kallisto_quant:
     input:
@@ -34,6 +36,8 @@ rule kallisto_quant:
         extra="",
     log:
         "logs/kallisto_quant/{sample}.log",
-    threads: 1
-    wrapper:
-        "v3.11.0/bio/kallisto/quant"
+    threads: config["kallisto_quant_threads"]
+    conda:
+        "../envs/kallisto.yaml"
+    shell:
+        "kallisto quant -i {input.index} {input.fastq} -o {output}"
