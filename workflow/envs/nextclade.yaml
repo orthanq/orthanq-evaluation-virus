@@ -1,0 +1,6 @@
+name: nextclade
+channels:
+   - bioconda
+dependencies:
+   - nextclade
+   
