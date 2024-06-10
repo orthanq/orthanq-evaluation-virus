@@ -96,7 +96,7 @@ rule pangolin:
     input:
         "results/consensus/{sample}.fasta",
     output:
-        "results/pangolin/{sample}_lineage_report.csv"
+        "results/pangolin/{sample}.csv"
     log:
         "logs/pangolin/{sample}.log"
     conda:

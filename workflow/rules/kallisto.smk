@@ -31,7 +31,8 @@ rule kallisto_quant:
         fastq=get_fastq_input,
         index="results/kallisto_index/sarscov2_all_nexstrain.idx",
     output:
-        directory("results/kallisto/quant_results_{sample}"),
+        dir=directory("results/kallisto/quant_results_{sample}"),
+        tsv="results/kallisto/quant_results_{sample}/abundance.tsv"
     params:
         extra="",
     log:
@@ -40,4 +41,4 @@ rule kallisto_quant:
     conda:
         "../envs/kallisto.yaml"
     shell:
-        "kallisto quant -i {input.index} {input.fastq} -o {output}"
+        "kallisto quant -i {input.index} {input.fastq} -o {output.dir}"
