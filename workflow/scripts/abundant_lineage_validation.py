@@ -5,22 +5,34 @@ import pandas as pd
 import os
 import sys
 import functools as ft
+import re
 
 with open(snakemake.log[0], "w") as f:
     sys.stderr = sys.stdout = f
 
+    #natural sorting (the sample names contains both string and number hence sorted() cannot sort them properly)
+    def atoi(text):
+        return int(text) if text.isdigit() else text
+
+    def natural_keys(text):
+        return [ atoi(c) for c in re.split(r'(\d+)', text) ]
+    
     ###########################################
     #ground truth##############################
     ###########################################
 
     #simulation input
-    simulation = snakemake.input.simulation
+    simulation = list(snakemake.input.simulation)
 
     def extract_ground_truth(simulation):
         #collect the abundant lineage in simulations
         simulation_largest_lineages=[]
 
-        for file in sorted(simulation):
+        #sort the list of files
+        simulation.sort(key=natural_keys)
+        print("sorted list: ", simulation)
+
+        for file in simulation:
             #read table
             results = pl.read_csv(file)
 
@@ -47,6 +59,8 @@ with open(snakemake.log[0], "w") as f:
         n_correct=0
         #calculate call rate and accuracy
         for pred,sim in zip(sorted_tool_predictions,sorted_ground_truth):
+            print("pred:",pred)
+            print("sim:", sim)
             if pred==sim:
                 n_correct+=1
 
@@ -69,14 +83,19 @@ with open(snakemake.log[0], "w") as f:
     ############################################
     
     #orthanq results
-    orthanq_input = snakemake.input.orthanq
+    orthanq_input = list(snakemake.input.orthanq)
 
     def extract_orthanq(list_of_input):
         #initialize orthanq predictions
         predictions=[]
 
         #collect the abundandant lineage in predictions
-        for file in sorted(list_of_input):
+
+        #sort the list of files
+        list_of_input.sort(key=natural_keys)
+        print("sorted list: ", list_of_input)
+        for file in list_of_input:
+            print("file name:", file)
             #read table
             results = pl.read_csv(file)
 
@@ -110,14 +129,19 @@ with open(snakemake.log[0], "w") as f:
     #############################################
 
     #assign list of pangolin results to a variable
-    pangolin_input = snakemake.input.pangolin
+    pangolin_input = list(snakemake.input.pangolin)
 
     def extract_pangolin(list_of_input):
         #initialize a list to collect predictions
         predictions=[]
 
         #loop over the files
-        for file in sorted(list_of_input):
+
+        #sort the list of files
+        list_of_input.sort(key=natural_keys)
+        print("sorted list: ", list_of_input)
+
+        for file in list_of_input:
 
             #predictions
             #read the file into a df
@@ -185,14 +209,19 @@ with open(snakemake.log[0], "w") as f:
     #############################################    
 
     #assign list of pangolin results to a variable
-    nextclade_input = snakemake.input.nextclade
+    nextclade_input = list(snakemake.input.nextclade)
     print(nextclade_input)
     def extract_nextclade(list_of_input):
         #initialize a list to collect predictions
         predictions=[]
 
         #loop over the files
-        for file in sorted(list_of_input):
+        
+        #sort the list of files
+        list_of_input.sort(key=natural_keys)
+        print("sorted list: ", list_of_input)
+
+        for file in list_of_input:
 
             #predictions
             #read the file into a df
@@ -220,7 +249,7 @@ with open(snakemake.log[0], "w") as f:
     ############################################# 
 
     #assign list of pangolin results to a variable
-    kallisto_input = snakemake.input.kallisto
+    kallisto_input = list(snakemake.input.kallisto)
     print(kallisto_input)
 
     def extract_kallisto(list_of_input):
@@ -229,7 +258,12 @@ with open(snakemake.log[0], "w") as f:
         predictions=[]
 
         #loop over the files
-        for file in sorted(list_of_input):
+
+        #sort the list of files
+        list_of_input.sort(key=natural_keys)
+        print("sorted list: ", list_of_input)
+
+        for file in list_of_input:
 
             #predictions
             #read the file into a df
