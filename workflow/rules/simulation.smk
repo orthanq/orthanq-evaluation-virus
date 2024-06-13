@@ -46,7 +46,7 @@ rule mason:
     benchmark:    
         "benchmarks/mason/{lineage}.tsv" 
     shell:
-        "mason_simulator -ir {input.ref} -n 50000 --illumina-read-length 150 -o {output.read1} -or {output.read2} --out-alignment {output.alignment} --read-name-prefix {wildcards.lineage}"
+        "mason_simulator -ir {input.ref} -n 50000 --illumina-read-length 150 -o {output.read1} -or {output.read2} --out-alignment {output.alignment} --read-name-prefix {wildcards.lineage} 2> {log}"
 
 rule get_fractions:
     input:
