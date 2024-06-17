@@ -12,7 +12,7 @@ rule get_dataset:
 
 rule run_nextclade:
     input:
-        sample_fasta="results/consensus/{sample}.fasta",
+        sample_fasta=f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta",
         dataset="results/nextstrain/sarscov2_dataset"
     output: 
         dir=directory("results/nextstrain/results/{sample}"),

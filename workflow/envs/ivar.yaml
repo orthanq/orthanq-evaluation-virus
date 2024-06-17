@@ -1,0 +1,8 @@
+name: ivar
+channels:
+   - bioconda
+   - conda-forge
+dependencies:
+   - ivar
+   - samtools
+   

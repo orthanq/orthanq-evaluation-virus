@@ -1,0 +1,5 @@
+name: yaml
+channels:
+  - conda-forge
+dependencies:
+  - pyyaml

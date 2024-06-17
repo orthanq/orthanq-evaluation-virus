@@ -29,7 +29,7 @@ if config["simulation"]:
             "results/evaluation/scatter_plot.svg",
             "results/evaluation/validation.tsv",
             # expand("results/bcftools_call/SimulatedSample{num}.vcf.gz", num=num_list),
-            expand("results/pangolin/SimulatedSample{num}.csv", num=num_list),
+            expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
             expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
             expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
             "results/clade_to_lineage/clade_to_lineages.tsv"

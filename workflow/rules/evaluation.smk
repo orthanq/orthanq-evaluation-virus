@@ -38,7 +38,7 @@ rule abundant_lineage_validation:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
         clade_to_lineage="results/clade_to_lineage/clade_to_lineages.tsv",
         orthanq=expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.tsv", num=num_list),
-        pangolin=expand("results/pangolin/SimulatedSample{num}.csv", num=num_list),
+        pangolin=expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
         nextclade=expand("results/nextstrain/results/SimulatedSample{num}/nextclade.tsv", num=num_list),
         kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}/abundance.tsv", num=num_list),
     output:

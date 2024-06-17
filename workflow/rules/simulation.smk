@@ -85,8 +85,8 @@ rule concat_fractions:
         # fq1="results/fractions/{{sample}}-{lineage}-{num}_1.fq",
         # fq2="results/fractions/{{sample}}-{lineage}-{num}_2.fq"
     output:
-        out_fq1="results/mixed/{sample}_1.fq",
-        out_fq2="results/mixed/{sample}_2.fq"
+        out_fq1="results/mixed/{sample}_1.fastq",
+        out_fq2="results/mixed/{sample}_2.fastq"
     log:
         "logs/mixed/{sample}.log",
     benchmark:    

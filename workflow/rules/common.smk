@@ -91,7 +91,7 @@ def get_concat_fractions_input(wildcards):
 # input function to retrieve fastq samples
 def get_fastq_input(wildcards):
     sample = wildcards.sample
-    simulated = ["results/mixed/{sample}_1.fq", "results/mixed/{sample}_2.fq"]
+    simulated = ["results/mixed/{sample}_1.fastq", "results/mixed/{sample}_2.fastq"]
     return simulated
 
 def get_results(wildcards):
@@ -101,3 +101,6 @@ def get_results(wildcards):
     else:
         final_output = expand("results/orthanq/calls/{sample}/{sample}.tsv", sample=simulated_sample["sample"].unique()) + expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=simulated_sample["sample"].unique())
         return final_output
+
+#pseudodate tobe used in uncovar workflow
+DATE="13062024"
