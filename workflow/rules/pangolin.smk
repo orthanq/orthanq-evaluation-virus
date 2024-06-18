@@ -149,17 +149,19 @@
 #     shell:
 #         "samtools mpileup -A -Q 0 {input.bam} | ivar consensus -p {output} -t 0.7 2> {log}"
 
-rule clone_uncovar_pipeline:
-    output:
-        directory("uncovar")
-    shell:
-        "git clone https://github.com/IKIM-Essen/uncovar.git"
+# rule clone_uncovar_pipeline:
+#     output:
+#         touch("results/clone_uncovar_done.txt"),
+#         uncovar_dir=directory("uncovar"),
+#     shell:
+#         "git clone https://github.com/IKIM-Essen/uncovar.git {output.uncovar_dir}"
 
 rule create_sample_sheet_unicovar:
     input:
         fq1=expand("results/mixed/SimulatedSample{num}_1.fastq", num=num_list),
         fq2=expand("results/mixed/SimulatedSample{num}_2.fastq", num=num_list),
-        template="uncovar/config/pep/samples.csv"
+        template=UNCOVAR_SAMPLE_SHEET,
+        # uncovar_check="results/clone_uncovar_done.txt"
     output:
         sample_sheet="uncovar/config/pep/samples2.csv"
     log:
@@ -169,9 +171,10 @@ rule create_sample_sheet_unicovar:
 
 rule update_configs_uncovar:
     input:
-        config="uncovar/config/config.yaml",
-        pepfile="uncovar/config/pep/config.yaml",
-        sample_sheet="uncovar/config/pep/samples2.csv"
+        config=UNCOVAR_CONFIG,
+        pepfile=UNCOVAR_PEP_CONFIG,
+        sample_sheet="uncovar/config/pep/samples2.csv",
+        # uncovar_check="results/clone_uncovar_done.txt"
     output:
         main_config="uncovar/config/config2.yaml",
         pep_config="uncovar/config/pep/config2.yaml"
@@ -185,34 +188,43 @@ rule update_configs_uncovar:
     script:
         "../scripts/change_sample_sheet_path.py"
 
+ruleorder: touch_uncovar_results > execute_uncovar > transfer_results
+rule touch_uncovar_results:  
+    output:
+        output_files="uncovar/results/{date}/polishing/bcftools-illumina/{sample}.fasta"
+    shell:
+        "touch {output.output_files}"
+
 rule execute_uncovar:
     input:
-        sample_sheet="uncovar/config/pep/samples2.csv"
+        sample_sheet="uncovar/config/pep/samples2.csv",
+        main_config="uncovar/config/config2.yaml",
+        pep_config="uncovar/config/pep/config2.yaml",
+        # uncovar_results_touch="results/touch_uncovar_results_done.txt"
     output:
-        foo="results/foo.txt"
+        touch("results/pangolin/unconvar_execution_done.txt")
     params: cores=2,
         output_files=expand("results/{date}/polishing/bcftools-illumina/SimulatedSample{num}.fasta", date=DATE, num=num_list)
     log:
         "logs/uncovar/execute_workflow.log"
     shell:
-        "touch {output.foo} && cd uncovar && "
+        "cd uncovar && "
         " snakemake -p --configfile config/config2.yaml --sdm conda --cores {params.cores} {params.output_files} --rerun-incomplete"
 
 rule transfer_results:
     input:
-        "uncovar/results/{date}/polishing/bcftools-illumina/{sample}.fasta"
+        uncovar_results="uncovar/results/{date}/polishing/bcftools-illumina/{sample}.fasta",
+        uncovar_execution_check="results/pangolin/unconvar_execution_done.txt" #required for the rule execute_uncovar to be executed before transfer_results
     output:
         "results/{date}/polishing/bcftools-illumina/{sample}.fasta"
-    priority: 2
     shell:
-        "cp {input} {output}"
+        "cp {input.uncovar_results} {output}"
 
 rule pangolin:
     input:
         f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
     output:
         "results/pangolin/{sample}_{date}.csv"
-    priority: 1
     log:
         "logs/pangolin/{sample}_{date}.log"
     conda:

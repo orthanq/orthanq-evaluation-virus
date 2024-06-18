@@ -21,3 +21,6 @@ f_coverage: 50
 bwa_threads: 1
 kallisto_index_threads: 1
 kallisto_quant_threads: 1
+
+#requirements
+#uncovar pipeline should be cloned in the workflow directory, e.g. git clone https://github.com/IKIM-Essen/uncovar.git {workdir}:

@@ -104,3 +104,6 @@ def get_results(wildcards):
 
 #pseudodate tobe used in uncovar workflow
 DATE="13062024"
+UNCOVAR_SAMPLE_SHEET="uncovar/config/pep/samples.csv"
+UNCOVAR_CONFIG="uncovar/config/config.yaml"
+UNCOVAR_PEP_CONFIG="uncovar/config/pep/config.yaml"
