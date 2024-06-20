@@ -1,14 +1,17 @@
 #simulate reads 
-simulation: True
+simulate_pandemics: False
 
 #option for simulating given fractions for a sample in lineages.tsv
 simulate_given: False
+
+#samples.tsv
+samples: config/samples.tsv
 
 #path for lineages to be simulated
 lineages: config/lineages.tsv
 
 #if simulate_given is False, samples are generated from frequency table
-number_of_samples: 15
+number_of_samples: 10
 
 #number of total reads in the sample
 n_reads: 50000

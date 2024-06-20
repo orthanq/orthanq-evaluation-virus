@@ -158,8 +158,8 @@
 
 rule create_sample_sheet_unicovar:
     input:
-        fq1=expand("results/mixed/SimulatedSample{num}_1.fastq", num=num_list),
-        fq2=expand("results/mixed/SimulatedSample{num}_2.fastq", num=num_list),
+        fq1=unicovar_inputs[0],
+        fq2=unicovar_inputs[1],
         template=UNCOVAR_SAMPLE_SHEET,
         # uncovar_check="results/clone_uncovar_done.txt"
     output:
