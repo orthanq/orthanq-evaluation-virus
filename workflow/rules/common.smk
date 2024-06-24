@@ -120,6 +120,8 @@ def get_fastq_input_unicovar():
         fqs2 = expand("results/sra/{sample}_2.fastq.gz", sample=samples["sra"])
     return [fqs1, fqs2]
 unicovar_inputs = get_fastq_input_unicovar()
+print("unicovar_inputs[0]",unicovar_inputs[0])
+print("unicovar_inputs[1]", unicovar_inputs[1])
 
 #just a pseudodate used in uncovar workflow, hence pangolin output
 DATE="13062024"
@@ -151,3 +153,12 @@ def get_results(wildcards):
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     final_output.extend(orthanq + pangolin + kallisto + nextclade)
     return final_output
+
+def get_uncovar_output():
+    if config["simulate_pandemics"] and not config["simulate_given"]:
+        pangolin = expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE)
+    elif config["simulate_given"] and not config["simulate_pandemics"]:
+        pangolin = expand("results/{date}/polishing/bcftools-illumina/SimulatedSample{num}.fasta", date=DATE, num=num_list)
+    else:
+        pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=samples["sra"], date=DATE) 
+    return pangolin

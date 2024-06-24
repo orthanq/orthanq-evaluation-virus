@@ -29,6 +29,8 @@ rule orthanq_quantify:
         "../envs/orthanq.yaml"
     params:
         prior="uniform"
+    resources: 
+        mem_mb=5000
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
