@@ -204,7 +204,7 @@ rule execute_uncovar:
     output:
         touch("results/pangolin/unconvar_execution_done.txt")
     params: cores=2,
-        output_files=expand("results/{date}/polishing/bcftools-illumina/SimulatedSample{num}.fasta", date=DATE, num=num_list)
+        output_files=get_uncovar_output()
     log:
         "logs/uncovar/execute_workflow.log"
     shell:
