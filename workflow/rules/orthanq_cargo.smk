@@ -1,4 +1,22 @@
 #wrappers should be used once they are ready
+rule orthanq_candidates:
+    output:
+        candidates_folder=directory("results/orthanq/candidates"),
+        candidates="results/orthanq/candidates/candidates.vcf",
+        reference_fasta="results/orthanq/candidates/reference.fasta",
+        reference_fasta_idx="results/orthanq/candidates/reference.fasta.fai",
+        sequences=expand("results/orthanq/candidates/sequences/{lineage}.fasta", lineage=orthanq_sequences), #all sequences should readily be there before simulation
+    log:
+        "logs/orthanq_candidates/candidates_virus.log",
+    conda:
+        "../envs/orthanq_cargo.yaml"
+    priority: 50
+    benchmark:    
+        "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
+    shell:
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --output {output.candidates_folder} 2> {log}"
+
+#wrappers should be used once they are ready
 rule orthanq_preprocess:
     input:
         candidates_folder="results/orthanq/candidates",
@@ -7,7 +25,7 @@ rule orthanq_preprocess:
     log:
         "logs/orthanq_preprocess/{sample}.log",
     conda:
-        "../envs/orthanq.yaml"
+        "../envs/orthanq_cargo.yaml"
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
@@ -26,7 +44,7 @@ rule orthanq_quantify:
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
-        "../envs/orthanq.yaml"
+        "../envs/orthanq_cargo.yaml"
     params:
         prior="uniform"
     resources: 
@@ -34,4 +52,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --enable-equivalence-class-constraint --output {output.tsv} 2> {log}"
