@@ -100,12 +100,11 @@ samples = (
 # input function to retrieve fastq samples
 def get_fastq_input(wildcards):
     sample = wildcards.sample
-    if samples['sra'].empty:
+    if config["simulate_pandemics"] or config["simulate_given"]:
         files = ["results/mixed/{sample}_1.fastq", "results/mixed/{sample}_2.fastq"]
-        return files
     else:
         files = ["results/sra/{sample}_1.fastq.gz", "results/sra/{sample}_2.fastq.gz"]
-        return files
+    return files
 
 #input function for create_sample_sheet_unicovar
 def get_fastq_input_unicovar():
