@@ -2,7 +2,10 @@
 simulate_pandemics: False
 
 #option for simulating given fractions for a sample in lineages.tsv
-simulate_given: False
+simulate_given: True
+
+#NCBI accession ID for the reference genome sequence
+reference_accession: NC_001802.1
 
 #samples.tsv
 samples: config/samples.tsv
