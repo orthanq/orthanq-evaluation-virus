@@ -1,11 +1,28 @@
 #wrappers should be used once they are ready
-rule orthanq_candidates:
+# rule orthanq_candidates_sarscov2:
+#     output:
+#         candidates_folder=directory("results/orthanq/candidates"),
+#         candidates="results/orthanq/candidates/candidates.vcf",
+#         reference_fasta="results/orthanq/candidates/reference.fasta",
+#         reference_fasta_idx="results/orthanq/candidates/reference.fasta.fai",
+#         sequences=expand("results/orthanq/candidates/sequences/{lineage}.fasta", lineage=orthanq_sequences), #all sequences should readily be there before simulation
+#     log:
+#         "logs/orthanq_candidates/candidates_virus.log",
+#     conda:
+#         "../envs/orthanq_cargo.yaml"
+#     priority: 50
+#     benchmark:    
+#         "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
+#     shell:
+#         "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --output {output.candidates_folder} 2> {log}"
+
+rule orthanq_candidates_generic:
+    input:
+        genome="results/ref/reference_sequence.fasta",
+        lineages="resources/lineages/hiv_5_virus_mix.fasta"
     output:
-        candidates_folder=directory("results/orthanq/candidates"),
         candidates="results/orthanq/candidates/candidates.vcf",
-        reference_fasta="results/orthanq/candidates/reference.fasta",
-        reference_fasta_idx="results/orthanq/candidates/reference.fasta.fai",
-        sequences=expand("results/orthanq/candidates/sequences/{lineage}.fasta", lineage=orthanq_sequences), #all sequences should readily be there before simulation
+        candidates_folder=directory("results/orthanq/candidates/"),
     log:
         "logs/orthanq_candidates/candidates_virus.log",
     conda:
@@ -14,13 +31,14 @@ rule orthanq_candidates:
     benchmark:    
         "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
     shell:
-        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --output {output.candidates_folder} 2> {log}"
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus generic --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_preprocess:
     input:
-        candidates_folder="results/orthanq/candidates",
-        reads=get_fastq_input
+        candidates="results/orthanq/candidates/candidates.vcf",
+        reads=get_fastq_input,
+        genome="results/ref/reference_sequence.fasta"
     output: "results/orthanq/preprocess/{sample}.bcf",
     log:
         "logs/orthanq_preprocess/{sample}.log",
@@ -29,7 +47,7 @@ rule orthanq_preprocess:
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq preprocess virus --candidates-folder {input.candidates_folder} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "/home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:

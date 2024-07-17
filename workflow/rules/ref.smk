@@ -1,6 +1,6 @@
 rule get_ref_sequence:
     output:
-        "results/ref/hiv.fasta",
+        "results/ref/reference_sequence.fasta",
     log:
         "logs/get_ref_sequence/hiv.log",
     conda:

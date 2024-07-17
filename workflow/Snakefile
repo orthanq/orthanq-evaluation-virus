@@ -7,7 +7,8 @@ export LD_LIBRARY_PATH=\"{LD_LIBRARY_PATH}\";
 
 configfile: "config/config.yaml"
 
-ruleorder: orthanq_candidates > mason > orthanq_preprocess
+# ruleorder: orthanq_candidates > mason > orthanq_preprocess
+ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
 
 include: "rules/ref.smk"
 include: "rules/common.smk"
@@ -24,11 +25,11 @@ include: "rules/get_metadata.smk"
 
 rule all:
     input:
-        expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
-        aggregate_input_get_fractions,
-        get_results,
+        # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
+        # aggregate_input_get_fractions,
+        # get_results,
         # "results/project_metadata/sra_collection_dates.tsv",
-        "results/ref/hiv.fasta"
+        "results/ref/reference_sequence.fasta"
         # "results/evaluation/scatter_plot.svg",
         # "results/evaluation/validation.tsv",
         # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
