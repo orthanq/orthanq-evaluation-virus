@@ -1,0 +1,4 @@
+#to generate fasta files for each hiv lineage:
+#1-) wget -c https://raw.githubusercontent.com/cbg-ethz/5-virus-mix/bcffd4a/data/REF.fasta -O hiv_5_virus_mix.fasta
+#2-) awk -v OFS="\n" '/^>/ {getline seq; print $0,seq > substr($1,2)".fa"}' hiv_5_virus_mix.fasta
+#3-) mv *.fa resources/lineages/
