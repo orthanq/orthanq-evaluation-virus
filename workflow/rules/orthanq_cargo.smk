@@ -37,7 +37,7 @@ rule orthanq_candidates_generic:
 rule orthanq_preprocess:
     input:
         candidates="results/orthanq/candidates/candidates.vcf",
-        reads=get_fastq_input,
+        reads=get_trimmed_fastq_input,
         genome="results/ref/reference_sequence.fasta"
     output: "results/orthanq/preprocess/{sample}.bcf",
     log:

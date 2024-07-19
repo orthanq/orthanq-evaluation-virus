@@ -106,6 +106,12 @@ def get_fastq_input(wildcards):
         files = ["results/sra/{sample}_1.fastq.gz", "results/sra/{sample}_2.fastq.gz"]
     return files
 
+#get trimmed fastq input
+def get_trimmed_fastq_input(wildcards):
+    sample = wildcards.sample
+    files = ["results/trimmed/{sample}.1.fastq", "results/trimmed/{sample}.2.fastq"]
+    return files
+
 #input function for create_sample_sheet_unicovar
 def get_fastq_input_unicovar():
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen

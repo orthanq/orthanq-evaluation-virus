@@ -13,6 +13,7 @@ ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
 include: "rules/ref.smk"
 include: "rules/common.smk"
 include: "rules/sra.smk"
+include: "rules/trimming.smk"
 include: "rules/candidate-and-sequence-generation.smk"
 include: "rules/simulation.smk"
 include: "rules/orthanq_cargo.smk"
