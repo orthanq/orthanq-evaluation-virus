@@ -34,7 +34,7 @@ checkpoint create_sample_compositions:
 
 rule mason:
     input:
-        ref="resources/lineages/{lineage}.fasta"
+        ref="resources/lineages/{lineage}.fa"
     output:
         read1="results/art/{lineage}_1.fq",
         read2="results/art/{lineage}_2.fq",

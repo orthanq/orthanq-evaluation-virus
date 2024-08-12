@@ -2,13 +2,20 @@
 simulate_pandemics: False
 
 #option for simulating given fractions for a sample in lineages.tsv
-simulate_given: False
+simulate_given: True
 
 #NCBI accession ID for the reference genome sequence
-reference_accession: NC_001802.1
+#for hiv NC_001802.1
+reference_accession: NC_045512 
+
+#lineages path:
+#for hiv
+# lineages: resources/lineages/hiv_5_virus_mix.fasta
+#for sarscov2
+lineages: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
 
 #samples.tsv
-samples: config/samples.tsv
+samples: config/samples_wastewater.tsv
 
 #path for lineages to be simulated
 lineages: config/lineages.tsv
