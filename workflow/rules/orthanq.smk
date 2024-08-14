@@ -18,7 +18,7 @@ rule orthanq_candidates_generic:
 rule orthanq_preprocess:
     input:
         candidates="results/orthanq/candidates/candidates.vcf", #just to make sure the file is generated
-        candidates="results/orthanq/candidates",
+        candidates_folder="results/orthanq/candidates",
         reads=get_trimmed_fastq_input,
         genome="results/ref/reference_sequence.fasta"
     output: "results/orthanq/preprocess/{sample}.bcf",
@@ -29,7 +29,7 @@ rule orthanq_preprocess:
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates_folder} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
