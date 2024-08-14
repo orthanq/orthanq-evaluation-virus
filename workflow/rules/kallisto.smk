@@ -1,19 +1,19 @@
 #quantify lineages by kallisto
 
-#Step 0: concatenate all fastas into one
-rule concat_fastas:
-    input:
-        expand("results/orthanq/candidates/sequences/{lineage}.fasta", lineage=orthanq_sequences)
-    output:
-        "results/orthanq/candidates/sequences/sarscov2_all_nextstrain.fasta"
-    log:
-        "logs/concat_fastas/concatenation.log"
-    shell:
-        "cat {input} > {output} 2> {log}"
+# #Step 0: concatenate all fastas into one
+# rule concat_fastas:
+#     input:
+#         expand("results/orthanq/candidates/sequences/{lineage}.fasta", lineage=orthanq_sequences)
+#     output:
+#         "results/orthanq/candidates/sequences/sarscov2_all_nextstrain.fasta"
+#     log:
+#         "logs/concat_fastas/concatenation.log"
+#     shell:
+#         "cat {input} > {output} 2> {log}"
 
 rule kallisto_index:
     input:
-        fasta="results/orthanq/candidates/sequences/sarscov2_all_nextstrain.fasta",
+        lineages=config["viral_lineages_fasta"]
     output:
         index="results/kallisto_index/sarscov2_all_nexstrain.idx",
     params:

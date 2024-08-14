@@ -20,7 +20,7 @@ def generate_numreads(lineages, n_reads):
 
 #following are only relevant when simulate_given is true (only simulate a sample with given lineages and fractions in lineages.tsv)
 #for sample simulation from given lineage.tsv
-lineages = pd.read_csv(config["lineages"], sep ="\t")
+lineages = pd.read_csv(config["lineages_and_fractions"], sep ="\t")
 
 # the simulated sample is created below
 simulated_given_lineages = generate_numreads(lineages, n_reads)

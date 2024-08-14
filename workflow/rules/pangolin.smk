@@ -203,13 +203,13 @@ rule execute_uncovar:
         # uncovar_results_touch="results/touch_uncovar_results_done.txt"
     output:
         touch("results/pangolin/unconvar_execution_done.txt")
-    params: cores=2,
+    params: cores=1,
         output_files=get_uncovar_output()
     log:
         "logs/uncovar/execute_workflow.log"
     shell:
         "cd uncovar && "
-        " snakemake -p --configfile config/config2.yaml --sdm conda --cores {params.cores} {params.output_files} --rerun-incomplete"
+        " snakemake -p --configfile config/config2.yaml --sdm conda -j {params.cores} {params.output_files} --rerun-incomplete"
 
 rule transfer_results:
     input:

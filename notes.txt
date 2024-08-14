@@ -1,4 +1,5 @@
 #to generate fasta files for each hiv lineage:
+https://github.com/cbg-ethz/5-virus-mix/blob/master/data/REF.fasta
 #1-) wget -c https://raw.githubusercontent.com/cbg-ethz/5-virus-mix/bcffd4a/data/REF.fasta -O hiv_5_virus_mix.fasta
 #2-) awk -v OFS="\n" '/^>/ {getline seq; print $0,seq > substr($1,2)".fa"}' hiv_5_virus_mix.fasta
 #3-) mv *.fa resources/lineages/
@@ -6,5 +7,9 @@
 #to generate fasta files for each pango consensus sequence for SARS-CoV-2
 #1-) wget -c https://github.com/corneliusroemer/pango-sequences/blob/ae3b868/data/pango-consensus-sequences_genome-nuc.fasta.zst -O pango-consensus-sequences_genome-nuc.fasta.zst
 #2-) unzstd pango-consensus-sequences_genome-nuc.fasta.zst
-#3-) awk -v OFS="\n" '/^>/ {getline seq; print $0,seq > substr($1,2)".fa"}' pango-consensus-sequences_genome-nuc.fasta
-#4-) mv *.fa resources/lineages/
+#3-) awk '/^>/ {OUT=substr($0,2) ".fasta"}; {print > OUT}' pango-consensus-sequences_genome-nuc.fasta
+#4-) mv *.fasta resources/lineages/ and mv pango-consensus-sequences_genome-nuc.fasta resources/lineages/
+
+
+#other requirements
+#uncovar pipeline should be cloned in the workflow directory, e.g. git clone https://github.com/IKIM-Essen/uncovar.git and branch for release v1.0.0 should be used.
