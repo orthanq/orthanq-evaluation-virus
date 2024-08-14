@@ -38,7 +38,7 @@ rule orthanq_quantify:
         candidates_folder="results/orthanq/candidates",
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
-        tsv="results/orthanq/calls/{sample}/{sample}.tsv",
+        tsv="results/orthanq/calls/{sample}/{sample}.csv",
         solutions="results/orthanq/calls/{sample}/viral_solutions.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
         lp_solution="results/orthanq/calls/{sample}/lp_solution.json",

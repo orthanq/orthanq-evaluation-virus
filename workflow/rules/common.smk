@@ -139,7 +139,7 @@ def get_results(wildcards):
     # final_output=["results/clade_to_lineage/clade_to_lineages.tsv", "results/evaluation/scatter_plot.svg", "results/evaluation/validation.tsv"]
     final_output=[]
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
-        orthanq = expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.tsv", num=num_list) + expand("results/orthanq/calls/SimulatedSample{num}/viral_solutions.html", num=num_list)
+        orthanq = expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.csv", num=num_list) + expand("results/orthanq/calls/SimulatedSample{num}/viral_solutions.html", num=num_list)
         pangolin = expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE)
         kallisto = expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list)
         nextclade = expand("results/nextstrain/results/SimulatedSample{num}", num=num_list)
@@ -147,12 +147,12 @@ def get_results(wildcards):
         # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
         # # expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
-        orthanq = expand("results/orthanq/calls/{sample}/{sample}.tsv", sample=simulated_given_lineages["sample"].unique()) + expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique())
+        orthanq = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=simulated_given_lineages["sample"].unique()) + expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique())
         pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=simulated_given_lineages["sample"].unique(), date=DATE)
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=simulated_given_lineages["sample"].unique())
         nextclade = expand("results/nextstrain/results/{sample}", sample=simulated_given_lineages["sample"].unique())
     else:
-        orthanq = expand("results/orthanq/calls/{sample}/{sample}.tsv", sample=samples["sra"])
+        orthanq = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"])
         pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=samples["sra"], date=DATE) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
