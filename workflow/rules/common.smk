@@ -156,7 +156,8 @@ def get_results(wildcards):
         pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=samples["sra"], date=DATE) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(orthanq + pangolin + kallisto + nextclade)
+    final_output.extend(orthanq + kallisto)
+    # final_output.extend(orthanq + pangolin + kallisto + nextclade)
     return final_output
 
 def get_uncovar_output():
