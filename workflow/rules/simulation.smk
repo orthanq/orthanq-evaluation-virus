@@ -36,9 +36,9 @@ rule mason:
     input:
         ref="resources/lineages/{lineage}.fasta"
     output:
-        read1="results/art/{lineage}_1.fq",
-        read2="results/art/{lineage}_2.fq",
-        alignment="results/art/{lineage}.sam"
+        read1="results/mason/{lineage}_1.fq",
+        read2="results/mason/{lineage}_2.fq",
+        alignment="results/mason/{lineage}.sam"
     log:
         "logs/mason/{lineage}.log"
     conda:
@@ -50,8 +50,8 @@ rule mason:
 
 rule get_fractions:
     input:
-        fq1="results/art/{lineage}_1.fq",
-        fq2="results/art/{lineage}_2.fq" 
+        fq1="results/mason/{lineage}_1.fq",
+        fq2="results/mason/{lineage}_2.fq" 
     output:
         out_fq1="results/fractions/{sample}-{lineage}-{num}_1.fq",
         out_fq2="results/fractions/{sample}-{lineage}-{num}_2.fq"
