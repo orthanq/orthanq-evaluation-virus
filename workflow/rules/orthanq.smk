@@ -29,7 +29,7 @@ rule orthanq_preprocess:
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates_folder} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
