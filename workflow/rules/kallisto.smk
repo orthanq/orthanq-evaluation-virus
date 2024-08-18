@@ -4,7 +4,7 @@ rule kallisto_index:
     input:
         lineages=config["viral_lineages_fasta"]
     output:
-        index="results/kallisto_index/sarscov2_all_nexstrain.idx",
+        index="results/kallisto_index/viral_lineages.idx",
     params:
         extra="",  # optional parameters
     log:
@@ -18,7 +18,7 @@ rule kallisto_index:
 rule kallisto_quant:
     input:
         fastq=get_fastq_input,
-        index="results/kallisto_index/sarscov2_all_nexstrain.idx",
+        index="results/kallisto_index/viral_lineages.idx",
     output:
         dir=directory("results/kallisto/quant_results_{sample}"),
         tsv="results/kallisto/quant_results_{sample}/abundance.tsv"
