@@ -19,7 +19,7 @@ rule orthanq_preprocess:
     input:
         candidates="results/orthanq/candidates/candidates.vcf", #just to make sure the file is generated
         candidates_folder="results/orthanq/candidates",
-        reads=get_fastq_input,
+        reads=get_trimmed_fastq_input,
         genome="results/ref/reference_sequence.fasta"
     output: "results/orthanq/preprocess/{sample}.bcf",
     log:

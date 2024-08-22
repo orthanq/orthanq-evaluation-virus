@@ -17,7 +17,7 @@ rule kallisto_index:
 
 rule kallisto_quant:
     input:
-        fastq=get_fastq_input,
+        fastq=get_trimmed_fastq_input,
         index="results/kallisto_index/viral_lineages.idx",
     output:
         dir=directory("results/kallisto/quant_results_{sample}"),
