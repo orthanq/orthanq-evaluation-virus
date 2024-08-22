@@ -1,19 +1,23 @@
 rule download_country_data:
     output:
-        "results/download_country_data/perCountryDataCaseCounts.json"
+        sequence_counts_usa_gz="results/download_sequence_counts/SeqCountsUSA.tsv.gz",
+        sequence_counts_usa="results/download_sequence_counts/SeqCountsUSA.tsv"
     log:
         "logs/download_country_data/download_country_data.log"
     shell:
-        "wget -c https://raw.githubusercontent.com/hodcroftlab/covariants/master/web/public/data/perCountryDataCaseCounts.json -O {output}"
+        "wget -c https://data.nextstrain.org/files/workflows/forecasts-ncov/gisaid/pango_lineages/usa.tsv.gz -O {output.sequence_counts_usa_gz} && "
+        " gzip -d {output.sequence_counts_usa_gz} -c > {output.sequence_counts_usa}"
 
 rule create_simulation_input:
     input:
-        per_country_data_json="results/download_country_data/perCountryDataCaseCounts.json"
+        sequence_counts_usa="results/download_sequence_counts/SeqCountsUSA.tsv"
     output:
-        per_country_data_csv_raw="results/simulation_input/perCountryDataCaseCountsRaw.csv",
-        per_country_data_csv_final="results/simulation_input/perCountryDataCaseCountsFinal.csv",
+        # sequence_counts_usa_raw="results/simulation_input/SeqCountsUSAraw.csv",
+        sequence_counts_usa_final="results/simulation_input/SeqCountsUSAFinal.csv",
     log:
         "logs/create_simulation_input/create_simulation_input.log"
+    conda:
+        "../envs/data_wrangle.yaml"
     benchmark:
         "benchmarks/create_simulation_input/create_simulation_input.tsv" 
     script:
@@ -21,7 +25,7 @@ rule create_simulation_input:
 
 checkpoint create_sample_compositions:
     input:
-        per_country_data_csv_final="results/simulation_input/perCountryDataCaseCountsFinal.csv",
+        sequence_counts_usa_final="results/simulation_input/SeqCountsUSAFinal.csv",
     output:
         synthetic_samples = expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list)
     log:
