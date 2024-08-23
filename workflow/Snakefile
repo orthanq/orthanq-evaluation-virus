@@ -29,7 +29,7 @@ rule all:
         aggregate_input_get_fractions,
         get_results,
         # "results/simulation_input/SeqCountsUSAFinal.csv"
-        # "results/project_metadata/sra_collection_dates.tsv",
+        "results/project_metadata/sra_collection_dates.tsv",
         # "results/evaluation/scatter_plot.svg",
         # "results/evaluation/validation.tsv",
         # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
