@@ -29,5 +29,7 @@ rule kallisto_quant:
     threads: config["kallisto_quant_threads"]
     conda:
         "../envs/kallisto.yaml"
+    benchmark:    
+        "benchmarks/kallisto_quant/{sample}.tsv" 
     shell:
         "kallisto quant -i {input.index} {input.fastq} -o {output.dir}"
