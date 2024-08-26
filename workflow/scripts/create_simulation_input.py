@@ -50,6 +50,17 @@ with open(snakemake.log[0], "w") as f:
     #write to csv
     # agg_df_total.write_csv(snakemake.output.sequence_counts_usa_raw)
 
+    #filtering function to keep greater or equal fractions to 0.01
+    def filter_fractions(pair):
+        key, value = pair
+        if value >= 0.01:
+            return True  
+
+    #normalize fractions
+    def normalize_dict_values(data):
+        total = sum(data.values())
+        return {key: value / total for key, value in data.items()}
+
     #now, iterate over the dataframe to calculate frequencies for each clade
     usa_freq_dist = []
     for row in agg_df_total.iter_rows(named=True):
@@ -71,15 +82,20 @@ with open(snakemake.log[0], "w") as f:
                 for clade in clades_counts_dict:
                     freq = clades_counts_dict[clade]/new_total_cases
                     clades_freqs[clade] = freq
+                print("clades_freqs:",clades_freqs)
 
-                #sort the dictionary and take first n elements
-                n=3
-                sorted_dict = dict(sorted(clades_freqs.items(), key=lambda item: item[1], reverse=True)[:n])
+                #filter for fractions smaller than 1% and normalize the rest of the fractions
+                filtered_dict = dict(filter(filter_fractions, clades_freqs.items()))
+                print("filtered_grades",filtered_dict)
+                
+                #normalize fractions
+                normalized_dict = normalize_dict_values(filtered_dict)
+                print("normalized_dict",normalized_dict)
 
                 #finally append to the main dictionary
                 usa_freq_dist.append({'total_sequences': row['total_sequences'],
                                     'week': row['date'],
-                                    'clades_frequencies': sorted_dict})
+                                    'clades_frequencies': normalized_dict})
                 
     #converting directly to polars somehow creates issues with clades_freqs, it can't use the dict type for some reason.
     new_usa_dist_df = pd.DataFrame(usa_freq_dist)
