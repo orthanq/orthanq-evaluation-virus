@@ -12,11 +12,11 @@ with open(snakemake.log[0], "w") as f:
     n_of_samples=snakemake.params.n_of_samples
 
     #read input table
-    df = pd.read_csv(snakemake.input.per_country_data_csv_final)
+    df = pd.read_csv(snakemake.input.sequence_counts_usa_final)
 
     #sample N sets
     list_of_distributions = []
-    list_of_distributions = [eval(row['new_stand_estimated_cases']) for _, row in df.iterrows()]
+    list_of_distributions = [eval(row['clades_frequencies']) for _, row in df.iterrows()]
 
     random.seed(1313)
 
