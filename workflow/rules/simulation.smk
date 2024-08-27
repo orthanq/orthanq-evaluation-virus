@@ -40,61 +40,50 @@ rule mason:
     input:
         ref="resources/lineages/{lineage}.fasta"
     output:
-        read1="results/mason/{lineage}_1.fq",
-        read2="results/mason/{lineage}_2.fq",
-        alignment="results/mason/{lineage}.sam"
+        read1="results/mason/{lineage}-{coverage}_1.fq",
+        read2="results/mason/{lineage}-{coverage}_2.fq",
+        alignment="results/mason/{lineage}-{coverage}.sam"
     log:
-        "logs/mason/{lineage}.log"
+        "logs/mason/{lineage}-{coverage}.log"
     conda:
         "../envs/mason.yaml"
     benchmark:    
-        "benchmarks/mason/{lineage}.tsv" 
+        "benchmarks/mason/{lineage}-{coverage}.tsv"
+    params: 
+        total_num_reads=lambda w: n_reads_dict[w.coverage]
     shell:
-        "mason_simulator -ir {input.ref} -n 50000 --illumina-read-length 150 -o {output.read1} -or {output.read2} --out-alignment {output.alignment} --read-name-prefix {wildcards.lineage} 2> {log}"
+        "mason_simulator -ir {input.ref} -n {params.total_num_reads} --illumina-read-length 150 -o {output.read1} -or {output.read2} --out-alignment {output.alignment} --read-name-prefix {wildcards.lineage} 2> {log}"
 
 rule get_fractions:
     input:
-        fq1="results/mason/{lineage}_1.fq",
-        fq2="results/mason/{lineage}_2.fq" 
+        fq1="results/mason/{lineage}-{coverage}_1.fq",
+        fq2="results/mason/{lineage}-{coverage}_2.fq"
     output:
-        out_fq1="results/fractions/{sample}-{lineage}-{num}_1.fq",
-        out_fq2="results/fractions/{sample}-{lineage}-{num}_2.fq"
+        out_fq1="results/fractions/{sample}-{lineage}-{num}-{coverage}_1.fq",
+        out_fq2="results/fractions/{sample}-{lineage}-{num}-{coverage}_2.fq"
     log:
-        "logs/seqtk/{sample}-{lineage}-{num}.log",
+        "logs/seqtk/{sample}-{lineage}-{num}-{coverage}.log",
     params:
         "{num}"
     conda:
         "../envs/seqtk.yaml"
     benchmark:    
-        "benchmarks/get_fractions/{sample}-{lineage}-{num}.tsv" 
+        "benchmarks/get_fractions/{sample}-{lineage}-{num}-{coverage}.tsv" 
     shell:
         "seqtk sample -s100 {input.fq1} {params} > {output.out_fq1}; "
         "seqtk sample -s100 {input.fq2} {params} > {output.out_fq2} 2> {log}"
 
 rule concat_fractions: 
     input:
-        # fq1=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_1.fq",
-        #     zip,
-        #     lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
-        #     num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
-        #     ),
-        # fq2=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_2.fq",
-        #     zip,
-        #     lineage=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['lineage'],
-        #     num=simulated_sample.loc[simulated_sample['sample_name'] == wc.sample]['num_reads']
-        #     ),
         fq1=lambda wildcards: get_concat_fractions_input(wildcards)[0],
         fq2=lambda wildcards: get_concat_fractions_input(wildcards)[1]
-
-        # fq1="results/fractions/{{sample}}-{lineage}-{num}_1.fq",
-        # fq2="results/fractions/{{sample}}-{lineage}-{num}_2.fq"
     output:
-        out_fq1="results/mixed/{sample}_1.fastq",
-        out_fq2="results/mixed/{sample}_2.fastq"
+        out_fq1="results/mixed/{sample}-{coverage}_1.fastq",
+        out_fq2="results/mixed/{sample}-{coverage}_2.fastq"
     log:
-        "logs/mixed/{sample}.log",
+        "logs/mixed/{sample}-{coverage}.log",
     benchmark:    
-        "benchmarks/concat_fractions/{sample}.tsv" 
+        "benchmarks/concat_fractions/{sample}-{coverage}.tsv" 
     shell:
         "cat {input.fq1} > {output.out_fq1}; "
         "cat {input.fq2} > {output.out_fq2}"

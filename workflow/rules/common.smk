@@ -2,7 +2,8 @@ import pandas as pd
 
 configfile: "config/config.yaml"
 
-n_reads = config["n_reads"]
+n_reads_dict = {"100x": config["n_reads_100x"],"1000x": config["n_reads_1000x"]}
+print(n_reads_dict)
 
 num_samples = config["number_of_samples"]
 
@@ -10,7 +11,7 @@ num_list = [num+1 for num in range(num_samples)]
 
 #modify sample tables to calculate required number of reads per lineage
 def generate_numreads(lineages, n_reads):
-    lineages['num_reads'] = lineages['fraction']*n_reads #assume the mixture will have 2000 reads
+    lineages['num_reads'] = lineages['fraction']*n_reads 
     lineages['num_reads'] = lineages['num_reads'].astype(int).astype('str')
     return lineages
 
@@ -20,28 +21,32 @@ def generate_numreads(lineages, n_reads):
 lineages = pd.read_csv(config["lineages_and_fractions"], sep ="\t")
 
 # the simulated sample is created below
-simulated_given_lineages = generate_numreads(lineages, n_reads)
-print(simulated_given_lineages)
+coverage_single_sample="100x"
+simulated_given_lineages = generate_numreads(lineages, n_reads_dict[coverage_single_sample])
+print("simulated_given_lineages",simulated_given_lineages)
 #upstream are only relevant when simulate_given is true
 
 # input function for get_fractions (executed after checkpoint 'create_sample_compositions')
 # decision based on content of output file
 def aggregate_input_get_fractions(wildcards):
     if config["simulate_pandemics"] and not config["simulate_given"]:
-        # Important: check if this works on a shared filesystem.
-        all_samples = []
-        for i in range(num_samples):
-            with checkpoints.create_sample_compositions.get(**wildcards).output[i].open() as f:
-                table = pd.read_csv(f)
-                table_modified = generate_numreads(table, n_reads)
-                all_samples.append(table_modified)
-        all_samples_df = pd.concat(all_samples)
-        print(all_samples_df)
-        fqs=[f"results/fractions/{row["sample"]}-{row["lineage"]}-{row["num_reads"]}_1.fq" for i,row in all_samples_df.iterrows()] + [f"results/fractions/{row["sample"]}-{row["lineage"]}-{row["num_reads"]}_2.fq" for i,row in all_samples_df.iterrows()]
-        print(fqs)
-        return fqs
+        all_samples_fqs = []
+        for (coverage,n_reads) in n_reads_dict.items():
+            # Important: check if this works on a shared filesystem.
+            samples_per_coverage = []
+            for i in range(num_samples):
+                with checkpoints.create_sample_compositions.get(**wildcards).output[i].open() as f:
+                    table = pd.read_csv(f)
+                    table_modified = generate_numreads(table, n_reads)
+                    samples_per_coverage.append(table_modified)
+            samples_per_coverage_df = pd.concat(samples_per_coverage)
+            fqs=[f"results/fractions/{row["sample"]}-{row["lineage"]}-{row["num_reads"]}-{coverage}_1.fq" for i,row in samples_per_coverage_df.iterrows()] + [f"results/fractions/{row["sample"]}-{row["lineage"]}-{row["num_reads"]}-{coverage}_2.fq" for i,row in samples_per_coverage_df.iterrows()]
+            print("samples_per_coverage_df", samples_per_coverage_df)
+            all_samples_fqs.extend(fqs)
+        print("all_samples_fqs",all_samples_fqs)
+        return all_samples_fqs
     elif config["simulate_given"] and not config["simulate_pandemics"]:
-        fqs=[f"results/fractions/{row['sample']}-{row['lineage']}-{row['num_reads']}_1.fq" for _, row in simulated_given_lineages.iterrows()] + [f"results/fractions/{row['sample']}-{row['lineage']}-{row['num_reads']}_2.fq" for _, row in simulated_given_lineages.iterrows()]
+        fqs=[f"results/fractions/{row['sample']}-{row['lineage']}-{row['num_reads']}-{coverage_single_sample}_1.fq" for _, row in simulated_given_lineages.iterrows()] + [f"results/fractions/{row['sample']}-{row['lineage']}-{row['num_reads']}-{coverage_single_sample}_2.fq" for _, row in simulated_given_lineages.iterrows()]
         return fqs
     else:
         return []
@@ -53,18 +58,21 @@ def aggregate_input_concat_fractions(wildcards):
     for i in range(num_samples):
         with checkpoints.create_sample_compositions.get(**wildcards).output[i].open() as f:
             table = pd.read_csv(f)
-            table_modified = generate_numreads(table, n_reads)
+            table_modified = generate_numreads(table, n_reads_dict[wildcards.coverage])
             paths.append(table_modified)
     all_samples_df = pd.concat(paths)
-    fq1=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_1.fq",
+    print("all_samples_df", all_samples_df)
+    fq1=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}-{{coverage}}_1.fq",
         zip,
         lineage=all_samples_df.loc[all_samples_df['sample'] == wc.sample]['lineage'],
-        num=all_samples_df.loc[all_samples_df['sample'] == wc.sample]['num_reads']
+        num=all_samples_df.loc[all_samples_df['sample'] == wc.sample]['num_reads'],
+        coverage=["100x", "1000x"]
         )
-    fq2=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}_2.fq",
+    fq2=lambda wc: expand("results/fractions/{{sample}}-{lineage}-{num}-{{coverage}}_2.fq",
         zip,
         lineage=all_samples_df.loc[all_samples_df['sample'] == wc.sample]['lineage'],
-        num=all_samples_df.loc[all_samples_df['sample'] == wc.sample]['num_reads']
+        num=all_samples_df.loc[all_samples_df['sample'] == wc.sample]['num_reads'],
+        coverage=["100x", "1000x"]
         )
     return [fq1,fq2]
 
@@ -75,15 +83,17 @@ def get_concat_fractions_input(wildcards):
         fq2=aggregate_input_concat_fractions(wildcards)[1]
         return [fq1,fq2]
     else:
-        fq1=expand("results/fractions/{{sample}}-{lineage}-{num}_1.fq",
+        fq1=expand("results/fractions/{{sample}}-{lineage}-{num}-{{coverage}}_1.fq",
         zip,
         lineage=simulated_given_lineages.loc[simulated_given_lineages['sample'] == wildcards.sample]['lineage'],
-        num=simulated_given_lineages.loc[simulated_given_lineages['sample'] == wildcards.sample]['num_reads']
+        num=simulated_given_lineages.loc[simulated_given_lineages['sample'] == wildcards.sample]['num_reads'],
+        coverage=coverage_single_sample
         )
-        fq2=expand("results/fractions/{{sample}}-{lineage}-{num}_2.fq",
+        fq2=expand("results/fractions/{{sample}}-{lineage}-{num}-{{coverage}}_2.fq",
         zip,
         lineage=simulated_given_lineages.loc[simulated_given_lineages['sample'] == wildcards.sample]['lineage'],
-        num=simulated_given_lineages.loc[simulated_given_lineages['sample'] == wildcards.sample]['num_reads']
+        num=simulated_given_lineages.loc[simulated_given_lineages['sample'] == wildcards.sample]['num_reads'],
+        coverage=coverage_single_sample
         )
         return [fq1,fq2]
 
@@ -112,8 +122,8 @@ def get_trimmed_fastq_input(wildcards):
 #input function for create_sample_sheet_unicovar
 def get_fastq_input_unicovar():
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
-        fqs1 = expand("results/mixed/SimulatedSample{num}_1.fastq", num=num_list)
-        fqs2 = expand("results/mixed/SimulatedSample{num}_2.fastq", num=num_list)
+        fqs1 = expand("results/mixed/SimulatedSample{num}-{coverage}_1.fastq", num=num_list, coverage=["100x","1000x"])
+        fqs2 = expand("results/mixed/SimulatedSample{num}-{coverage}_2.fastq", num=num_list, coverage=["100x", "1000x"])
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
         fqs1 = expand("results/mixed/{sample}_1.fastq",  sample=simulated_given_lineages["sample"].unique())
         fqs2 = expand("results/mixed/{sample}_2.fastq",  sample=simulated_given_lineages["sample"].unique())
@@ -136,30 +146,33 @@ def get_results(wildcards):
     # final_output=["results/clade_to_lineage/clade_to_lineages.tsv", "results/evaluation/scatter_plot.svg", "results/evaluation/validation.tsv"]
     final_output=[]
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
-        orthanq = expand("results/orthanq/calls/SimulatedSample{num}/SimulatedSample{num}.csv", num=num_list) + expand("results/orthanq/calls/SimulatedSample{num}/viral_solutions.html", num=num_list)
-        pangolin = expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE)
-        kallisto = expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list)
-        nextclade = expand("results/nextstrain/results/SimulatedSample{num}", num=num_list)
+        orthanq_csv = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
+        orthanq_solutions = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/viral_solutions.html", num=num_list, coverage=["100x", "1000x"])
+        pangolin = expand("results/pangolin/SimulatedSample{num}_{date}_{coverage}.csv", num=num_list, date=DATE, coverage=["100x", "1000x"])
+        kallisto = expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}", num=num_list, coverage=["100x", "1000x"])
+        nextclade = expand("results/nextstrain/results/SimulatedSample{num}-{coverage}", num=num_list, coverage=["100x", "1000x"])
         # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
         # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
         # # expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
-        orthanq = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=simulated_given_lineages["sample"].unique()) + expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique())
+        orthanq_csv = expand("results/orthanq/calls/{sample}-{coverage}/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample) 
+        orthanq_solutions = expand("results/orthanq/calls/{sample}-{coverage}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=simulated_given_lineages["sample"].unique(), date=DATE)
-        kallisto = expand("results/kallisto/quant_results_{sample}", sample=simulated_given_lineages["sample"].unique())
+        kallisto = expand("results/kallisto/quant_results_{sample}-{coverage}", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         nextclade = expand("results/nextstrain/results/{sample}", sample=simulated_given_lineages["sample"].unique())
     else:
-        orthanq = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"])
+        orthanq_csv = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"])
+        orthanq_solutions = expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=samples["sra"])
         pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=samples["sra"], date=DATE) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(orthanq + kallisto)
+    final_output.extend(orthanq_csv + orthanq_solutions + kallisto)
     # final_output.extend(orthanq + pangolin + kallisto + nextclade)
     return final_output
 
 def get_uncovar_output():
     if config["simulate_pandemics"] and not config["simulate_given"]:
-        pangolin = expand("results/{date}/polishing/bcftools-illumina/SimulatedSample{num}.fasta", num=num_list, date=DATE)
+        pangolin = expand("results/{date}/polishing/bcftools-illumina/SimulatedSample{num}-{coverage}.fasta", num=num_list, date=DATE, coverage=["100x", "1000x"])
     elif config["simulate_given"] and not config["simulate_pandemics"]:
         pangolin = expand("results/{date}/polishing/bcftools-illumina/{sample}.fasta", sample=simulated_given_lineages["sample"].unique(), date=DATE)
     else:
