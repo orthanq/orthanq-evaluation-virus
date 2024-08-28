@@ -125,8 +125,8 @@ def get_fastq_input_unicovar():
         fqs1 = expand("results/mixed/SimulatedSample{num}-{coverage}_1.fastq", num=num_list, coverage=["100x","1000x"])
         fqs2 = expand("results/mixed/SimulatedSample{num}-{coverage}_2.fastq", num=num_list, coverage=["100x", "1000x"])
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
-        fqs1 = expand("results/mixed/{sample}_1.fastq",  sample=simulated_given_lineages["sample"].unique())
-        fqs2 = expand("results/mixed/{sample}_2.fastq",  sample=simulated_given_lineages["sample"].unique())
+        fqs1 = expand("results/mixed/{sample}-{coverage}_1.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+        fqs2 = expand("results/mixed/{sample}-{coverage}_2.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
     else:
         fqs1 = expand("results/sra/{sample}_1.fastq.gz", sample=samples["sra"])
         fqs2 = expand("results/sra/{sample}_2.fastq.gz", sample=samples["sra"])
@@ -148,7 +148,7 @@ def get_results(wildcards):
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
         orthanq_csv = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
         orthanq_solutions = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/viral_solutions.html", num=num_list, coverage=["100x", "1000x"])
-        pangolin = expand("results/pangolin/SimulatedSample{num}_{date}_{coverage}.csv", num=num_list, date=DATE, coverage=["100x", "1000x"])
+        pangolin = expand("results/pangolin/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
         kallisto = expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}", num=num_list, coverage=["100x", "1000x"])
         nextclade = expand("results/nextstrain/results/SimulatedSample{num}-{coverage}", num=num_list, coverage=["100x", "1000x"])
         # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
@@ -157,16 +157,16 @@ def get_results(wildcards):
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
         orthanq_csv = expand("results/orthanq/calls/{sample}-{coverage}/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample) 
         orthanq_solutions = expand("results/orthanq/calls/{sample}-{coverage}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
-        pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=simulated_given_lineages["sample"].unique(), date=DATE)
+        pangolin = expand("results/pangolin/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         kallisto = expand("results/kallisto/quant_results_{sample}-{coverage}", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         nextclade = expand("results/nextstrain/results/{sample}", sample=simulated_given_lineages["sample"].unique())
     else:
         orthanq_csv = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"])
         orthanq_solutions = expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=samples["sra"])
-        pangolin = expand("results/pangolin/{sample}_{date}.csv", sample=samples["sra"], date=DATE) 
+        pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(orthanq_csv + orthanq_solutions + kallisto)
+    final_output.extend(pangolin)
     # final_output.extend(orthanq + pangolin + kallisto + nextclade)
     return final_output
 
@@ -174,7 +174,7 @@ def get_uncovar_output():
     if config["simulate_pandemics"] and not config["simulate_given"]:
         pangolin = expand("results/{date}/polishing/bcftools-illumina/SimulatedSample{num}-{coverage}.fasta", num=num_list, date=DATE, coverage=["100x", "1000x"])
     elif config["simulate_given"] and not config["simulate_pandemics"]:
-        pangolin = expand("results/{date}/polishing/bcftools-illumina/{sample}.fasta", sample=simulated_given_lineages["sample"].unique(), date=DATE)
+        pangolin = expand("results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta", sample=simulated_given_lineages["sample"].unique(), date=DATE, coverage=coverage_single_sample)
     else:
         pangolin = expand("results/{date}/polishing/bcftools-illumina/{sample}.fasta", sample=samples["sra"], date=DATE) 
     return pangolin

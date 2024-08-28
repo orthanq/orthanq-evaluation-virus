@@ -166,6 +166,7 @@ rule create_sample_sheet_unicovar:
         sample_sheet="uncovar/config/pep/samples2.csv"
     log:
         "logs/create_sample_sheet_unicovar.log"
+    group: "pangolin"
     script:
         "../scripts/create_unicovar_sheet.py"
 
@@ -180,6 +181,7 @@ rule update_configs_uncovar:
         pep_config="uncovar/config/pep/config2.yaml"
     log:
         "logs/uncovar/change_sample_sheet_path.log"
+    group: "pangolin"
     params:
         pepfile_path=lambda w, output: output.pep_config,
         sample_sheet_path=lambda w, input: input.sample_sheet
@@ -191,7 +193,8 @@ rule update_configs_uncovar:
 ruleorder: touch_uncovar_results > execute_uncovar > transfer_results
 rule touch_uncovar_results:  
     output:
-        output_files="uncovar/results/{date}/polishing/bcftools-illumina/{sample}.fasta"
+        output_files="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
+    group: "pangolin"
     shell:
         "touch {output.output_files}"
 
@@ -207,29 +210,30 @@ rule execute_uncovar:
         output_files=get_uncovar_output()
     log:
         "logs/uncovar/execute_workflow.log"
+    group: "pangolin"
     shell:
         "cd uncovar && "
         " snakemake -p --configfile config/config2.yaml --sdm conda -j {params.cores} {params.output_files} --rerun-incomplete"
 
 rule transfer_results:
     input:
-        uncovar_results="uncovar/results/{date}/polishing/bcftools-illumina/{sample}.fasta",
+        uncovar_results="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta",
         uncovar_execution_check="results/pangolin/unconvar_execution_done.txt" #required for the rule execute_uncovar to be executed before transfer_results
     output:
-        "results/{date}/polishing/bcftools-illumina/{sample}.fasta"
+        "results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
     shell:
         "cp {input.uncovar_results} {output}"
 
 rule pangolin:
     input:
-        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
+        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
     output:
-        "results/pangolin/{sample}_{date}.csv"
+        "results/pangolin/{sample}-{coverage}.csv"
     log:
-        "logs/pangolin/{sample}_{date}.log"
+        "logs/pangolin/{sample}-{coverage}.log"
     conda:
         "../envs/pangolin.yaml"
     benchmark:
-        "benchmarks/evaluation/{sample}_{date}.tsv" 
+        "benchmarks/evaluation/{sample}-{coverage}.tsv" 
     shell:
         "pangolin {input} --outfile {output} 2> {log}"
