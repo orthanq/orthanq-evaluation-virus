@@ -1,5 +1,6 @@
 # #align reads with bwa, sort and call variants and create consensus fasta sequences.
 # #Then use pangolin for finding the abundant lineage
+ruleorder: touch_uncovar_results > execute_uncovar
 
 # # align reads by bwa
 # rule bwa_index:
@@ -160,28 +161,24 @@ rule create_sample_sheet_unicovar:
     input:
         fq1=unicovar_inputs[0],
         fq2=unicovar_inputs[1],
-        template=UNCOVAR_SAMPLE_SHEET,
-        # uncovar_check="results/clone_uncovar_done.txt"
+        template="uncovar/config/pep/samples.csv",
     output:
         sample_sheet="uncovar/config/pep/samples2.csv"
     log:
         "logs/create_sample_sheet_unicovar.log"
-    group: "pangolin"
     script:
         "../scripts/create_unicovar_sheet.py"
 
 rule update_configs_uncovar:
     input:
-        config=UNCOVAR_CONFIG,
-        pepfile=UNCOVAR_PEP_CONFIG,
+        config="uncovar/config/config.yaml",
+        pepfile="uncovar/config/pep/config.yaml",
         sample_sheet="uncovar/config/pep/samples2.csv",
-        # uncovar_check="results/clone_uncovar_done.txt"
     output:
         main_config="uncovar/config/config2.yaml",
         pep_config="uncovar/config/pep/config2.yaml"
     log:
         "logs/uncovar/change_sample_sheet_path.log"
-    group: "pangolin"
     params:
         pepfile_path=lambda w, output: output.pep_config,
         sample_sheet_path=lambda w, input: input.sample_sheet
@@ -194,15 +191,15 @@ ruleorder: touch_uncovar_results > execute_uncovar > transfer_results
 rule touch_uncovar_results:  
     output:
         output_files="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
-    group: "pangolin"
     shell:
         "touch {output.output_files}"
 
 rule execute_uncovar:
     input:
+        fqs=get_uncovar_input,
         sample_sheet="uncovar/config/pep/samples2.csv",
         main_config="uncovar/config/config2.yaml",
-        pep_config="uncovar/config/pep/config2.yaml",
+        pep_config="uncovar/config/pep/config2.yaml"
         # uncovar_results_touch="results/touch_uncovar_results_done.txt"
     output:
         touch("results/pangolin/unconvar_execution_done.txt")
@@ -210,10 +207,9 @@ rule execute_uncovar:
         output_files=get_uncovar_output()
     log:
         "logs/uncovar/execute_workflow.log"
-    group: "pangolin"
     shell:
         "cd uncovar && "
-        " snakemake -p --configfile config/config2.yaml --sdm conda -j {params.cores} {params.output_files} --rerun-incomplete"
+        " snakemake -p --configfile config/config2.yaml --sdm conda -j {params.cores} {params.output_files} -R fastp_pe"
 
 rule transfer_results:
     input:

@@ -178,3 +178,12 @@ def get_uncovar_output():
     else:
         pangolin = expand("results/{date}/polishing/bcftools-illumina/{sample}.fasta", sample=samples["sra"], date=DATE) 
     return pangolin
+
+def get_uncovar_input(wildcards):
+    if config["simulate_pandemics"] and not config["simulate_given"]:
+        pangolin = expand("results/mixed/SimulatedSample{num}-{coverage}_{pair}.fastq", num=num_list, coverage=["100x", "1000x"], pair=[1,2])
+    elif config["simulate_given"] and not config["simulate_pandemics"]:
+        pangolin = expand("results/mixed/{sample}-{coverage}_{pair}.fastq", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample, pair=[1,2])
+    else:
+        pangolin = expand("results/sra/{sample}_1.fastq.gz", sample=samples["sra"], pair=[1,2]) 
+    return pangolin
