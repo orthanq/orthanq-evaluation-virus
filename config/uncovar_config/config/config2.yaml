@@ -1,42 +1,3 @@
-#simulate reads 
-simulate_pandemics: False
-
-#option for simulating given fractions for a sample in lineages.tsv
-simulate_given: True
-
-#path for lineages to be simulated
-lineages_and_fractions: config/lineages.tsv
-
-#NCBI accession ID for the reference genome sequence
-#for hiv NC_001802.1
-reference_accession: NC_045512 
-
-#lineages path:
-#for hiv
-# lineages: resources/lineages/hiv_5_virus_mix.fasta
-#for sarscov2
-viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
-
-#samples.tsv
-samples: config/samples_wastewater.tsv
-
-#if simulate_given is False, samples are generated from frequency table
-number_of_samples: 1
-
-#number of total reads in the sample, considering 150 bp reads, sarscov2 has 29900 bp
-n_reads_100x: 20000 #for 100x
-n_reads_1000x: 200000 #for 1000x
-
-##tool configurations
-#art simulation
-f_coverage: 50
-
-#threads for tools
-bwa_threads: 1
-kallisto_index_threads: 1
-kallisto_quant_threads: 1
-
-#define config of uncovar pipeline
 pepfile: config/pep/config2.yaml
 mode: patient
 virus-reference-genome:
@@ -66,7 +27,7 @@ preprocessing:
   kit-adapters: --adapter_sequence GCGAATTTCGACGATCGTTGCATTAACTCGCGAA --adapter_sequence_r2
     AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
   artic-primer-version: 3
-  amplicon-primers: uncovar/uncovar_resources/nCoV-2019.primer.bed
+  amplicon-primers: resources/nCoV-2019.primer.bed
   amplicon-reference: MN908947
 assembly:
   illumina:

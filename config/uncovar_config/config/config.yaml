@@ -1,0 +1,249 @@
+pepfile: config/pep/config.yaml
+
+# execution mode. Can be either "patient" or "environment"
+mode: patient
+
+# virus genome to use as reference. Must be a NCBI accession
+virus-reference-genome:
+  - NC_045512.2
+
+# download path of human genome reference
+human-genome-download-path:
+  - ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.28_GRCh38.p13/GCA_000001405.28_GRCh38.p13_genomic.fna.gz
+
+sending_lab_number: 10259
+
+data-handling:
+  # flag for using the following data-handling structure
+  # True: data-handling structure is used as shown below
+  # False: only the sample sheet needs to be updated (manually)
+  use-data-handling: True
+  # flag for archiving data
+  # True: data is archived in path defined below
+  # False: data is not archived
+  archive-data: True
+  # path of incoming data, which is moved to the
+  # data directory by the preprocessing script
+  incoming: ../incoming/
+  # path to store data within the workflow
+  data: data/
+  # path to archive data from incoming and
+  # the results from the latest run to
+  archive: ../archive/
+
+quality-criteria:
+  illumina:
+    # minimal length of acceptable reads
+    min-length-reads: 30
+    # average quality of acceptable reads (PHRED)
+    min-PHRED: 20
+  ont:
+    # minimal length of acceptable reads
+    min-length-reads: 200
+    # average quality of acceptable reads (PHRED)
+    min-PHRED: 10
+  # identity to virus reference genome (see-above) of reconstructed sequence
+  min-identity: 0.9
+  # share N in the reconstructed sequence
+  max-n: 0.05
+  # minimum local sequencing depth without filtering of PCR duplicates
+  min-depth-with-PCR-duplicates: 20
+  # minimum local sequencing depth after filtering PCR duplicates
+  min-depth-without-PCR-duplicates: 10
+  # minimum informative allele frequency
+  min-allele: 0.9
+
+preprocessing:
+  # only for *non* Oxford Nanopore data. Adapters to trim.
+  # see: https://www.nimagen.com/shop/products/rc-cov096/easyseq-sars-cov-2-novel-coronavirus-whole-genome-sequencing-kit
+  kit-adapters: "--adapter_sequence GCGAATTTCGACGATCGTTGCATTAACTCGCGAA --adapter_sequence_r2 AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
+  # only for Oxford Nanopore data.
+  # ARTIC primer version to clip from reads. See
+  # https://github.com/artic-network/artic-ncov2019/tree/master/primer_schemes/nCoV-2019/V4
+  # for more information
+  artic-primer-version: 3
+  # path to amplicon primers in bed format for hard-clipping on paired end files (illumina) or url to file that should be downloaded
+  amplicon-primers: "resources/nCoV-2019.primer.bed"
+  # GenBank accession of reference sequence of the amplicon primers
+  amplicon-reference: "MN908947"
+
+assembly:
+  illumina:
+    # assemblers used for shotgun sequencing with on Illumina technology
+    shotgun: "megahit-std"
+    # assemblers used for amplicon sequencing with on Illumina technology
+    amplicon: "megahit-std"
+  oxford nanopore:
+    # assemblers used for shotgun sequencing with on Oxford Nanopore technology
+    shotgun: "megahit-std"
+    # assemblers used for amplicon sequencing with on Oxford Nanopore technology
+    amplicon: "megahit-std"
+    # Medaka models are named to indicate i) the pore type, ii) the sequencing device (MinION or PromethION), iii) the basecaller variant, and iv) the basecaller version
+    # with the format: {pore}_{device}_{caller variant}_{caller version}
+    # See https://github.com/nanoporetech/medaka#models for more information.
+    medaka_model: r941_min_fast_g303
+  ion torrent:
+    # assemblers used for shotgun sequencing with on Ion Torrent technology
+    shotgun: "megahit-std"
+    # assemblers used for amplicon sequencing with on Torrent technology
+    amplicon: "megahit-std"
+  # minimum posterior probability for a clonal variant to be included in the generated pseudo-assembly
+  min-variant-prob: 0.95
+
+variant-calling:
+  # genome annotation to use. Can be
+  # 'orf' (e.g. ORF1ab, S, etc..) and/or
+  # 'protein' (e.g. nsp1, Hel, Spike Protein S1, etc..)
+  annotations:
+    - "orf"
+    - "protein"
+  # false discovery rate to control for
+  fdr: 0.05
+  # downsample loci to this read depth
+  max-read-depth: 2000
+  report:
+    # downsample loci to this read depth for visualization in report
+    max-read-depth: 100
+  filters:
+    low-impact: 'ANN["IMPACT"] in ["LOW", "MODIFIER"]'
+    high+moderate-impact: 'ANN["IMPACT"] in ["HIGH", "MODERATE"]'
+
+strain-calling:
+  # minimum reported strain fraction after quantification
+  min-fraction: 0.02
+  # paths to store genomes that are extracted from the full GISAID data
+  extracted-strain-genomes: resources/genomes
+  # flag for using all lineage reference from GISAIDS Epicov database. API key must be exported as env var GISAID_API_TOKEN.
+  use-gisaid: False
+  # GenBank accession for downloading lineage-references
+  # only used, if use-gisaid flag is set to False
+  lineage-references:
+    B.1.1.7: MZ773928
+    B.1.351: MZ433432
+    P.1: MZ477759
+    B.1.617.2: OK091006
+
+# mutations to be highlighted (protein name -> variants)
+mth:
+  S:
+    - L18F
+    - T19R
+    - T20N
+    - P26S
+    - H69_V70del
+    - D80A
+    - D138Y
+    - Y144del
+    - F157_R158del
+    - R190S
+    - D215G
+    - R246I
+    - K417N
+    - K417T
+    - L452R
+    - E484K
+    - T478K
+    - N501Y
+    - A570D
+    - D614G
+    - H655Y
+    - P681R
+    - P681H
+    - A701V
+    - T716I
+    - D950N
+    - S982A
+    - T1027I
+    - D1118H
+    - V1176F
+
+############################################
+#      Configuration for benchmarking      #
+############################################
+
+# NCBI reference sequences of non-SARS-CoV-2 coronavirus.
+# Used to test whether the pipeline can distinguish between
+# non-SARS CoV-2 and SARS CoV-2 viruses.
+non_cov2_genomes:
+  - NC_005831
+  - NC_002645
+  - NC_006213
+  - NC_006577
+  - NC_019843
+  - NC_004718
+
+# for testing the read bases strain calling
+mixtures:
+  # maximal number of reads to generate
+  max_reads: 294459
+  # number of mixtures to generate
+  no_mixtures: 500
+  # number of strains to mix
+  no_strains: 2
+  # or you can specify the mix you would like to have
+  # this assumes, that strain files are available under resources/genomes
+  # the used number of strains must match the no_strains defined above
+  use_predefined_mixtures: False
+  # use the following format: "_MIX_B-1-1-7_PERC_90_MIX_B-1-351_PERC_10"
+  predefined_mixtures:
+    - "_MIX_B-1-1-7_PERC_50_MIX_B-1-351_PERC_50"
+    - "_MIX_B-1-1-7_PERC_90_MIX_B-1-351_PERC_10"
+
+read_lineage_call:
+  number_of_samples: 100
+  number_of_reads:
+    - 100
+    - 200
+    - 300
+    - 400
+    - 500
+    - 600
+    - 700
+    - 800
+    - 900
+    - 1000
+    - 3000
+    - 5000
+    - 7000
+    - 10000
+    - 30000
+    - 60000
+    - 120000
+    - 500000
+    - 1000000
+  length_of_reads:
+    - 100
+    - 150
+    - 250
+
+# assemblers used for assembly comparison
+assemblers_for_comparison:
+  - megahit-std
+  - megahit-meta-large
+  - megahit-meta-sensitive
+  - trinity
+  - velvet
+  - metaspades
+  - coronaspades
+  - spades
+  - rnaviralspades
+
+# assemblers used for sequencing method
+assemblers_used:
+  shotgun: "megahit-std"
+  amplicon: "metaspades"
+
+# orf names for variant calling orf plots
+orf_names:
+  - ORF1ab
+  - S
+  - ORF3a
+  - E
+  - M
+  - ORF6
+  - ORF7a
+  - ORF7b
+  - ORF8
+  - N
+  - ORF10
+  - 3UTR

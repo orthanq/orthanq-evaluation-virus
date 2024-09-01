@@ -1,6 +1,6 @@
 # #align reads with bwa, sort and call variants and create consensus fasta sequences.
 # #Then use pangolin for finding the abundant lineage
-ruleorder: touch_uncovar_results > execute_uncovar
+# ruleorder: touch_uncovar_results > execute_uncovar
 
 # # align reads by bwa
 # rule bwa_index:
@@ -157,68 +157,77 @@ ruleorder: touch_uncovar_results > execute_uncovar
 #     shell:
 #         "git clone https://github.com/IKIM-Essen/uncovar.git {output.uncovar_dir}"
 
-rule create_sample_sheet_unicovar:
-    input:
-        fq1=unicovar_inputs[0],
-        fq2=unicovar_inputs[1],
-        template="uncovar/config/pep/samples.csv",
-    output:
-        sample_sheet="uncovar/config/pep/samples2.csv"
-    log:
-        "logs/create_sample_sheet_unicovar.log"
-    script:
-        "../scripts/create_unicovar_sheet.py"
+# rule create_sample_sheet_unicovar:
+#     input:
+#         fq1=unicovar_inputs[0],
+#         fq2=unicovar_inputs[1],
+#         template="uncovar/config/pep/samples.csv",
+#     output:
+#         sample_sheet="uncovar/config/pep/samples2.csv"
+#     log:
+#         "logs/create_sample_sheet_unicovar.log"
+#     script:
+#         "../scripts/create_unicovar_sheet.py"
 
-rule update_configs_uncovar:
-    input:
-        config="uncovar/config/config.yaml",
-        pepfile="uncovar/config/pep/config.yaml",
-        sample_sheet="uncovar/config/pep/samples2.csv",
-    output:
-        main_config="uncovar/config/config2.yaml",
-        pep_config="uncovar/config/pep/config2.yaml"
-    log:
-        "logs/uncovar/change_sample_sheet_path.log"
-    params:
-        pepfile_path=lambda w, output: output.pep_config,
-        sample_sheet_path=lambda w, input: input.sample_sheet
-    conda:
-        "../envs/yaml.yaml"
-    script:
-        "../scripts/change_sample_sheet_path.py"
+# rule update_configs_uncovar:
+#     input:
+#         config="uncovar/config/config.yaml",
+#         pepfile="uncovar/config/pep/config.yaml",
+#         sample_sheet="uncovar/config/pep/samples2.csv",
+#     output:
+#         main_config="uncovar/config/config2.yaml",
+#         pep_config="uncovar/config/pep/config2.yaml"
+#     log:
+#         "logs/uncovar/change_sample_sheet_path.log"
+#     params:
+#         pepfile_path=lambda w, output: output.pep_config,
+#         sample_sheet_path=lambda w, input: input.sample_sheet
+#     conda:
+#         "../envs/yaml.yaml"
+#     script:
+#         "../scripts/change_sample_sheet_path.py"
 
-ruleorder: touch_uncovar_results > execute_uncovar > transfer_results
-rule touch_uncovar_results:  
-    output:
-        output_files="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
-    shell:
-        "touch {output.output_files}"
+# ruleorder: touch_uncovar_results > execute_uncovar > transfer_results
+# rule touch_uncovar_results:  
+#     output:
+#         output_files="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
+#     shell:
+#         "touch {output.output_files}"
 
-rule execute_uncovar:
-    input:
-        fqs=get_uncovar_input,
-        sample_sheet="uncovar/config/pep/samples2.csv",
-        main_config="uncovar/config/config2.yaml",
-        pep_config="uncovar/config/pep/config2.yaml"
-        # uncovar_results_touch="results/touch_uncovar_results_done.txt"
-    output:
-        touch("results/pangolin/unconvar_execution_done.txt")
-    params: cores=1,
-        output_files=get_uncovar_output()
-    log:
-        "logs/uncovar/execute_workflow.log"
-    shell:
-        "cd uncovar && "
-        " snakemake -p --configfile config/config2.yaml --sdm conda -j {params.cores} {params.output_files} -R fastp_pe"
+# rule execute_uncovar:
+#     input:
+#         fqs=get_uncovar_input,
+#         sample_sheet="uncovar/config/pep/samples2.csv",
+#         main_config="uncovar/config/config2.yaml",
+#         pep_config="uncovar/config/pep/config2.yaml"
+#         # uncovar_results_touch="results/touch_uncovar_results_done.txt"
+#     output:
+#         touch("results/pangolin/unconvar_execution_done.txt")
+#     params: cores=1,
+#         output_files=get_uncovar_output()
+#     log:
+#         "logs/uncovar/execute_workflow.log"
+#     shell:
+#         "cd uncovar && "
+#         " snakemake -p --configfile config/config2.yaml --sdm conda -j {params.cores} {params.output_files} -R fastp_pe"
 
-rule transfer_results:
-    input:
-        uncovar_results="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta",
-        uncovar_execution_check="results/pangolin/unconvar_execution_done.txt" #required for the rule execute_uncovar to be executed before transfer_results
-    output:
-        "results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
-    shell:
-        "cp {input.uncovar_results} {output}"
+# rule transfer_results:
+#     input:
+#         uncovar_results="uncovar/results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta",
+#         uncovar_execution_check="results/pangolin/unconvar_execution_done.txt" #required for the rule execute_uncovar to be executed before transfer_results
+#     output:
+#         "results/{date}/polishing/bcftools-illumina/{sample}-{coverage}.fasta"
+#     shell:
+#         "cp {input.uncovar_results} {output}"
+
+module uncovar_pipeline:
+    snakefile:
+        github("IKIM-Essen/uncovar", path="workflow/Snakefile", tag="v1.0.0")
+    config: 
+        config
+    # prefix: "uncovar/"
+
+use rule * from uncovar_pipeline as uncovar_*
 
 rule pangolin:
     input:
