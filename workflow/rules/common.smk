@@ -128,8 +128,9 @@ def get_fastq_input_unicovar():
         fqs1 = expand("results/mixed/{sample}-{coverage}_1.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         fqs2 = expand("results/mixed/{sample}-{coverage}_2.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
     else:
-        fqs1 = expand("results/sra/{sample}_1.fastq.gz", sample=samples["sra"])
-        fqs2 = expand("results/sra/{sample}_2.fastq.gz", sample=samples["sra"])
+        fqs1 = expand("results/trimmed/{sample}.1.fastq.gz", sample=samples["sra"])
+        fqs2 = expand("results/trimmed/{sample}.2.fastq.gz", sample=samples["sra"])
+        
     return [fqs1, fqs2]
 unicovar_inputs = get_fastq_input_unicovar()
 print("unicovar_inputs[0]",unicovar_inputs[0])
@@ -166,9 +167,13 @@ def get_results(wildcards):
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(pangolin)
+    final_output.extend(orthanq_csv + orthanq_solutions)
     # final_output.extend(orthanq + pangolin + kallisto + nextclade)
     return final_output
+
+def get_orthanq_pandemics_evaluation_input(wildcards):
+    if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
+        return expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
 
 def get_uncovar_output():
     if config["simulate_pandemics"] and not config["simulate_given"]:

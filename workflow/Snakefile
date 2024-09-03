@@ -8,33 +8,80 @@ export LD_LIBRARY_PATH=\"{LD_LIBRARY_PATH}\";
 configfile: "config/config.yaml"
 
 # ruleorder: orthanq_candidates > mason > orthanq_preprocess
-ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
 
-include: "rules/ref.smk"
-include: "rules/common.smk"
-include: "rules/sra.smk"
-include: "rules/trimming.smk"
-include: "rules/simulation.smk"
-include: "rules/orthanq.smk"
-include: "rules/pangolin.smk"
-include: "rules/kallisto.smk"
-include: "rules/nextclade.smk"
-include: "rules/evaluation.smk"
-include: "rules/vega.smk"
-include: "rules/get_metadata.smk"
+if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
+    ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
 
-rule all:
-    input:
-        # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
-        aggregate_input_get_fractions,
-        get_results,
-        # "results/simulation_input/SeqCountsUSAFinal.csv"
-        "results/project_metadata/sra_collection_dates.tsv",
-        # "results/evaluation/scatter_plot.svg",
-        # "results/evaluation/validation.tsv",
-        # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
-        # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
-        # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
-        # # expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
-        # "results/clade_to_lineage/clade_to_lineages.tsv"
-#todo: implement the other case
+    include: "rules/ref.smk"
+    include: "rules/common.smk"
+    include: "rules/simulation.smk"
+    include: "rules/simulation-pandemics-evaluation.smk"
+    include: "rules/orthanq.smk"
+    # include: "rules/pangolin.smk"
+    include: "rules/kallisto.smk"
+    include: "rules/nextclade.smk"
+    include: "rules/vega.smk"
+    include: "rules/get_metadata.smk"
+
+    rule all:
+        input:
+            # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
+            aggregate_input_get_fractions,
+            get_results,
+            # "results/simulation_input/SeqCountsUSAFinal.csv"
+            "results/project_metadata/sra_collection_dates.tsv",
+            "results/evaluation/scatter_plot.svg",
+            "results/evaluation/validation.tsv",
+            # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
+            # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
+            # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
+            # # expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
+            # "results/clade_to_lineage/clade_to_lineages.tsv"
+
+elif config["simulate_given"] and not config["simulate_pandemics"]:
+    ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
+
+    include: "rules/ref.smk"
+    include: "rules/common.smk"
+    include: "rules/simulation.smk"
+    include: "rules/orthanq.smk"
+    # include: "rules/pangolin.smk"
+    include: "rules/kallisto.smk"
+    include: "rules/nextclade.smk"
+    include: "rules/vega.smk"
+
+    rule all:
+        input:
+            # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
+            aggregate_input_get_fractions,
+            get_results,
+            # "results/simulation_input/SeqCountsUSAFinal.csv"
+            # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
+            # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
+            # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
+            # # expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
+            # "results/clade_to_lineage/clade_to_lineages.tsv"
+elif not config["simulate_given"] and not config["simulate_pandemics"]:
+    ruleorder: orthanq_candidates_generic > orthanq_preprocess
+
+    include: "rules/ref.smk"
+    include: "rules/common.smk"
+    include: "rules/sra.smk"
+    include: "rules/trimming.smk"
+    include: "rules/orthanq.smk"
+    # include: "rules/pangolin.smk"
+    include: "rules/kallisto.smk"
+    include: "rules/nextclade.smk"
+    include: "rules/vega.smk"
+    
+    rule all:
+        input:
+            # expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
+            aggregate_input_get_fractions,
+            get_results,
+            # "results/simulation_input/SeqCountsUSAFinal.csv"
+            # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
+            # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
+            # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
+            # # expand("results/nextstrain/results/SimulatedSample{num}", num=num_list),
+            # "results/clade_to_lineage/clade_to_lineages.tsv"

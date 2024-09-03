@@ -286,7 +286,8 @@ with open(snakemake.log[0], "w") as f:
     print("kallisto validation: ", kallisto_validation)
 
     #merge all validation dataframes
-    dfs = [orthanq_validation, pangolin_validation, nextclade_validation, kallisto_validation]
+    # dfs = [orthanq_validation, pangolin_validation, nextclade_validation, kallisto_validation] #temporarily comment out other tools
+    dfs = [orthanq_validation]
     df_final = ft.reduce(lambda left, right: left.join(right, on='n_samples'), dfs)
     print(df_final)
 
