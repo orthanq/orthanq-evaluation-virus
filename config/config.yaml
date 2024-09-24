@@ -21,7 +21,7 @@ viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fa
 samples: config/samples_wastewater.tsv
 
 #if simulate_given is False, samples are generated from frequency table
-number_of_samples: 1
+number_of_samples: 3
 
 #number of total reads in the sample, considering 150 bp reads, sarscov2 has 29900 bp
 n_reads_100x: 20000 #for 100x
