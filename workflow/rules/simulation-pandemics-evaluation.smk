@@ -35,7 +35,7 @@ rule prepare_clade_to_pangolin:
 
 rule abundant_lineage_validation:
     input:
-        # simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
+        simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
         # clade_to_lineage="results/clade_to_lineage/clade_to_lineages.tsv",
         orthanq=get_orthanq_pandemics_evaluation_input,
         # pangolin=expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),

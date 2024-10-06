@@ -75,7 +75,7 @@ with open(snakemake.log[0], "w") as f:
     for file in orthanq_input:
 
         #retrieve sample name
-        sample_name = os.path.basename(file).split(".")
+        sample_name = os.path.basename(file).split(".")[0].split("-") #first split is to get rid of the extension and second is to get rid of the coverage part '-100x' in simulated samples.
         print(sample_name[0])
 
         #read table
