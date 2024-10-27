@@ -1,11 +1,22 @@
-#simulate reads 
-simulate_pandemics: True
+## working mode of the workflow, the sample sheet of the uncovar workflow needs to be filled in according to the two options selected below.
+## if both are false, then it will analyze the samples in the sample sheet.
+# simulate reads to imitate pandemics. sample names start with 'SimulatedSample{num}-{coverage}' and num starting from 1 to {number_of_samples}. coverages
+simulate_pandemics: False
+number_of_samples: 3
 
-#option for simulating given fractions for a sample in lineages.tsv
-simulate_given: False
+# option for simulating given fractions for a sample in lineages.tsv. Sample name starts with 'SampleExample-{coverage}'
+simulate_given: True
+coverage_simulate_given: 100x
+
+#number of total reads in the sample, considering 150 bp reads, sarscov2 has 29900 bp
+n_reads_100x: 20000 #for 100x
+n_reads_1000x: 200000 #for 1000x
 
 #path for lineages to be simulated
 lineages_and_fractions: config/lineages.tsv
+
+# if both simulation options are False, then sample sheet will be used.
+samples: config/samples_wastewater_test.tsv
 
 #NCBI accession ID for the reference genome sequence
 #for hiv NC_001802.1
@@ -17,16 +28,6 @@ reference_accession: NC_045512
 #for sarscov2
 viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
 
-#samples.tsv
-samples: config/samples_wastewater.tsv
-
-#if simulate_given is False, samples are generated from frequency table
-number_of_samples: 3
-
-#number of total reads in the sample, considering 150 bp reads, sarscov2 has 29900 bp
-n_reads_100x: 20000 #for 100x
-n_reads_1000x: 200000 #for 1000x
-
 ##tool configurations
 #art simulation
 f_coverage: 50
@@ -36,8 +37,9 @@ bwa_threads: 1
 kallisto_index_threads: 1
 kallisto_quant_threads: 1
 
-#define config of uncovar pipeline
-pepfile: config/pep/config2.yaml
+## define config of uncovar pipeline##
+
+pepfile: config/pep/config_filled.yaml
 mode: patient
 virus-reference-genome:
   - NC_045512.2

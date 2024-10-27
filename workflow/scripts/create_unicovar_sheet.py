@@ -49,8 +49,8 @@ with open(snakemake.log[0], "w") as f:
         results1 = extract_substring(f1, "/results")
         results2 = extract_substring(f2, "/results")
         print(results1)
-        unicovar_sample_sheet.loc[index, "fq1"] = ".." + results1
-        unicovar_sample_sheet.loc[index, "fq2"] = ".." + results2
+        unicovar_sample_sheet.loc[index, "fq1"] = results1
+        unicovar_sample_sheet.loc[index, "fq2"] = results2
         unicovar_sample_sheet.loc[index, "date"] = pseudodate_unicovar
         unicovar_sample_sheet.loc[index, "is_amplicon_data"] = 1
         unicovar_sample_sheet.loc[index, "technology"] = "illumina"

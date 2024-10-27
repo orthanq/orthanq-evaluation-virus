@@ -21,7 +21,7 @@ def generate_numreads(lineages, n_reads):
 lineages = pd.read_csv(config["lineages_and_fractions"], sep ="\t")
 
 # the simulated sample is created below
-coverage_single_sample="100x"
+coverage_single_sample=config["coverage_simulate_given"]
 simulated_given_lineages = generate_numreads(lineages, n_reads_dict[coverage_single_sample])
 print("simulated_given_lineages",simulated_given_lineages)
 #upstream are only relevant when simulate_given is true
@@ -167,7 +167,7 @@ def get_results(wildcards):
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(orthanq_csv + orthanq_solutions)
+    final_output.extend(orthanq_csv + orthanq_solutions + pangolin)
     # final_output.extend(orthanq + pangolin + kallisto + nextclade)
     return final_output
 

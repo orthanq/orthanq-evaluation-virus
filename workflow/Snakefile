@@ -17,7 +17,7 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
     include: "rules/simulation.smk"
     include: "rules/simulation-pandemics-evaluation.smk"
     include: "rules/orthanq.smk"
-    # include: "rules/pangolin.smk"
+    include: "rules/pangolin.smk"
     include: "rules/kallisto.smk"
     include: "rules/nextclade.smk"
     include: "rules/vega.smk"
@@ -29,9 +29,9 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             aggregate_input_get_fractions,
             get_results,
             # "results/simulation_input/SeqCountsUSAFinal.csv"
-            "results/project_metadata/sra_collection_dates.tsv",
-            "results/evaluation/scatter_plot.svg",
-            "results/evaluation/validation.tsv",
+            # "results/project_metadata/sra_collection_dates.tsv",
+            # "results/evaluation/scatter_plot.svg",
+            # "results/evaluation/validation.tsv",
             # expand("uncovar/results/{date}/polishing/bcftools-illumina/SimulatedSample{num}_{date}.fasta", num=num_list, date=DATE),
             # # expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
             # # expand("results/kallisto/quant_results_SimulatedSample{num}", num=num_list),
@@ -45,7 +45,7 @@ elif config["simulate_given"] and not config["simulate_pandemics"]:
     include: "rules/common.smk"
     include: "rules/simulation.smk"
     include: "rules/orthanq.smk"
-    # include: "rules/pangolin.smk"
+    include: "rules/pangolin.smk"
     include: "rules/kallisto.smk"
     include: "rules/nextclade.smk"
     include: "rules/vega.smk"
@@ -69,7 +69,7 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
     include: "rules/sra.smk"
     include: "rules/trimming.smk"
     include: "rules/orthanq.smk"
-    # include: "rules/pangolin.smk"
+    include: "rules/pangolin.smk"
     include: "rules/kallisto.smk"
     include: "rules/nextclade.smk"
     include: "rules/vega.smk"
