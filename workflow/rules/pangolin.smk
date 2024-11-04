@@ -35,13 +35,15 @@
 
 module uncovar_pipeline:
     snakefile:
-        github("IKIM-Essen/uncovar", path="workflow/Snakefile", commit="9cb1576a8c41c23344940f2248e5d44464a53b2e")
+        github("IKIM-Essen/uncovar", path="workflow/Snakefile", tag="v1.1.1")
+        # "/projects/koesterlab/orthanq/orthanq-evaluation-virus/uncovar/workflow/Snakefile"
     config: 
         config
     # prefix: "uncovar/"
 
 use rule * from uncovar_pipeline as uncovar_*
 
+##for simulation cases
 rule pangolin:
     input:
         f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
@@ -55,3 +57,18 @@ rule pangolin:
         "benchmarks/evaluation/{sample}-{coverage}.tsv" 
     shell:
         "pangolin {input} --outfile {output} 2> {log}"
+
+# #for normal analysis of given samples
+# rule pangolin:
+#     input:
+#         f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
+#     output:
+#         "results/pangolin/{sample}.csv"
+#     log:
+#         "logs/pangolin/{sample}.log"
+#     conda:
+#         "../envs/pangolin.yaml"
+#     benchmark:
+#         "benchmarks/evaluation/{sample}.tsv" 
+#     shell:
+#         "pangolin {input} --outfile {output} 2> {log}"
