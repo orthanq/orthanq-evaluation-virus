@@ -16,7 +16,7 @@ n_reads_1000x: 200000 #for 1000x
 lineages_and_fractions: config/lineages.tsv
 
 # if both simulation options are False, then sample sheet will be used.
-samples: config/samples_wastewater_test.tsv
+samples: config/samples_wastewater_test_1.tsv
 
 #NCBI accession ID for the reference genome sequence
 #for hiv NC_001802.1
@@ -68,7 +68,7 @@ preprocessing:
   kit-adapters: --adapter_sequence GCGAATTTCGACGATCGTTGCATTAACTCGCGAA --adapter_sequence_r2
     AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT
   artic-primer-version: 3
-  amplicon-primers: uncovar/uncovar_resources/nCoV-2019.primer.bed
+  amplicon-primers: resources/nCoV-2019.primer.bed
   amplicon-reference: MN908947
 assembly:
   illumina:
