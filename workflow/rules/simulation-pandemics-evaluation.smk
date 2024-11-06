@@ -4,9 +4,9 @@ rule scatter_plot:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
         plot="results/evaluation/scatter_plot.svg",
-        # foo="foo.csv"
     log:
         "logs/scatter_plot/scatter_plot.log"
+    params: coverage_number=2 #this needs to be updated in case we have more or less than 10x and 100x.
     conda:
         "../envs/altair.yaml"
     benchmark:
@@ -43,9 +43,9 @@ rule abundant_lineage_validation:
         # kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}/abundance.tsv", num=num_list),
     output:
         validation="results/evaluation/validation.tsv"
-        # foo="foo.csv"
     log:
         "logs/evaluation/validation.log"
+    params: coverage_number=2 #this needs to be updated in case we have more or less than 10x and 100x.
     conda:
         "../envs/altair.yaml"
     benchmark:

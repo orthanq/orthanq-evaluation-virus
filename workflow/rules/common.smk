@@ -143,8 +143,6 @@ UNCOVAR_CONFIG="uncovar/config/config.yaml"
 UNCOVAR_PEP_CONFIG="uncovar/config/pep/config.yaml"
 
 def get_results(wildcards):
-    #the following two are required in any case.
-    # final_output=["results/clade_to_lineage/clade_to_lineages.tsv", "results/evaluation/scatter_plot.svg", "results/evaluation/validation.tsv"]
     final_output=[]
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
         orthanq_csv = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
