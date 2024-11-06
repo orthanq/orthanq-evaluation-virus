@@ -35,7 +35,7 @@
 
 module uncovar_pipeline:
     snakefile:
-        github("IKIM-Essen/uncovar", path="workflow/Snakefile", tag="v1.1.1")
+        github("IKIM-Essen/uncovar", path="workflow/Snakefile", commit="f476ab1befbef177ae1290c0b6796283549a6df4")
         # "/projects/koesterlab/orthanq/orthanq-evaluation-virus/uncovar/workflow/Snakefile"
     config: 
         config
