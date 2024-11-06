@@ -1,0 +1,2 @@
+sample_name,fq1,fq2,date,is_amplicon_data,technology,include_in_high_genome_summary
+SampleExample-100x,results/mixed/SampleExample-100x_1.fastq,results/mixed/SampleExample-100x_2.fastq,13062024,1,illumina,1
