@@ -3,5 +3,5 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - pangolin
+  - pangolin=4.3.1
 
