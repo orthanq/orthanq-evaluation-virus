@@ -164,7 +164,3 @@ def get_results(wildcards):
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
     return final_output
-
-def get_orthanq_pandemics_evaluation_input(wildcards):
-    if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
-        return expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])

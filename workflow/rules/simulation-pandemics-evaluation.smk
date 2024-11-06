@@ -1,6 +1,6 @@
 rule scatter_plot:
     input:
-        orthanq_prediction=get_orthanq_pandemics_evaluation_input,
+        orthanq_prediction=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"]),
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
         plot="results/evaluation/scatter_plot.svg",
@@ -37,7 +37,7 @@ rule abundant_lineage_validation:
     input:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
         # clade_to_lineage="results/clade_to_lineage/clade_to_lineages.tsv",
-        orthanq=get_orthanq_pandemics_evaluation_input,
+        orthanq=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"]),
         # pangolin=expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
         # nextclade=expand("results/nextstrain/results/SimulatedSample{num}/nextclade.tsv", num=num_list),
         # kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}/abundance.tsv", num=num_list),
