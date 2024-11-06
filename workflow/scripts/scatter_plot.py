@@ -49,7 +49,6 @@ with open(snakemake.log[0], "w") as f:
 
         #loop over fractions and lineages
         for f,l in zip(fractions, lineages):
-            print(f[0], l[0])
             lineage = l[0]
             fraction = f[0]
             if lineage in simulated_fractions:
@@ -65,11 +64,14 @@ with open(snakemake.log[0], "w") as f:
         #lastly add number of fractions 
         lineages_simulations[sample_name[0]] = flattened
 
-    print(lineages_simulations)
+        #and lastly, duplicate the number of elents in values of the dictionary, to account for coverage numbers
+        simulated_fractions_dup = {key: [x for x in value for _ in range(snakemake.params.coverage_number)] for key, value in simulated_fractions.items()}
+    print("lineages_simulations",lineages_simulations)
+    print("simulated_fractions_dup", simulated_fractions_dup)
 
     #2-) collect all predicted fractions of orthanq
 
-    #initialize a list to collect predicted fractions
+    #initialize a dict to collect predicted fractions
     predicted_fractions={}
 
     for file in orthanq_input:
@@ -88,9 +90,9 @@ with open(snakemake.log[0], "w") as f:
         #remove density and odds columns
         list_of_first_row.pop('density', None)
         list_of_first_row.pop('odds', None)
+        print("list_of_first_row", list_of_first_row)
 
         for k,v in list_of_first_row.items():
-            print(k,v)
             if k in predicted_fractions:
                 fracs_for_key = predicted_fractions[k]
                 fracs_for_key.append(v)
@@ -99,7 +101,7 @@ with open(snakemake.log[0], "w") as f:
                 predicted_fractions[k] = [v]
 
         #*some lineages are not present in orthanq predictions
-        #append 0.0 fractions as long as the number of fractions in simulated sample
+        #append 0.0 as many as the number of fractions in simulated sample
         sample_lineages = lineages_simulations[sample_name[0]]
         
         for lin in sample_lineages:
@@ -114,27 +116,25 @@ with open(snakemake.log[0], "w") as f:
                 else:
                     predicted_fractions[lin] = [0.0]
 
-    print("simulated_fractions", simulated_fractions)  
-    print(len(predicted_fractions))
     print("predicted_fractions",predicted_fractions)
 
     #now sort both dictionaries
-    ordered_simulated_fractions = dict(sorted(simulated_fractions.items()))
+    ordered_simulated_fractions_dup = dict(sorted(simulated_fractions_dup.items()))
     ordered_predicted_fractions = dict(sorted(predicted_fractions.items()))
 
-    print("ordered_simulated_fractions", ordered_simulated_fractions)  
+    print("ordered_simulated_fractions_dup", ordered_simulated_fractions_dup)  
     print("ordered_predicted_fractions",ordered_predicted_fractions)
 
-    #*some lineages are present in simulated fractions
+    #*some predicted lineages are present in simulated fractions
     #remove them (ask johannes)
     ordered_predicted_fractions_copy = ordered_predicted_fractions.copy() #an explicit copy
     for k_o, v_o in ordered_predicted_fractions.items():
-        if k_o not in ordered_simulated_fractions:
+        if k_o not in ordered_simulated_fractions_dup:
             ordered_predicted_fractions_copy.pop(k_o, None)
     print("ordered_predicted_fractions_copy:", ordered_predicted_fractions_copy)
 
     #convert to dataframe
-    data = {"predicted_fractions": flatten(ordered_predicted_fractions_copy.values()), "simulated_fractions": flatten(ordered_simulated_fractions.values())}
+    data = {"predicted_fractions": flatten(ordered_predicted_fractions_copy.values()), "simulated_fractions": flatten(ordered_simulated_fractions_dup.values())}
     print(data)
     df = pl.DataFrame(data)
     print(df)
@@ -166,7 +166,7 @@ with open(snakemake.log[0], "w") as f:
     plot.save(snakemake.output.plot)
 
     #calculate spearman correlation
-    spearman=scipy.stats.spearmanr(flatten(ordered_predicted_fractions_copy.values()), flatten(ordered_simulated_fractions.values()))   # Spearman's rho
+    spearman=scipy.stats.spearmanr(flatten(ordered_predicted_fractions_copy.values()), flatten(ordered_simulated_fractions_dup.values()))   # Spearman's rho
     print(spearman)
     
     # df.write_csv(snakemake.output.foo)
