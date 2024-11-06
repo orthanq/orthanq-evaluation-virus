@@ -43,32 +43,21 @@ module uncovar_pipeline:
 
 use rule * from uncovar_pipeline as uncovar_*
 
+rule ensure_uncovar_output:
+    input:
+        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
+
 ##for simulation cases
 rule pangolin:
     input:
-        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
+        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
     output:
-        "results/pangolin/{sample}-{coverage}.csv"
+        "results/pangolin/{sample}.csv"
     log:
-        "logs/pangolin/{sample}-{coverage}.log"
+        "logs/pangolin/{sample}.log"
     conda:
         "../envs/pangolin.yaml"
     benchmark:
-        "benchmarks/evaluation/{sample}-{coverage}.tsv" 
+        "benchmarks/evaluation/{sample}.tsv" 
     shell:
         "pangolin {input} --outfile {output} 2> {log}"
-
-# #for normal analysis of given samples
-# rule pangolin:
-#     input:
-#         f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
-#     output:
-#         "results/pangolin/{sample}.csv"
-#     log:
-#         "logs/pangolin/{sample}.log"
-#     conda:
-#         "../envs/pangolin.yaml"
-#     benchmark:
-#         "benchmarks/evaluation/{sample}.tsv" 
-#     shell:
-#         "pangolin {input} --outfile {output} 2> {log}"

@@ -1,7 +1,5 @@
 configfile: "config/config.yaml"
 
-# ruleorder: orthanq_candidates > mason > orthanq_preprocess
-
 if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
     ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
 
