@@ -40,7 +40,7 @@ def aggregate_input_get_fractions(wildcards):
                     table_modified = generate_numreads(table, n_reads)
                     samples_per_coverage.append(table_modified)
             samples_per_coverage_df = pd.concat(samples_per_coverage)
-            fqs=[f"results/fractions/{row["sample"]}-{row["lineage"]}-{row["num_reads"]}-{coverage}_1.fq" for i,row in samples_per_coverage_df.iterrows()] + [f"results/fractions/{row["sample"]}-{row["lineage"]}-{row["num_reads"]}-{coverage}_2.fq" for i,row in samples_per_coverage_df.iterrows()]
+            fqs=[f"results/fractions/{row['sample']}-{row['lineage']}-{row['num_reads']}-{coverage}_1.fq" for i,row in samples_per_coverage_df.iterrows()] + [f"results/fractions/{row['sample']}-{row['lineage']}-{row['num_reads']}-{coverage}_2.fq" for i,row in samples_per_coverage_df.iterrows()]
             print("samples_per_coverage_df", samples_per_coverage_df)
             all_samples_fqs.extend(fqs)
         print("all_samples_fqs",all_samples_fqs)
