@@ -42,6 +42,7 @@ rule orthanq_quantify:
         solutions="results/orthanq/calls/{sample}/viral_solutions.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
         lp_solution="results/orthanq/calls/{sample}/lp_solution.json",
+        graph="results/orthanq/calls/{sample}/graph.dot"
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
