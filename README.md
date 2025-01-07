@@ -1,4 +1,6 @@
-# An evaluation workflow of Orthanq for virus applications.
+# Orthanq evaluation workflow for viruses
+ 
+An evaluation workflow of Orthanq for virus applications.
 
 ## Configuration 
 
