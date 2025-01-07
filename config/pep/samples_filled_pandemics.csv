@@ -1,3 +1,11 @@
 sample_name,fq1,fq2,date,is_amplicon_data,technology,include_in_high_genome_summary
 SimulatedSample1-100x,results/mixed/SimulatedSample1-100x_1.fastq,results/mixed/SimulatedSample1-100x_2.fastq,13062024,1,illumina,1
 SimulatedSample1-1000x,results/mixed/SimulatedSample1-1000x_1.fastq,results/mixed/SimulatedSample1-1000x_2.fastq,13062024,1,illumina,1
+SimulatedSample2-100x,results/mixed/SimulatedSample2-100x_1.fastq,results/mixed/SimulatedSample2-100x_2.fastq,13062024,1,illumina,1
+SimulatedSample2-1000x,results/mixed/SimulatedSample2-1000x_1.fastq,results/mixed/SimulatedSample2-1000x_2.fastq,13062024,1,illumina,1
+SimulatedSample3-100x,results/mixed/SimulatedSample3-100x_1.fastq,results/mixed/SimulatedSample3-100x_2.fastq,13062024,1,illumina,1
+SimulatedSample3-1000x,results/mixed/SimulatedSample3-1000x_1.fastq,results/mixed/SimulatedSample3-1000x_2.fastq,13062024,1,illumina,1
+SimulatedSample4-100x,results/mixed/SimulatedSample4-100x_1.fastq,results/mixed/SimulatedSample4-100x_2.fastq,13062024,1,illumina,1
+SimulatedSample4-1000x,results/mixed/SimulatedSample4-1000x_1.fastq,results/mixed/SimulatedSample4-1000x_2.fastq,13062024,1,illumina,1
+SimulatedSample5-100x,results/mixed/SimulatedSample5-100x_1.fastq,results/mixed/SimulatedSample5-100x_2.fastq,13062024,1,illumina,1
+SimulatedSample5-1000x,results/mixed/SimulatedSample5-1000x_1.fastq,results/mixed/SimulatedSample5-1000x_2.fastq,13062024,1,illumina,1

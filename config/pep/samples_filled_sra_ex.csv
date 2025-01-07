@@ -1,0 +1,11 @@
+sample_name,fq1,fq2,date,is_amplicon_data,technology,include_in_high_genome_summary
+SRR15505116,results/trimmed/SRR15505116.1.fastq,results/trimmed/SRR15505116.2.fastq,13062024,1,illumina,1
+SRR15505102,results/trimmed/SRR15505102.1.fastq,results/trimmed/SRR15505102.2.fastq,13062024,1,illumina,1
+SRR15505103,results/trimmed/SRR15505103.1.fastq,results/trimmed/SRR15505103.2.fastq,13062024,1,illumina,1
+SRR15505104,results/trimmed/SRR15505104.1.fastq,results/trimmed/SRR15505104.2.fastq,13062024,1,illumina,1
+SRR15505105,results/trimmed/SRR15505105.1.fastq,results/trimmed/SRR15505105.2.fastq,13062024,1,illumina,1
+SRR15505106,results/trimmed/SRR15505106.1.fastq,results/trimmed/SRR15505106.2.fastq,13062024,1,illumina,1
+SRR15505107,results/trimmed/SRR15505107.1.fastq,results/trimmed/SRR15505107.2.fastq,13062024,1,illumina,1
+SRR15505108,results/trimmed/SRR15505108.1.fastq,results/trimmed/SRR15505108.2.fastq,13062024,1,illumina,1
+SRR15505109,results/trimmed/SRR15505109.1.fastq,results/trimmed/SRR15505109.2.fastq,13062024,1,illumina,1
+SRR15505110,results/trimmed/SRR15505110.1.fastq,results/trimmed/SRR15505110.2.fastq,13062024,1,illumina,1

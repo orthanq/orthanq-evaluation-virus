@@ -43,10 +43,14 @@ module uncovar_pipeline:
 
 use rule * from uncovar_pipeline as uncovar_*
 
-rule ensure_uncovar_output:
-    input:
-        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
-
+if config["simulate_pandemics"] or config["simulate_given"]:
+    rule ensure_uncovar_output:
+        input:
+            f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
+else:
+    rule ensure_uncovar_output:
+        input:
+            f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
 ##for simulation cases
 rule pangolin:
     input:

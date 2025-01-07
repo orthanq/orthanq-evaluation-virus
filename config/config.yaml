@@ -1,8 +1,8 @@
 ## working mode of the workflow, the sample sheet of the uncovar workflow needs to be filled in according to the two options selected below.
 ## if both are false, then it will analyze the samples in the sample sheet.
 # simulate reads to imitate pandemics. sample names start with 'SimulatedSample{num}-{coverage}' and num starting from 1 to {number_of_samples}. coverages
-simulate_pandemics: True
-number_of_samples: 1
+simulate_pandemics: False
+number_of_samples: 5
 
 # option for simulating given fractions for a sample in lineages.tsv. Sample name starts with 'SampleExample-{coverage}'
 simulate_given: False
@@ -16,7 +16,7 @@ n_reads_1000x: 200000 #for 1000x
 lineages_and_fractions: config/lineages.tsv
 
 # if both simulation options are False, then sample sheet will be used.
-samples: config/samples_wastewater_test_1.tsv
+samples: config/samples_wastewater_test.tsv
 
 #NCBI accession ID for the reference genome sequence
 #for hiv NC_001802.1

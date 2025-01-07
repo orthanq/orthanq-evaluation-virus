@@ -8,12 +8,12 @@ rule orthanq_candidates_generic:
     log:
         "logs/orthanq_candidates/candidates_virus.log",
     conda:
-        "../envs/orthanq.yaml"
+        "../envs/orthanq_dev.yaml"
     priority: 50
     benchmark:    
         "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
     shell:
-        "orthanq candidates virus generic --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus generic --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 rule orthanq_preprocess:
     input:
@@ -25,11 +25,11 @@ rule orthanq_preprocess:
     log:
         "logs/orthanq_preprocess/{sample}.log",
     conda:
-        "../envs/orthanq.yaml"
+        "../envs/orthanq_dev.yaml"
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
@@ -42,11 +42,11 @@ rule orthanq_quantify:
         solutions="results/orthanq/calls/{sample}/viral_solutions.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
         lp_solution="results/orthanq/calls/{sample}/lp_solution.json",
-        graph="results/orthanq/calls/{sample}/graph.dot"
+        # graph="results/orthanq/calls/{sample}/graph.dot"
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
-        "../envs/orthanq.yaml"
+        "../envs/orthanq_dev.yaml"
     params:
         prior="uniform"
     resources: 
@@ -54,5 +54,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} "
-        " --output {output.tsv} 2> {log}" #deactivated '--enable-equivalence-class-constraint --threshold-equivalence-class 5' temporarily
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq call virus --candidates-folder {input.candidates_folder} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"
