@@ -1,12 +1,11 @@
-#scatterplot for all points
-#in this plot we throw all data points together with the fractions 
-#and each sample is read alphabetically (e.g. SimulatedSample1, SimulatedSample2 etc.) for both predictions and simulations
-#in the end, each datapoint for the corresponding lineage is paired to each other.
+#we throw all data points together with the fractions and each sample is read alphabetically (e.g. SimulatedSample1, SimulatedSample2 etc.) for both predictions and simulations
+#here it is assumed that two scatterplots for two coverages are generated, 100x and 1000x.
 
 # import pandas as pd
 import polars as pl
 import pandas as pd
 import altair as alt
+import numpy as np
 import pyarrow
 import os
 import json
@@ -17,156 +16,155 @@ import scipy.stats
 with open(snakemake.log[0], "w") as f:
     sys.stderr = sys.stdout = f
 
-    def flatten(xss):
-        return [x for xs in xss for x in xs]
-
     #orthanq results
     orthanq_input = snakemake.input.orthanq_prediction
 
     #simulation input
     simulation = snakemake.input.simulation
 
-
     #1-) collect all simulated fractions
-
-    #initialize a list to collect simulated fractions: lineage_name: fraction
-    simulated_fractions={}
-
-    #keep record of number of fractions for each sample: sample: lineage_names
-    lineages_simulations={}
+    sample_composition = {}
 
     for file in simulation:
         #retrieve sample name
         sample_name = os.path.basename(file).split(".")
-        print(sample_name[0])
 
         #read table
-        results = pl.read_csv(file)
+        results = pd.read_csv(file)
 
         #select fraction and lineage column
-        fractions = results.select('fraction').rows()
-        lineages = results.select('lineage').rows()
+        fractions = results['fraction'].tolist()
+        lineages = results['lineage'].tolist()
 
-        #loop over fractions and lineages
-        for f,l in zip(fractions, lineages):
-            lineage = l[0]
-            fraction = f[0]
-            if lineage in simulated_fractions:
-                fracs_for_key = simulated_fractions[lineage]
-                fracs_for_key.append(fraction)
-                simulated_fractions[lineage] = fracs_for_key
-            else:
-                simulated_fractions[lineage] = [fraction]
-        
-        #flatten the list of lists
-        flattened = flatten(lineages)
+        #record sample composition
+        fractions_per_lineage = {lineage: fraction for fraction, lineage in zip(fractions, lineages)}
+        sample_composition[sample_name[0]] = fractions_per_lineage
+    print("sample_composition", sample_composition)
 
-        #lastly add number of fractions 
-        lineages_simulations[sample_name[0]] = flattened
-
-        #and lastly, duplicate the number of elents in values of the dictionary, to account for coverage numbers
-        simulated_fractions_dup = {key: [x for x in value for _ in range(snakemake.params.coverage_number)] for key, value in simulated_fractions.items()}
-    print("lineages_simulations",lineages_simulations)
-    print("simulated_fractions_dup", simulated_fractions_dup)
-
-    #2-) collect all predicted fractions of orthanq
-
-    #initialize a dict to collect predicted fractions
-    predicted_fractions={}
+    # #2-) collect all predicted fractions of orthanq, separately by coverages 
+    predicted_fractions_100x=[]
+    predicted_fractions_1000x=[] 
 
     for file in orthanq_input:
-
-        #retrieve sample name
-        sample_name = os.path.basename(file).split(".")[0].split("-") #first split is to get rid of the extension and second is to get rid of the coverage part '-100x' in simulated samples.
-        print(sample_name[0])
-
+        #get sample and coverage
+        splitted = os.path.basename(file).split(".")[0].split("-") #first split is to get rid of the extension
+        sample = splitted[0]
+        cov = splitted[1]
+        print("sample:", sample)
+        print("cov", cov)
+        
+        #set correct dictionary in case of differing coverages
+        if cov == "100x": 
+            predicted_fractions_final = predicted_fractions_100x
+        elif cov == "1000x":
+            predicted_fractions_final = predicted_fractions_1000x
+        
         #read table
-        results = pl.read_csv(file)
+        results = pd.read_csv(file)
 
-        #first row
-        best_results = results[0]
-        list_of_first_row = best_results.rows(named=True)[0]
+        ##find the records that have the same density
+        best_odds = [1, 1.0, 1.00]
+        best_results = results[results['odds'].isin(best_odds)]
+        print("---best_results---")
+        print(best_results)
 
         #remove density and odds columns
-        list_of_first_row.pop('density', None)
-        list_of_first_row.pop('odds', None)
-        print("list_of_first_row", list_of_first_row)
+        best_results = best_results.drop(columns=['density', 'odds'])
 
-        for k,v in list_of_first_row.items():
-            if k in predicted_fractions:
-                fracs_for_key = predicted_fractions[k]
-                fracs_for_key.append(v)
-                predicted_fractions[k] = fracs_for_key
-            else:
-                predicted_fractions[k] = [v]
+        #names of haplotypes in the results
+        haplotypes = best_results.columns.tolist()
+        print("haplotypes", haplotypes)
 
-        #*some lineages are not present in orthanq predictions
-        #append 0.0 as many as the number of fractions in simulated sample
-        sample_lineages = lineages_simulations[sample_name[0]]
-        
-        for lin in sample_lineages:
-            lineages_in_results = list_of_first_row.keys()
-            print("lin:", lin)
-            print("lineages_in_results:",lineages_in_results)
-            if not lin in lineages_in_results:
-                if lin in predicted_fractions:
-                    fracs_for_lin = predicted_fractions[lin]
-                    fracs_for_lin.append(0.0)
-                    predicted_fractions[lin] = fracs_for_lin
+        #find true haplotype fractions for this sample
+        simulated_fractions = sample_composition[sample]
+        print("simulated_fractions: ",simulated_fractions)
+
+        rmse_values = {}
+        for (i,row) in best_results.iterrows():
+
+            fractions_real = []
+            fractions_predicted = []
+
+            #loop over each lineage,fraction in the simulation and check if the prediction contains the lineage, if yes, take the RMSE
+            #if not, record it as 0.0 in the prediction.
+            for (l,f) in simulated_fractions.items():
+                fractions_real.append(simulated_fractions[l])
+                if l in haplotypes:
+                    fractions_predicted.append(row[l])
                 else:
-                    predicted_fractions[lin] = [0.0]
+                    fractions_predicted.append(row[0.0])
+            
+            print("fractions_real: ", fractions_real)
+            print("fractions_predicted: ", fractions_predicted)
+            
+            #calculate rmse of this solution
+            rmse = np.sqrt(np.mean((np.array(fractions_real) - np.array(fractions_predicted)) ** 2))
+            rmse_values[rmse] = [fractions_real, fractions_predicted]
 
-    print("predicted_fractions",predicted_fractions)
+        print("rmse values:", rmse_values)
+        #find the smallest key
+        smallest_key = min(rmse_values.keys())        
+        print("smallest_key", smallest_key)
 
-    #now sort both dictionaries
-    ordered_simulated_fractions_dup = dict(sorted(simulated_fractions_dup.items()))
-    ordered_predicted_fractions = dict(sorted(predicted_fractions.items()))
+        #extend the final prediction list by the values belonging to this rmse value, first index belongs to prediction
+        predicted_fractions_final.extend(rmse_values[smallest_key][1])
 
-    print("ordered_simulated_fractions_dup", ordered_simulated_fractions_dup)  
-    print("ordered_predicted_fractions",ordered_predicted_fractions)
+    print("predicted_fractions_100x",predicted_fractions_100x)
+    print("predicted_fractions_1000x",predicted_fractions_1000x)
 
-    #*some predicted lineages are present in simulated fractions
-    #remove them (ask johannes)
-    ordered_predicted_fractions_copy = ordered_predicted_fractions.copy() #an explicit copy
-    for k_o, v_o in ordered_predicted_fractions.items():
-        if k_o not in ordered_simulated_fractions_dup:
-            ordered_predicted_fractions_copy.pop(k_o, None)
-    print("ordered_predicted_fractions_copy:", ordered_predicted_fractions_copy)
+    # real_lineages = fractions_per_lineage.keys()
+    sorted_output = sorted(snakemake.output.plot, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
+    plot_100x = sorted_output[0]
+    plot_1000x = sorted_output[1]
 
-    #convert to dataframe
-    data = {"predicted_fractions": flatten(ordered_predicted_fractions_copy.values()), "simulated_fractions": flatten(ordered_simulated_fractions_dup.values())}
-    print(data)
-    df = pl.DataFrame(data)
-    print(df)
+    for cov in ["100x", "1000x"]:
+        print("cov: ", cov)
+        if cov == "100x":
+            predicted_fractions = predicted_fractions_100x
+        elif cov == "1000x":
+            predicted_fractions = predicted_fractions_1000x
 
-    #throw all fractions
-    
-    # scatter plot
-    scatterplot = alt.Chart(df).mark_point().transform_calculate(jitter="random()").encode(
-        x='simulated_fractions:Q',
-        y='predicted_fractions:Q',
-        # xOffset='jitter:Q',
-        color=alt.value("black"),
-    )
+        #find x and y values for the plots
+        x_values = [value for sample in sample_composition.values() for value in sample.values()]
+        y_values = predicted_fractions
+        print("x_values: ", x_values)
+        print("y_values", y_values)
+        
+        data = pd.DataFrame({
+            'Actual': x_values,
+            'Predicted': y_values,
+        })
+        print(data)
 
-    #add a diagonal line
-    line = pd.DataFrame({
-    'simulated_fractions': [0.0, 1.0],
-    'predicted_fractions':  [0.0, 1.0],
-    })
+        # scatter plot
+        scatterplot = alt.Chart(data).mark_point().transform_calculate(jitter="random()").encode(
+            x='Actual:Q',
+            y='Predicted:Q',
+            # xOffset='jitter:Q',
+            color=alt.value("black"),
+        )
 
-    line_plot = alt.Chart(line).mark_line(color='red').encode(
-    x= 'simulated_fractions',
-    y= 'predicted_fractions',
-    )
+        # add a diagonal line
+        line = pd.DataFrame({
+        'Actual': [0.0, 1.0],
+        'Predicted':  [0.0, 1.0],
+        })
 
-    plot = scatterplot + line_plot
+        line_plot = alt.Chart(line).mark_line(color='red').encode(
+        x= 'Actual',
+        y= 'Predicted',
+        )
 
-    #export 
-    plot.save(snakemake.output.plot)
+        plot = scatterplot + line_plot    
 
-    #calculate spearman correlation
-    spearman=scipy.stats.spearmanr(flatten(ordered_predicted_fractions_copy.values()), flatten(ordered_simulated_fractions_dup.values()))   # Spearman's rho
-    print(spearman)
-    
-    # df.write_csv(snakemake.output.foo)
+        #export 
+        if cov == "100x":
+            plot.save(plot_100x)
+        elif cov == "1000x":
+            plot.save(plot_1000x)
+
+        #calculate spearman correlation
+        spearman=scipy.stats.spearmanr(x_values, y_values)   # Spearman's rho
+        print("spearman",spearman)
+        
+        # # df.write_csv(snakemake.output.foo)

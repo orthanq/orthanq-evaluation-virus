@@ -20,7 +20,7 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             "results/project_metadata/sra_collection_dates.tsv",
             aggregate_input_get_fractions,
             get_results,
-            # "results/evaluation/scatter_plot.svg",
+            expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
             # "results/evaluation/validation.tsv",
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:

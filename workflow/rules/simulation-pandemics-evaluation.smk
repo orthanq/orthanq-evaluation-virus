@@ -1,12 +1,12 @@
+coverage=["100x", "1000x"]
 rule scatter_plot:
     input:
-        orthanq_prediction=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"]),
+        orthanq_prediction=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
-        plot="results/evaluation/scatter_plot.svg",
+        plot=expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
     log:
         "logs/scatter_plot/scatter_plot.log"
-    params: coverage_number=2 #this needs to be updated in case we have more or less than 10x and 100x.
     conda:
         "../envs/altair.yaml"
     benchmark:
