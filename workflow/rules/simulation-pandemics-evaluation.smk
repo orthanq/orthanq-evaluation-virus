@@ -37,15 +37,14 @@ rule abundant_lineage_validation:
     input:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
         # clade_to_lineage="results/clade_to_lineage/clade_to_lineages.tsv",
-        orthanq=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"]),
+        orthanq=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
         # pangolin=expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
         # nextclade=expand("results/nextstrain/results/SimulatedSample{num}/nextclade.tsv", num=num_list),
         # kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}/abundance.tsv", num=num_list),
     output:
-        validation="results/evaluation/validation.tsv"
+        validation=expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage)
     log:
         "logs/evaluation/validation.log"
-    params: coverage_number=2 #this needs to be updated in case we have more or less than 10x and 100x.
     conda:
         "../envs/altair.yaml"
     benchmark:
