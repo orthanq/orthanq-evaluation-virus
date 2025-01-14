@@ -36,11 +36,11 @@ rule prepare_clade_to_pangolin:
 rule abundant_lineage_validation:
     input:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
-        # clade_to_lineage="results/clade_to_lineage/clade_to_lineages.tsv",
+        clade_to_lineage="results/clade_to_lineage/clade_to_lineages.tsv",
         orthanq=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
-        # pangolin=expand("results/pangolin/SimulatedSample{num}_{date}.csv", num=num_list, date=DATE),
-        # nextclade=expand("results/nextstrain/results/SimulatedSample{num}/nextclade.tsv", num=num_list),
-        # kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}/abundance.tsv", num=num_list),
+        pangolin=expand("results/pangolin/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
+        nextclade=expand("results/nextstrain/results/SimulatedSample{num}-{coverage}/nextclade.tsv", num=num_list, coverage=coverage),
+        kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}/abundance.tsv", num=num_list, coverage=coverage),
     output:
         validation=expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage)
     log:
