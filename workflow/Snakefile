@@ -52,8 +52,11 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
     include: "rules/kallisto.smk"
     include: "rules/nextclade.smk"
     include: "rules/vega.smk"
+    include: "rules/wastewater_evaluation.smk"
     
     rule all:
         input:
             aggregate_input_get_fractions,
             get_results,
+            "results/evaluation/wastewater_validation_B117.svg",
+            "results/evaluation/wastewater_validation_B1526.svg"
