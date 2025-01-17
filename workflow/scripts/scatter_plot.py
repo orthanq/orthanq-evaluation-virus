@@ -71,9 +71,9 @@ with open(snakemake.log[0], "w") as f:
         #remove density and odds columns
         best_results = best_results.drop(columns=['density', 'odds'])
 
-        #names of haplotypes in the results
-        haplotypes = best_results.columns.tolist()
-        print("haplotypes", haplotypes)
+        #names of predicted haplotypes in the results
+        predicted_haplotypes = best_results.columns.tolist()
+        print("predicted_haplotypes", predicted_haplotypes)
 
         #find true haplotype fractions for this sample
         simulated_fractions = sample_composition[sample]
@@ -89,10 +89,10 @@ with open(snakemake.log[0], "w") as f:
             #if not, record it as 0.0 in the prediction.
             for (l,f) in simulated_fractions.items():
                 fractions_real.append(simulated_fractions[l])
-                if l in haplotypes:
+                if l in predicted_haplotypes:
                     fractions_predicted.append(row[l])
                 else:
-                    fractions_predicted.append(row[0.0])
+                    fractions_predicted.append(0.0)
             
             print("fractions_real: ", fractions_real)
             print("fractions_predicted: ", fractions_predicted)
