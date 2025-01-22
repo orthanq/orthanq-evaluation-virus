@@ -35,7 +35,7 @@
 
 module uncovar_pipeline:
     snakefile:
-        github("IKIM-Essen/uncovar", path="workflow/Snakefile", commit="f476ab1befbef177ae1290c0b6796283549a6df4")
+        github("IKIM-Essen/uncovar", path="workflow/Snakefile", commit="b16b3e3067e2d188227f80f1a637f76b5a8fdfab")
         # "/projects/koesterlab/orthanq/orthanq-evaluation-virus/uncovar/workflow/Snakefile"
     config: 
         config
@@ -43,14 +43,15 @@ module uncovar_pipeline:
 
 use rule * from uncovar_pipeline as uncovar_*
 
-if config["simulate_pandemics"] or config["simulate_given"]:
-    rule ensure_uncovar_output:
-        input:
-            f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
-else:
-    rule ensure_uncovar_output:
-        input:
-            f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
+# if config["simulate_pandemics"] or config["simulate_given"]:
+#     rule ensure_uncovar_output:
+#         input:
+#             f"results/{DATE}/polishing/bcftools-illumina/{{sample}}-{{coverage}}.fasta"
+# else:
+#     rule ensure_uncovar_output:
+#         input:
+#             f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta"
+
 ##for simulation cases
 rule pangolin:
     input:

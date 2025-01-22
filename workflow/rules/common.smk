@@ -119,29 +119,6 @@ def get_trimmed_fastq_input(wildcards):
     files = ["results/trimmed/{sample}.1.fastq", "results/trimmed/{sample}.2.fastq"]
     return files
 
-#input function for create_sample_sheet_unicovar
-def get_fastq_input_unicovar():
-    if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
-        fqs1 = expand("results/mixed/SimulatedSample{num}-{coverage}_1.fastq", num=num_list, coverage=["100x","1000x"])
-        fqs2 = expand("results/mixed/SimulatedSample{num}-{coverage}_2.fastq", num=num_list, coverage=["100x", "1000x"])
-    elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
-        fqs1 = expand("results/mixed/{sample}-{coverage}_1.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
-        fqs2 = expand("results/mixed/{sample}-{coverage}_2.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
-    else:
-        fqs1 = expand("results/trimmed/{sample}.1.fastq.gz", sample=samples["sra"])
-        fqs2 = expand("results/trimmed/{sample}.2.fastq.gz", sample=samples["sra"])
-        
-    return [fqs1, fqs2]
-unicovar_inputs = get_fastq_input_unicovar()
-print("unicovar_inputs[0]",unicovar_inputs[0])
-print("unicovar_inputs[1]", unicovar_inputs[1])
-
-#just a pseudodate used in uncovar workflow, hence pangolin output
-DATE="13062024"
-UNCOVAR_SAMPLE_SHEET="uncovar/config/pep/samples.csv"
-UNCOVAR_CONFIG="uncovar/config/config.yaml"
-UNCOVAR_PEP_CONFIG="uncovar/config/pep/config.yaml"
-
 def get_results(wildcards):
     final_output=[]
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
@@ -164,3 +141,26 @@ def get_results(wildcards):
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
     return final_output
+
+# #input function for create_sample_sheet_unicovar
+# def get_fastq_input_unicovar():
+#     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
+#         fqs1 = expand("results/mixed/SimulatedSample{num}-{coverage}.1.fastq", num=num_list, coverage=["100x","1000x"])
+#         fqs2 = expand("results/mixed/SimulatedSample{num}-{coverage}.2.fastq", num=num_list, coverage=["100x", "1000x"])
+#     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
+#         fqs1 = expand("results/mixed/{sample}-{coverage}.1.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+#         fqs2 = expand("results/mixed/{sample}-{coverage}.2.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+#     else:
+#         fqs1 = expand("results/trimmed/{sample}.1.fastq.gz", sample=samples["sra"])
+#         fqs2 = expand("results/trimmed/{sample}.2.fastq.gz", sample=samples["sra"])
+        
+#     return [fqs1, fqs2]
+# unicovar_inputs = get_fastq_input_unicovar()
+# print("unicovar_inputs[0]",unicovar_inputs[0])
+# print("unicovar_inputs[1]", unicovar_inputs[1])
+
+# #just a pseudodate used in uncovar workflow, hence pangolin output
+DATE="13062024"
+# UNCOVAR_SAMPLE_SHEET="uncovar/config/pep/samples.csv"
+# UNCOVAR_CONFIG="uncovar/config/config.yaml"
+# UNCOVAR_PEP_CONFIG="uncovar/config/pep/config.yaml"

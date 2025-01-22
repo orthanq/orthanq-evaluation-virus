@@ -1,27 +1,30 @@
 configfile: "config/config.yaml"
 
 if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
+    # ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess > uncovar_fastp_pe > uncovar_gzip
     ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
-
+    
     include: "rules/ref.smk"
     include: "rules/common.smk"
+    include: "rules/get_metadata.smk"
     include: "rules/simulation.smk"
-    include: "rules/simulation-pandemics-evaluation.smk"
     include: "rules/orthanq.smk"
     include: "rules/pangolin.smk"
     include: "rules/kallisto.smk"
     include: "rules/nextclade.smk"
     include: "rules/vega.smk"
-    include: "rules/get_metadata.smk"
+    include: "rules/simulation-pandemics-evaluation.smk"
 
     rule all:
         input:
             expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             "results/project_metadata/sra_collection_dates.tsv",
             aggregate_input_get_fractions,
+            # expand("results/mixed/SimulatedSample{num}-{coverage}_1.fastq",num=num_list, coverage=coverage),
             get_results,
             expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
-            expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage)
+            expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage),
+            # expand("results/pangolin/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage)
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
     ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
