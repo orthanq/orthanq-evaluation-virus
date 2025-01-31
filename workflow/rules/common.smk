@@ -116,7 +116,7 @@ def get_fastq_input(wildcards):
 #get trimmed fastq input
 def get_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
-    files = ["results/trimmed/{sample}.1.fastq", "results/trimmed/{sample}.2.fastq"]
+    files = ["results/jvarkit/{sample}.forward.fastq", "results/jvarkit/{sample}.forward.fastq"]
     return files
 
 def get_results(wildcards):
@@ -139,7 +139,8 @@ def get_results(wildcards):
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
+    # final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
+    final_output.extend(orthanq_csv + orthanq_solutions)
     return final_output
 
 # #input function for create_sample_sheet_unicovar

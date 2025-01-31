@@ -1,0 +1,6 @@
+name: jvarkit
+channels:
+   - bioconda
+   - conda-forge
+dependencies:
+   - jvarkit

@@ -51,6 +51,7 @@ rule orthanq_quantify:
         prior="uniform"
     resources: 
         mem_mb=5000
+    threads: 20
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
