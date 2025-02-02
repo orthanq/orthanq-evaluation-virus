@@ -37,18 +37,16 @@ rule bwa_index:
     input:
         "results/ref/reference_sequence.fasta"
     output:
-        idx=multiext("results/ref/reference_sequence", ".amb", ".ann", ".bwt", ".pac", ".sa")
+        idx=multiext("results/ref/reference_sequence.fasta", ".amb", ".ann", ".bwt", ".pac", ".sa")
     log:
         "logs/bwa_index.log"
-    params:
-        prefix="results/ref/reference_sequence",
     wrapper:
         "v5.5.2/bio/bwa/index" 
 
 rule align_bwa:
     input:
         ref="results/ref/reference_sequence.fasta",
-        ref_idx=multiext("results/ref/reference_sequence", ".amb", ".ann", ".bwt", ".pac", ".sa"),
+        idx=rules.bwa_index.output,
         f1="results/trimmomatic/{sample}_1.fastq",
         f2="results/trimmomatic/{sample}_2.fastq",
     output:
@@ -56,10 +54,11 @@ rule align_bwa:
     log:
         "logs/prep_bwa/{sample}.log",
     threads: 20
+    params: idx=lambda w, input: os.path.splitext(input.idx[0])[0]
     conda:
         "../envs/bwa.yaml"
     shell:
-        "bwa mem -L 100 -t {threads} {input.ref} {input.f1} {input.f2} "
+        "bwa mem -L 100 -t {threads} {params.idx} {input.f1} {input.f2} "
         " | samtools view -bh | samtools sort > {output} 2> {log}"
     
 rule ivar:
