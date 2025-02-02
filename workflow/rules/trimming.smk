@@ -66,14 +66,14 @@ rule ivar:
         bam="results/trimmomatic/{sample}.bam",
         primers="resources/primer.bedpe"
     output:
-        dir=directory("results/ivar/{sample}"),
-        file="results/ivar/{sample}.bam"
+        bam="results/ivar/{sample}.bam"
     log:
         "logs/ivar/{sample}.log"
+    params: bam_fname=lambda w, output: os.path.splitext(output.bam)[0]
     conda:
         "../envs/ivar.yaml"
     shell:
-        "ivar trim -i {input.bam} -b {input.primers} -p {output.dir} -e > {log} 2>&1"
+        "ivar trim -i {input.bam} -b {input.primers} -p {params.bam_fname} -e > {log} 2>&1"
 
 rule jvarkit:
     input:
