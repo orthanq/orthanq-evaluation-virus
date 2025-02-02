@@ -116,7 +116,7 @@ def get_fastq_input(wildcards):
 #get trimmed fastq input
 def get_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
-    files = ["results/jvarkit/{sample}.forward.fastq", "results/jvarkit/{sample}.forward.fastq"]
+    files = ["results/jvarkit/{sample}.forward.fastq", "results/jvarkit/{sample}.reverse.fastq"]
     return files
 
 def get_results(wildcards):
