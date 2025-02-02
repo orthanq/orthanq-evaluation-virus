@@ -85,7 +85,7 @@ rule jvarkit:
     conda:
         "../envs/jvarkit.yaml"
     shell:
-        "jvarkit biostar84452 --samoutputformat BAM <(samtools sort {input} > {output} 2> {log}"
+        "jvarkit biostar84452 --samoutputformat BAM <(samtools sort {input}) > {output} 2> {log}"
 
 rule extract_fastqs:
     input:
