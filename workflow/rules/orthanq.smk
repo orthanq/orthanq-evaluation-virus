@@ -21,7 +21,9 @@ rule orthanq_preprocess:
         candidates_folder="results/orthanq/candidates",
         reads=get_trimmed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_fastq_input,
         genome="results/ref/reference_sequence.fasta"
-    output: "results/orthanq/preprocess/{sample}.bcf",
+    output: 
+        bcf="results/orthanq/preprocess/{sample}.bcf",
+        bam="results/orthanq/preprocess/{sample}_sorted.bam"
     log:
         "logs/orthanq_preprocess/{sample}.log",
     conda:
