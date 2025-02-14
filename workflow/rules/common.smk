@@ -140,7 +140,7 @@ def get_results(wildcards):
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     # final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
-    final_output.extend(orthanq_csv + orthanq_solutions)
+    final_output.extend(orthanq_csv + orthanq_solutions + kallisto)
     return final_output
 
 # #input function for create_sample_sheet_unicovar

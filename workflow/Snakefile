@@ -22,8 +22,8 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             aggregate_input_get_fractions,
             # expand("results/mixed/SimulatedSample{num}-{coverage}_1.fastq",num=num_list, coverage=coverage),
             get_results,
-            expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
-            expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage),
+            # expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
+            # expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage),
             # expand("results/pangolin/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage)
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
