@@ -1,0 +1,4 @@
+1-) wget http://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/genes/ncbiGenes.gtf.gz
+2-) gunzip ncbiGenes.gtf.gz
+3-) sed 's/NC_045512v2/NC_045512.2/g' ncbiGenes.gtf  > ncbiGenes_converted.gtf
+4-) awk 'BEGIN{OFS="\t"} !/^#/ {print $1, $4-1, $5, $9}' ncbiGenes_converted.gtf > genes.bed

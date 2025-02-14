@@ -15,9 +15,23 @@ rule orthanq_candidates_generic:
     shell:
         "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus generic --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
+##intersect candidates vcf with sarscov2 proteincoding genes with bedtools intersect -a variants.vcf -b genes.bed -wa > intersected.vcf
+rule intersect:
+    input:
+        vcf="results/orthanq/candidates/candidates.vcf",
+        bed="resources/genes.bed"
+    output:
+        "results/orthanq/candidates/candidates_intersected.vcf"
+    log:
+        "logs/bedtools_intersect.log"
+    conda:
+        "../envs/bedtools.yaml"
+    shell:
+        "bedtools intersect -a {input.vcf} -b {input.bed} -wa -u -header > {output} 2> {log}"
+
 rule orthanq_preprocess:
     input:
-        candidates="results/orthanq/candidates/candidates.vcf", #just to make sure the file is generated
+        candidates="results/orthanq/candidates/candidates_intersected.vcf", #just to make sure the file is generated
         candidates_folder="results/orthanq/candidates",
         reads=get_trimmed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_fastq_input,
         genome="results/ref/reference_sequence.fasta"
@@ -36,8 +50,7 @@ rule orthanq_preprocess:
 #wrappers should be used once they are ready
 rule orthanq_quantify:
     input:
-        candidates="results/orthanq/candidates/candidates.vcf", #just to make sure the file is generated
-        candidates_folder="results/orthanq/candidates",
+        haplotype_variants="results/orthanq/candidates/candidates_intersected.vcf", #just to make sure the file is generated
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
         tsv="results/orthanq/calls/{sample}/{sample}.csv",
