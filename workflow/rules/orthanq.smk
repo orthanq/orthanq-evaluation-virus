@@ -17,8 +17,7 @@ rule orthanq_candidates_generic:
 
 rule orthanq_preprocess:
     input:
-        candidates="results/orthanq/candidates/candidates.vcf", #just to make sure the file is generated
-        candidates_folder="results/orthanq/candidates",
+        candidates="results/orthanq/candidates/candidates.vcf", 
         reads=get_trimmed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_fastq_input,
         genome="results/ref/reference_sequence.fasta"
     output: 
@@ -36,8 +35,7 @@ rule orthanq_preprocess:
 #wrappers should be used once they are ready
 rule orthanq_quantify:
     input:
-        candidates="results/orthanq/candidates/candidates.vcf", #just to make sure the file is generated
-        candidates_folder="results/orthanq/candidates",
+        haplotype_variants="results/orthanq/candidates/candidates.vcf", 
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
         tsv="results/orthanq/calls/{sample}/{sample}.csv",
