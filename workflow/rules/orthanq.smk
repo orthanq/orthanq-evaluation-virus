@@ -13,7 +13,7 @@ rule orthanq_candidates_generic:
     benchmark:    
         "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus generic --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 rule orthanq_preprocess:
     input:
