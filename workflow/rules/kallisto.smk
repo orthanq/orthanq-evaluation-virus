@@ -22,7 +22,7 @@ rule kallisto_quant:
     output:
         dir=directory("results/kallisto/quant_results_{sample}"),
         tsv="results/kallisto/quant_results_{sample}/abundance.tsv",
-        bam="results/kallisto/quant_results_{sample}/pseudoalignments.bam"
+        # bam="results/kallisto/quant_results_{sample}/pseudoalignments.bam"
     params:
         extra="",
     log:
@@ -33,4 +33,4 @@ rule kallisto_quant:
     benchmark:    
         "benchmarks/kallisto_quant/{sample}.tsv" 
     shell:
-        "kallisto quant -i {input.index} {input.fastq} -t {threads} --pseudobam -o {output.dir}"
+        "kallisto quant -i {input.index} {input.fastq} -t {threads} -o {output.dir}"
