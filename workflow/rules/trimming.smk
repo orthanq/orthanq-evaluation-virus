@@ -1,37 +1,18 @@
-# rule cutadapt:
-#     input:
-#         get_fastq_input,
-#     output:
-#         fastq1="results/trimmed/{sample}.1.fastq",
-#         fastq2="results/trimmed/{sample}.2.fastq",
-#         qc="results/trimmed/{sample}.qc.txt",
-#     params:
-#         #adapters obtained from: https://github.com/baymlab/wastewater_analysis/blob/9c82d9a63ca5718d1dcc7e73cc0e8931e161338a/auxiliary_data/adapters.fa#L3
-#         adapters="-g AGATGTGTATAAGAGACAG -a CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT" #the reverse complement adapter (ADAPTER1_rc) is found in 5' ends in both pairs and the regular one (ADAPTER1) is in the 3`
-#         # extra="-q 30,30",
-#     log:
-#         "logs/cutadapt/{sample}.log",
-#     threads: 4  # set desired number of threads here
-#     wrapper:
-#         "v3.13.8/bio/cutadapt/pe"
-
-rule trimmomatic:
+rule cutadapt:
     input:
-        fastqs=get_fastq_input,
-        adapters="resources/adapters.fa"
+        get_fastq_input,
     output:
-        f1="results/trimmomatic/{sample}_1.fastq",
-        f1_s="results/trimmomatic/{sample}_s1.fastq",
-        f2="results/trimmomatic/{sample}_2.fastq",
-        f2_s="results/trimmomatic/{sample}_2_s2.fastq",
+        fastq1="results/trimmed/{sample}.1.fastq",
+        fastq2="results/trimmed/{sample}.2.fastq",
+        qc="results/trimmed/{sample}.qc.txt",
+    params:
+        adapters="-g AGATGTGTATAAGAGACAG -a CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT" #the reverse complement adapter (ADAPTER1_rc) is found in 5' ends in both pairs and the regular one (ADAPTER1) is in the 3`
+        # extra="-q 30,30",
     log:
-        "logs/trimmomatic/{sample}.log",
-    threads: 20
-    conda:
-        "../envs/trimmomatic.yaml"
-    shell:
-        "trimmomatic PE -threads {threads} {input.fastqs} {output.f1} {output.f1_s} {output.f2} {output.f2_s} ILLUMINACLIP:{input.adapters}:2:30:10:2:keepBothReads " 
-        "SLIDINGWINDOW:4:15 MINLEN:36 LEADING:3 TRAILING:3 > {log} 2>&1"
+        "logs/cutadapt/{sample}.log",
+    threads: 10
+    wrapper:
+        "v3.13.8/bio/cutadapt/pe"
 
 rule bwa_index:
     input:
@@ -47,10 +28,10 @@ rule align_bwa:
     input:
         ref="results/ref/reference_sequence.fasta",
         idx=rules.bwa_index.output,
-        f1="results/trimmomatic/{sample}_1.fastq",
-        f2="results/trimmomatic/{sample}_2.fastq",
+        f1="results/trimmed/{sample}.1.fastq",
+        f2="results/trimmed/{sample}.2.fastq",
     output:
-        "results/trimmomatic/{sample}.bam"
+        "results/bwa_aligned/{sample}.bam"
     log:
         "logs/prep_bwa/{sample}.log",
     threads: 20
@@ -58,42 +39,29 @@ rule align_bwa:
     conda:
         "../envs/bwa.yaml"
     shell:
-        "bwa mem -L 100 -t {threads} {params.idx} {input.f1} {input.f2} "
+        "bwa mem -t {threads} {params.idx} {input.f1} {input.f2} "
         " | samtools view -bh | samtools sort > {output} 2> {log}"
-    
-rule ivar:
-    input:
-        bam="results/trimmomatic/{sample}.bam",
-        primers="resources/primer.bedpe"
-    output:
-        bam="results/ivar/{sample}.bam"
-    log:
-        "logs/ivar/{sample}.log"
-    params: bam_fname=lambda w, output: os.path.splitext(output.bam)[0]
-    conda:
-        "../envs/ivar.yaml"
-    shell:
-        "ivar trim -i {input.bam} -b {input.primers} -p {params.bam_fname} -e > {log} 2>&1"
 
-rule jvarkit:
+rule ampliconclip:
     input:
-        "results/ivar/{sample}.bam"
+        bam="results/bwa_aligned/{sample}.bam",
+        primers=get_primers
     output:
-        "results/jvarkit/{sample}.bam"
+        bam="results/clipped/{sample}.trimmed.bam"
     log:
-        "logs/jvarkit/{sample}.log"
+        "logs/ampliconclip/{sample}.log"
     conda:
-        "../envs/jvarkit.yaml"
+        "../envs/samtools.yaml"
     shell:
-        "jvarkit biostar84452 --samoutputformat BAM <(samtools sort {input}) > {output} 2> {log}"
-
+        "samtools ampliconclip -b {input.primers} {input.bam} -o {output.bam} 2> {log}"
+ 
 rule extract_fastqs:
     input:
-        "results/jvarkit/{sample}.bam" 
+        "results/clipped/{sample}.trimmed.bam" 
     output:
-        f1="results/jvarkit/{sample}.forward.fastq",
-        f2="results/jvarkit/{sample}.reverse.fastq",
-        singles="results/jvarkit/{sample}.singles.fastq"
+        f1="results/extracted_reads/{sample}.forward.fastq",
+        f2="results/extracted_reads/{sample}.reverse.fastq",
+        singles="results/extracted_reads/{sample}.singles.fastq"
     log:
         "logs/extract_fastqs/{sample}.log"
     conda:

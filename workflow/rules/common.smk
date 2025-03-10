@@ -9,6 +9,9 @@ num_samples = config["number_of_samples"]
 
 num_list = [num+1 for num in range(num_samples)]
 
+# #just a pseudodate used in uncovar workflow, hence pangolin output
+DATE="13062024"
+
 #modify sample tables to calculate required number of reads per lineage
 def generate_numreads(lineages, n_reads):
     lineages['num_reads'] = lineages['fraction']*n_reads 
@@ -104,6 +107,10 @@ samples = (
     )
 )
 
+def get_primers(wildcards):
+    primer_version = samples[samples['sra'] == wildcards.sample]['primer'].values[0]
+    return f"resources/primer_{primer_version}.bed"
+
 # input function to retrieve fastq samples
 def get_fastq_input(wildcards):
     sample = wildcards.sample
@@ -116,7 +123,7 @@ def get_fastq_input(wildcards):
 #get trimmed fastq input
 def get_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
-    files = ["results/jvarkit/{sample}.forward.fastq", "results/jvarkit/{sample}.reverse.fastq"]
+    files = ["results/extracted_reads/{sample}.forward.fastq", "results/extracted_reads/{sample}.reverse.fastq"]
     return files
 
 def get_results(wildcards):
@@ -140,7 +147,7 @@ def get_results(wildcards):
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     # final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
-    final_output.extend(orthanq_csv + orthanq_solutions + kallisto)
+    final_output.extend(orthanq_csv + orthanq_solutions)
     return final_output
 
 # #input function for create_sample_sheet_unicovar
@@ -160,8 +167,6 @@ def get_results(wildcards):
 # print("unicovar_inputs[0]",unicovar_inputs[0])
 # print("unicovar_inputs[1]", unicovar_inputs[1])
 
-# #just a pseudodate used in uncovar workflow, hence pangolin output
-DATE="13062024"
 # UNCOVAR_SAMPLE_SHEET="uncovar/config/pep/samples.csv"
 # UNCOVAR_CONFIG="uncovar/config/config.yaml"
 # UNCOVAR_PEP_CONFIG="uncovar/config/pep/config.yaml"
