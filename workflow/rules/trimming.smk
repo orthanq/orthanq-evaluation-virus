@@ -1,6 +1,20 @@
+rule fastqc:
+    input:
+        lambda wildcards: get_raw_fastq_input(wildcards)[0],  # Extracts the first (zeroth index) input file
+    output:
+        html="results/qc/fastqc/{sample}.html",
+        zip="results/qc/fastqc/{sample}_fastqc.zip",
+    log:
+        "logs/fastqc/{sample}.log",
+    resources:
+        mem_mb=1024,
+    wrapper:
+        "v5.5.2/bio/fastqc"
+#might need to change the adapters
+#run pangolin and kallisto too
 rule cutadapt:
     input:
-        get_fastq_input,
+        get_raw_fastq_input,
     output:
         fastq1="results/trimmed/{sample}.1.fastq",
         fastq2="results/trimmed/{sample}.2.fastq",
@@ -13,6 +27,20 @@ rule cutadapt:
     threads: 10
     wrapper:
         "v3.13.8/bio/cutadapt/pe"
+
+rule fastp_pe_wo_trimming:
+    input:
+        sample=get_raw_fastq_input
+    output:
+        html="results/report/pe_wo_trimming/{sample}.html",
+        json="results/report/pe_wo_trimming/{sample}.json"
+    log:
+        "logs/fastp/pe_wo_trimming/{sample}.log"
+    params:
+        extra=""
+    threads: 10
+    wrapper:
+        "v5.9.0/bio/fastp"
 
 rule bwa_index:
     input:

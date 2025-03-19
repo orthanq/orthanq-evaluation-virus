@@ -112,7 +112,7 @@ def get_primers(wildcards):
     return f"resources/primer_{primer_version}.bed"
 
 # input function to retrieve fastq samples
-def get_fastq_input(wildcards):
+def get_raw_fastq_input(wildcards):
     sample = wildcards.sample
     if config["simulate_pandemics"] or config["simulate_given"]:
         files = ["results/mixed/{sample}_1.fastq", "results/mixed/{sample}_2.fastq"]
@@ -121,10 +121,23 @@ def get_fastq_input(wildcards):
     return files
 
 #get trimmed fastq input
-def get_trimmed_fastq_input(wildcards):
+def get_primer_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
     files = ["results/extracted_reads/{sample}.forward.fastq", "results/extracted_reads/{sample}.reverse.fastq"]
     return files
+
+#get adapter trimmed fastq input
+def get_adapter_trimmed_fastq_input(wildcards):
+    sample = wildcards.sample
+    files = ["results/trimmed/{sample}.1.fastq", "results/trimmed/{sample}.2.fastq"]
+    return files
+
+#do primer trimming if primer column exists, if not, just do adapter trimming
+def get_processed_fastq_input(wildcards):
+    if 'primer' in samples.columns:
+        return get_primer_trimmed_fastq_input
+    return get_raw_fastq_input
+
 
 def get_results(wildcards):
     final_output=[]
@@ -147,7 +160,7 @@ def get_results(wildcards):
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     # final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
-    final_output.extend(orthanq_csv + orthanq_solutions)
+    final_output.extend(orthanq_csv + orthanq_solutions + kallisto + pangolin + nextclade)
     return final_output
 
 # #input function for create_sample_sheet_unicovar

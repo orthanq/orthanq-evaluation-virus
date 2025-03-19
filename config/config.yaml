@@ -16,7 +16,7 @@ n_reads_1000x: 200000 #for 1000x
 lineages_and_fractions: config/lineages.tsv
 
 # if both simulation options are False, then sample sheet will be used.
-samples: config/samples_PRJNA809680.tsv
+samples: config/samples_PRJNA804575.tsv
 
 #NCBI accession ID for the reference genome sequence
 #for hiv NC_001802.1

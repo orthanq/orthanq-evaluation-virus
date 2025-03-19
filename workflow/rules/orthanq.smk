@@ -18,7 +18,7 @@ rule orthanq_candidates_generic:
 rule orthanq_preprocess:
     input:
         candidates="results/orthanq/candidates/candidates.vcf", 
-        reads=get_trimmed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_fastq_input,
+        reads=get_processed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_raw_fastq_input,
         genome="results/ref/reference_sequence.fasta"
     output: 
         bcf="results/orthanq/preprocess/{sample}.bcf",
@@ -30,7 +30,7 @@ rule orthanq_preprocess:
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
