@@ -129,14 +129,14 @@ def get_primer_trimmed_fastq_input(wildcards):
 #get adapter trimmed fastq input
 def get_adapter_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
-    files = ["results/trimmed/{sample}.1.fastq", "results/trimmed/{sample}.2.fastq"]
+    files = ["results/fastp-trimmed/pe/{sample}.1.fastq", "results/fastp-trimmed/pe/{sample}.2.fastq"]
     return files
 
 #do primer trimming if primer column exists, if not, just do adapter trimming
 def get_processed_fastq_input(wildcards):
     if 'primer' in samples.columns:
         return get_primer_trimmed_fastq_input
-    return get_raw_fastq_input
+    return get_adapter_trimmed_fastq_input
 
 
 def get_results(wildcards):

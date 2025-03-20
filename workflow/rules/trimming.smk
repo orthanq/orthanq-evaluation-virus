@@ -10,23 +10,24 @@ rule fastqc:
         mem_mb=1024,
     wrapper:
         "v5.5.2/bio/fastqc"
-#might need to change the adapters
-#run pangolin and kallisto too
-rule cutadapt:
-    input:
-        get_raw_fastq_input,
-    output:
-        fastq1="results/trimmed/{sample}.1.fastq",
-        fastq2="results/trimmed/{sample}.2.fastq",
-        qc="results/trimmed/{sample}.qc.txt",
-    params:
-        adapters="-g AGATGTGTATAAGAGACAG -a CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT" #the reverse complement adapter (ADAPTER1_rc) is found in 5' ends in both pairs and the regular one (ADAPTER1) is in the 3`
-        # extra="-q 30,30",
-    log:
-        "logs/cutadapt/{sample}.log",
-    threads: 10
-    wrapper:
-        "v3.13.8/bio/cutadapt/pe"
+        
+# #might need to change the adapters
+# #run pangolin and kallisto too
+# rule cutadapt:
+#     input:
+#         get_raw_fastq_input,
+#     output:
+#         fastq1="results/trimmed/{sample}.1.fastq",
+#         fastq2="results/trimmed/{sample}.2.fastq",
+#         qc="results/trimmed/{sample}.qc.txt",
+#     params:
+#         adapters="-g AGATGTGTATAAGAGACAG -a CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT" #the reverse complement adapter (ADAPTER1_rc) is found in 5' ends in both pairs and the regular one (ADAPTER1) is in the 3`
+#         # extra="-q 30,30",
+#     log:
+#         "logs/cutadapt/{sample}.log",
+#     threads: 10
+#     wrapper:
+#         "v3.13.8/bio/cutadapt/pe"
 
 rule fastp_pe_wo_trimming:
     input:
@@ -38,6 +39,21 @@ rule fastp_pe_wo_trimming:
         "logs/fastp/pe_wo_trimming/{sample}.log"
     params:
         extra=""
+    threads: 10
+    wrapper:
+        "v5.9.0/bio/fastp"
+
+rule fastp_pe:
+    input:
+        sample=get_raw_fastq_input
+    output:
+        trimmed=["results/fastp-trimmed/pe/{sample}.1.fastq", "results/fastp-trimmed/pe/{sample}.2.fastq"],
+        json="results/fastp-trimmed/pe/{sample}.json",
+        html="results/fastp-trimmed/pe/{sample}.html",
+    log:
+        "logs/fastp/pe/{sample}.log"
+    params:
+        extra="--detect_adapter_for_pe"
     threads: 10
     wrapper:
         "v5.9.0/bio/fastp"
@@ -56,8 +72,8 @@ rule align_bwa:
     input:
         ref="results/ref/reference_sequence.fasta",
         idx=rules.bwa_index.output,
-        f1="results/trimmed/{sample}.1.fastq",
-        f2="results/trimmed/{sample}.2.fastq",
+        f1=lambda wildcards: get_raw_fastq_input(wildcards)[0],
+        f2=lambda wildcards: get_raw_fastq_input(wildcards)[1]
     output:
         "results/bwa_aligned/{sample}.bam"
     log:

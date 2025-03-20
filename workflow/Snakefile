@@ -58,12 +58,15 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
     include: "rules/nextclade.smk"
     include: "rules/vega.smk"
     include: "rules/wastewater_evaluation.smk"
-    
+    include: "rules/evaluation_real_data.smk"
+
     rule all:
         input:
             # aggregate_input_get_fractions,
             expand("results/qc/fastqc/{sample}.html", sample=samples["sra"]), 
             expand("results/report/pe_wo_trimming/{sample}.html", sample=samples["sra"]),
+            expand("results/fastp-trimmed/pe/{sample}.{ext}", sample=samples["sra"], ext={"html", "json"}),
             get_results,
+            "results/evaluation/scatter_plot_PRJNA809680.svg"
             # "results/evaluation/wastewater_validation_B117.svg",
             # "results/evaluation/wastewater_validation_B1526.svg"
