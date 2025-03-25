@@ -214,7 +214,7 @@ with open(snakemake.log[0], "w") as f:
 
     # Create the stacked bar chart with grouped bars
     chart = alt.Chart(final_table).mark_bar().encode(
-        x=alt.X('tool:N', title=None, axis=alt.Axis(labelAngle=-45)),   
+        x=alt.X('tool:N', title=None, axis=alt.Axis(labelAngle=-45),sort=['truth', 'orthanq', 'kallisto', 'pangolin', 'nextclade']),   
         # xOffset='tool:N',
         y=alt.Y('sum(fraction)', title="fraction" ,scale=alt.Scale(domain=[0.0, 1.0], clamp=True), axis=alt.Axis(grid=False)),
         column=alt.Column('sample:N', header=alt.Header(titleFontSize=24), title=None),
