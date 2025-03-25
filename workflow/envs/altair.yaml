@@ -1,5 +1,6 @@
 channels:
   - conda-forge
+  - bioconda
 dependencies:
   - altair
   - pandas
@@ -7,3 +8,5 @@ dependencies:
   - vl-convert-python
   - pyarrow
   - scipy
+  - numpy
+  - matplotlib

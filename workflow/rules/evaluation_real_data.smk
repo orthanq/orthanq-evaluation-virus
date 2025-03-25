@@ -1,12 +1,18 @@
-rule scatter_plot:
+rule plot_barchart:
     input:
-        orthanq_prediction=expand("results/orthanq/calls/{sample}/{sample}.csv",sample=samples["sra"]),
-        truth="resources/PRJNA809680_truth.csv",
+        orthanq=expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"]),
+        kallisto=expand("results/kallisto/quant_results_{sample}/abundance.tsv", sample=samples["sra"]),
+        pangolin=expand("results/pangolin/{sample}.csv", sample=samples["sra"]),
+        nextclade = expand("results/nextstrain/results/{sample}/nextclade.csv", sample=samples["sra"]),
+        truth="resources/truth_both.csv"
     output:
-        plot="results/evaluation/scatter_plot_PRJNA809680.svg"
+        plot_svg="results/plots/stacked_barchart.svg",
+        plot_html="results/plots/stacked_barchart.html",
+        table="results/tables/all_tools_predictions.csv",
     log:
-        "logs/scatter_plot/PRJNA809680/scatter_plot.log"
+        "logs/plots/plot_stacked_barchart.log"
     conda:
         "../envs/altair.yaml"
     script:
-        "../scripts/scatter_plot_real_data.py"
+        "../scripts/plot_stacked_barchart.py" 
+
