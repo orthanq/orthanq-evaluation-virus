@@ -20,9 +20,9 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
             get_results,
-            expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
-            expand("results/evaluation/scatter_plot_{coverage}.html",coverage=coverage),
-            expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage),
+            expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.svg",coverage=coverage),
+            expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.html",coverage=coverage),
+            expand("results/evaluation-pandemics/tables/abundant_lineage_validation_{coverage}.tsv",coverage=coverage),
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
     ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
@@ -61,6 +61,6 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
         input:
             aggregate_input_get_fractions,
             # get_results,
-            "results/plots/stacked_barchart.svg",
-            "results/plots/stacked_barchart.html",
-            "results/tables/all_tools_predictions.csv",
+            "results/evaluation-real-data/plots/stacked_barchart.svg",
+            "results/evaluation-real-data/plots/stacked_barchart.html",
+            "results/evaluation-real-data/tables/all_tools_predictions.csv",

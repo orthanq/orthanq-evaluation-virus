@@ -1,12 +1,10 @@
-#quantify lineages by kallisto
-
 rule kallisto_index:
     input:
         lineages=config["viral_lineages_fasta"]
     output:
         index="results/kallisto_index/viral_lineages.idx",
     params:
-        extra="",  # optional parameters
+        extra="",
     log:
         "logs/kallisto_index/kallisto_index.log",
     threads: config["kallisto_index_threads"]
@@ -22,7 +20,6 @@ rule kallisto_quant:
     output:
         dir=directory("results/kallisto/quant_results_{sample}"),
         tsv="results/kallisto/quant_results_{sample}/abundance.tsv",
-        # bam="results/kallisto/quant_results_{sample}/pseudoalignments.bam"
     params:
         extra="",
     log:

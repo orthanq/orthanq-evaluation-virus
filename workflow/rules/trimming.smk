@@ -10,24 +10,6 @@ rule fastqc:
         mem_mb=1024,
     wrapper:
         "v5.5.2/bio/fastqc"
-        
-# #might need to change the adapters
-# #run pangolin and kallisto too
-# rule cutadapt:
-#     input:
-#         get_raw_fastq_input,
-#     output:
-#         fastq1="results/trimmed/{sample}.1.fastq",
-#         fastq2="results/trimmed/{sample}.2.fastq",
-#         qc="results/trimmed/{sample}.qc.txt",
-#     params:
-#         adapters="-g AGATGTGTATAAGAGACAG -a CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT" #the reverse complement adapter (ADAPTER1_rc) is found in 5' ends in both pairs and the regular one (ADAPTER1) is in the 3`
-#         # extra="-q 30,30",
-#     log:
-#         "logs/cutadapt/{sample}.log",
-#     threads: 10
-#     wrapper:
-#         "v3.13.8/bio/cutadapt/pe"
 
 rule fastp_pe_wo_trimming:
     input:

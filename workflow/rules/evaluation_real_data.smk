@@ -6,11 +6,11 @@ rule plot_barchart:
         nextclade = expand("results/nextstrain/results/{sample}/nextclade.csv", sample=samples["sra"]),
         truth="resources/truth_both.csv"
     output:
-        plot_svg="results/plots/stacked_barchart.svg",
-        plot_html="results/plots/stacked_barchart.html",
-        table="results/tables/all_tools_predictions.csv",
+        plot_svg="results/evaluation-real-data/plots/stacked_barchart.svg",
+        plot_html="results/evaluation-real-data/plots/stacked_barchart.html",
+        table="results/evaluation-real-data/tables/all_tools_predictions.csv",
     log:
-        "logs/plots/plot_stacked_barchart.log"
+        "logs/evaluation-real-data/plot_stacked_barchart.log"
     conda:
         "../envs/altair.yaml"
     script:

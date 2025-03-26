@@ -4,11 +4,11 @@ rule scatter_plot:
         orthanq_prediction=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
-        svg=expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
-        html=expand("results/evaluation/scatter_plot_{coverage}.html",coverage=coverage),
+        svg=expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.svg",coverage=coverage),
+        html=expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.html",coverage=coverage),
 
     log:
-        "logs/scatter_plot/scatter_plot.log"
+        "logs/evaluation-pandemics/scatter_plot.log"
     conda:
         "../envs/altair.yaml"
     benchmark:
@@ -44,9 +44,9 @@ rule abundant_lineage_validation:
         nextclade=expand("results/nextstrain/results/SimulatedSample{num}-{coverage}/nextclade.tsv", num=num_list, coverage=coverage),
         kallisto=expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}/abundance.tsv", num=num_list, coverage=coverage),
     output:
-        validation=expand("results/evaluation/validation_{coverage}.tsv",coverage=coverage)
+        validation=expand("results/evaluation-pandemics/tables/abundant_lineage_validation_{coverage}.tsv",coverage=coverage)
     log:
-        "logs/evaluation/validation.log"
+        "logs/evaluation-pandemics/abundant_lineage.log"
     conda:
         "../envs/altair.yaml"
     benchmark:
