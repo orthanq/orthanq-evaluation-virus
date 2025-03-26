@@ -112,10 +112,15 @@ with open(snakemake.log[0], "w") as f:
     print("predicted_fractions_100x",predicted_fractions_100x)
     print("predicted_fractions_1000x",predicted_fractions_1000x)
 
-    # real_lineages = fractions_per_lineage.keys()
-    sorted_output = sorted(snakemake.output.plot, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
-    plot_100x = sorted_output[0]
-    plot_1000x = sorted_output[1]
+    #svg paths
+    sorted_output_svg = sorted(snakemake.output.svg, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
+    plot_100x_svg = sorted_output_svg[0]
+    plot_1000x_svg = sorted_output_svg[1]
+
+    #svg paths
+    sorted_output_html = sorted(snakemake.output.html, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.html', '')))
+    plot_100x_html = sorted_output_html[0]
+    plot_1000x_html = sorted_output_html[1]
 
     for cov in ["100x", "1000x"]:
         print("cov: ", cov)
@@ -157,11 +162,13 @@ with open(snakemake.log[0], "w") as f:
 
         plot = scatterplot + line_plot    
 
-        #export 
+        #export to svg and html
         if cov == "100x":
-            plot.save(plot_100x)
+            plot.save(plot_100x_svg)
+            plot.save(plot_100x_html)
         elif cov == "1000x":
-            plot.save(plot_1000x)
+            plot.save(plot_1000x_svg)
+            plot.save(plot_1000x_html)
 
         #calculate spearman correlation
         spearman=scipy.stats.spearmanr(x_values, y_values)   # Spearman's rho

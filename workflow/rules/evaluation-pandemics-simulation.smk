@@ -4,7 +4,9 @@ rule scatter_plot:
         orthanq_prediction=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
-        plot=expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
+        svg=expand("results/evaluation/scatter_plot_{coverage}.svg",coverage=coverage),
+        html=expand("results/evaluation/scatter_plot_{coverage}.html",coverage=coverage),
+
     log:
         "logs/scatter_plot/scatter_plot.log"
     conda:
