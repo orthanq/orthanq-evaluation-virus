@@ -147,6 +147,7 @@ with open(snakemake.log[0], "w") as f:
             y='Predicted:Q',
             # xOffset='jitter:Q',
             color=alt.value("black"),
+            tooltip=alt.Tooltip(['Actual', 'Predicted'])
         )
 
         # add a diagonal line

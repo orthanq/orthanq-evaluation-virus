@@ -136,6 +136,8 @@ def get_adapter_trimmed_fastq_input(wildcards):
 def get_processed_fastq_input(wildcards):
     if 'primer' in samples.columns:
         return get_primer_trimmed_fastq_input
+    # if "labmix" in config["samples"]:
+    #     return get_raw_fastq_input
     return get_adapter_trimmed_fastq_input
 
 
@@ -159,8 +161,8 @@ def get_results(wildcards):
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    # final_output.extend(orthanq_csv + orthanq_solutions + pangolin + kallisto + nextclade)
-    final_output.extend(orthanq_csv + orthanq_solutions + kallisto + pangolin + nextclade)
+    final_output.extend(orthanq_csv + orthanq_solutions)
+    # final_output.extend(orthanq_csv + orthanq_solutions + kallisto + pangolin + nextclade)
     return final_output
 
 # #input function for create_sample_sheet_unicovar

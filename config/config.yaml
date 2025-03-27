@@ -2,31 +2,31 @@
 ## if both are false, then it will analyze the samples in the sample sheet.
 # simulate reads to imitate pandemics. sample names start with 'SimulatedSample{num}-{coverage}' and num starting from 1 to {number_of_samples}. coverages
 simulate_pandemics: False
-number_of_samples: 5
+number_of_samples: 10
 
 # option for simulating given fractions for a sample in lineages.tsv. Sample name starts with 'SampleExample-{coverage}'
 simulate_given: False
 coverage_simulate_given: 100x
+#path for lineages to be simulated
+lineages_and_fractions: config/lineages.tsv
 
 #number of total reads in the sample, considering 150 bp reads, sarscov2 has 29900 bp
 n_reads_100x: 20000 #for 100x
 n_reads_1000x: 200000 #for 1000x
 
-#path for lineages to be simulated
-lineages_and_fractions: config/lineages.tsv
-
 # if both simulation options are False, then sample sheet will be used.
-samples: config/samples.tsv
+samples: config/samples_labmix.tsv
 
-#NCBI accession ID for the reference genome sequence
+#NCBI accession ID for the reference genome sequence (set when analyuzing different virus species)
 #for hiv NC_001802.1
-reference_accession: NC_045512 
+#for SARS-CoV-2: NC_045512 
+reference_accession: NC_001802.1 
 
-#lineages path:
-#for hiv
-# lineages: resources/lineages/hiv_5_virus_mix.fasta
+#lineages path (set when analyuzing different virus species)
+# for hiv SET !!!
+viral_lineages_fasta: resources/lineages/hiv/hiv_5_virus_mix.fasta
 #for sarscov2
-viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
+# viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
 
 ##tool configurations
 #art simulation

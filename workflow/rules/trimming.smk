@@ -35,7 +35,7 @@ rule fastp_pe:
     log:
         "logs/fastp/pe/{sample}.log"
     params:
-        extra="--detect_adapter_for_pe"
+        extra="--detect_adapter_for_pe --phred64 --qualified_quality_phred 30 --cut_by_quality3 --cut_by_quality5"
     threads: 10
     wrapper:
         "v5.9.0/bio/fastp"
