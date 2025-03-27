@@ -60,7 +60,4 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
 
     rule all:
         input:
-            # "results/evaluation-real-data/plots/stacked_barchart.svg",
-            # "results/evaluation-real-data/plots/stacked_barchart.html",
-            # "results/evaluation-real-data/tables/all_tools_predictions.csv",
-            "results/evaluation-hiv/plots/scatter_plot.svg", #add when labmix sample is executed.
+            get_results_real_data()

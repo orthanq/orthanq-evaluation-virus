@@ -1,0 +1,14 @@
+sample_name,fq1,fq2,date,is_amplicon_data,technology,include_in_high_genome_summary
+SRR18272228,results/fastp-trimmed/pe/SRR18272228.1.fastq,results/fastp-trimmed/pe/SRR18272228.2.fastq,13062024,1,illumina,1
+SRR18272229,results/fastp-trimmed/pe/SRR18272229.1.fastq,results/fastp-trimmed/pe/SRR18272229.2.fastq,13062024,1,illumina,1
+SRR18272230,results/fastp-trimmed/pe/SRR18272230.1.fastq,results/fastp-trimmed/pe/SRR18272230.2.fastq,13062024,1,illumina,1
+SRR17951438,results/fastp-trimmed/pe/SRR17951438.1.fastq,results/fastp-trimmed/pe/SRR17951438.2.fastq,13062024,1,illumina,1
+SRR17951439,results/fastp-trimmed/pe/SRR17951439.1.fastq,results/fastp-trimmed/pe/SRR17951439.2.fastq,13062024,1,illumina,1
+SRR18113107,results/extracted_reads/SRR18113107.forward.fastq,results/extracted_reads/SRR18113107.reverse.fastq,13062024,1,illumina,1
+SRR18113108,results/extracted_reads/SRR18113108.forward.fastq,results/extracted_reads/SRR18113108.reverse.fastq,13062024,1,illumina,1
+SRR18113109,results/extracted_reads/SRR18113109.forward.fastq,results/extracted_reads/SRR18113109.reverse.fastq,13062024,1,illumina,1
+SRR18113110,results/extracted_reads/SRR18113110.forward.fastq,results/extracted_reads/SRR18113110.reverse.fastq,13062024,1,illumina,1
+SRR18113111,results/extracted_reads/SRR18113111.forward.fastq,results/extracted_reads/SRR18113111.reverse.fastq,13062024,1,illumina,1
+SRR18113112,results/extracted_reads/SRR18113112.forward.fastq,results/extracted_reads/SRR18113112.reverse.fastq,13062024,1,illumina,1
+SRR18113113,results/extracted_reads/SRR18113113.forward.fastq,results/extracted_reads/SRR18113113.reverse.fastq,13062024,1,illumina,1
+SRR18113114,results/extracted_reads/SRR18113114.forward.fastq,results/extracted_reads/SRR18113114.reverse.fastq,13062024,1,illumina,1

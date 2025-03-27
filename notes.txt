@@ -16,3 +16,4 @@ https://github.com/cbg-ethz/5-virus-mix/blob/master/data/REF.fasta
 #uncovar pipeline should be cloned in the workflow directory, e.g. git clone https://github.com/IKIM-Essen/uncovar.git and branch for release v1.0.0 should be used.
 
 #in case of hiv labmix analysis, set "reference_accession", "viral_lineages_fasta" and set false for "simulate_pandemics" and "simulate_given".
+#don't forget to use the correct sample sheet for pangolin!

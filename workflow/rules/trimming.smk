@@ -35,7 +35,7 @@ rule fastp_pe:
     log:
         "logs/fastp/pe/{sample}.log"
     params:
-        extra="--detect_adapter_for_pe --phred64 --qualified_quality_phred 30 --cut_by_quality3 --cut_by_quality5"
+        extra=fastp_params()
     threads: 10
     wrapper:
         "v5.9.0/bio/fastp"
@@ -60,7 +60,7 @@ rule align_bwa:
         "results/bwa_aligned/{sample}.bam"
     log:
         "logs/prep_bwa/{sample}.log",
-    threads: 20
+    threads: 30
     params: idx=lambda w, input: os.path.splitext(input.idx[0])[0]
     conda:
         "../envs/bwa.yaml"

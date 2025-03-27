@@ -136,10 +136,13 @@ def get_adapter_trimmed_fastq_input(wildcards):
 def get_processed_fastq_input(wildcards):
     if 'primer' in samples.columns:
         return get_primer_trimmed_fastq_input
-    # if "labmix" in config["samples"]:
-    #     return get_raw_fastq_input
     return get_adapter_trimmed_fastq_input
 
+def fastp_params():
+    if "labmix" in config["samples"]:
+        return "--detect_adapter_for_pe --phred64 --qualified_quality_phred 30 --cut_by_quality3 --cut_by_quality5"
+    else:
+        return "--detect_adapter_for_pe"
 
 def get_results(wildcards):
     final_output=[]
@@ -161,10 +164,17 @@ def get_results(wildcards):
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    final_output.extend(orthanq_csv + orthanq_solutions)
-    # final_output.extend(orthanq_csv + orthanq_solutions + kallisto + pangolin + nextclade)
+    # final_output.extend(orthanq_csv + orthanq_solutions)
+    final_output.extend(orthanq_csv + orthanq_solutions + kallisto + pangolin + nextclade)
     return final_output
 
+def get_results_real_data():
+    if "labmix" in config["samples"]:
+        return "results/evaluation-hiv/plots/scatter_plot.svg"
+    else:
+        return ["results/evaluation-real-data/plots/stacked_barchart.svg",
+        "results/evaluation-real-data/plots/stacked_barchart.html",
+        "results/evaluation-real-data/tables/all_tools_predictions.csv"]
 # #input function for create_sample_sheet_unicovar
 # def get_fastq_input_unicovar():
 #     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
