@@ -123,11 +123,11 @@ with open(snakemake.log[0], "w") as f:
             # Sort by 'tpm' in descending order
             df_sorted = df.sort_values(by='tpm', ascending=False)
 
+            # Calculate total TPM of all hits (denominator for fraction calculation)
+            total_tpm = df_sorted['tpm'].sum()
+            
             # Select the top 5 rows with the highest TPM values
             top5 = df_sorted.head(5)
-
-            # Calculate the total TPM of the top 5
-            total_tpm = top5['tpm'].sum()
 
             # Compute the fraction (percentage) of each prediction in the top 5 mix
             top5['fraction'] = top5['tpm'] / total_tpm
@@ -156,6 +156,17 @@ with open(snakemake.log[0], "w") as f:
                 else:
                     top5.at[index,'WHO_name'] = "other"
 
+            # Handle remaining values by creating adding another row with 'other
+            remaining_fraction = df_sorted.iloc[5:]['tpm'].sum() / total_tpm
+            other_entry = pd.DataFrame([{
+                'sample': sample_name,
+                'prediction': "other",
+                'WHO_name': "other",
+                'fraction': remaining_fraction,
+                'tool': "kallisto"
+            }])
+            
+            top5 = pd.concat([top5, other_entry], ignore_index=True)
             # Append to the results list
             data.append(top5[['sample', 'prediction', 'WHO_name' , 'fraction', 'tool']])
 
