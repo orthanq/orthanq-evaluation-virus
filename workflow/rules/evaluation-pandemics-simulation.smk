@@ -2,11 +2,13 @@ coverage=["100x", "1000x"]
 rule scatter_plot:
     input:
         orthanq_prediction=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=coverage),
+        kallisto_prediction=expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}/abundance.tsv", num=num_list, coverage=coverage),
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
-        svg=expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.svg",coverage=coverage),
-        html=expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.html",coverage=coverage),
-
+        orthanq_svg=expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.svg",coverage=coverage),
+        orthanq_html=expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.html",coverage=coverage),
+        kallisto_svg=expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.svg",coverage=coverage),
+        kallisto_html=expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.html",coverage=coverage),
     log:
         "logs/evaluation-pandemics/scatter_plot.log"
     conda:
@@ -14,7 +16,7 @@ rule scatter_plot:
     benchmark:
         "benchmarks/scatter_plot/scatter_plot.tsv" 
     script:
-        "../scripts/scatter_plot.py"
+        "../scripts/scatter_plot_pandemics_simulation.py"
 
 #the downloaded file is updated daily by UCSC
 rule download_clade_to_pangolin:

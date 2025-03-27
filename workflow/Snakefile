@@ -20,8 +20,10 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
             get_results,
-            expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.svg",coverage=coverage),
-            expand("results/evaluation-pandemics/plots/scatter_plot_{coverage}.html",coverage=coverage),
+            expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.svg",coverage=coverage),
+            expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.html",coverage=coverage),
+            expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.svg",coverage=coverage),
+            expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.html",coverage=coverage),
             expand("results/evaluation-pandemics/tables/abundant_lineage_validation_{coverage}.tsv",coverage=coverage),
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
