@@ -134,9 +134,13 @@ def get_adapter_trimmed_fastq_input(wildcards):
 
 #do primer trimming if primer column exists, if not, just do adapter trimming
 def get_processed_fastq_input(wildcards):
-    if 'primer' in samples.columns:
-        return get_primer_trimmed_fastq_input
-    return get_adapter_trimmed_fastq_input
+    """Dynamically determine the input FASTQ based on whether a primer is present for the sample."""
+    sample = wildcards.sample  # Get sample name from wildcards
+    if sample in samples["sra"].values:  # Ensure sample exists
+        row = samples[samples["sra"] == sample]  # Get the row for the sample
+        if not row["primer"].isna().values[0]:  # Check if primer column has a value
+            return get_primer_trimmed_fastq_input(wildcards)  # Use primer-trimmed
+    return get_adapter_trimmed_fastq_input(wildcards)  # Use adapter-trimmed by default
 
 def fastp_params():
     if "labmix" in config["samples"]:
@@ -183,7 +187,7 @@ def get_viral_lineages_path():
     if "labmix" in config["samples"]:
         return "results/kallisto_index/hiv_viral_lineages.idx"
     else:
-        "results/kallisto_index/sarscov2_viral_lineages.idx"
+        return "results/kallisto_index/sarscov2_viral_lineages.idx"
 
 def get_ref_seq_path():
     if "labmix" in config["samples"]:
