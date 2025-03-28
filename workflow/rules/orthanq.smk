@@ -1,6 +1,6 @@
 rule orthanq_candidates_generic:
     input:
-        genome="results/ref/reference_sequence.fasta",
+        genome=get_ref_seq_path(),
         lineages=config["viral_lineages_fasta"]
     output:
         candidates="results/orthanq/candidates/candidates.vcf",
@@ -19,7 +19,7 @@ rule orthanq_preprocess:
     input:
         candidates="results/orthanq/candidates/candidates.vcf", 
         reads=get_processed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_raw_fastq_input,
-        genome="results/ref/reference_sequence.fasta"
+        genome=get_ref_seq_path()
     output: 
         bcf="results/orthanq/preprocess/{sample}.bcf",
         bam="results/orthanq/preprocess/{sample}_sorted.bam"

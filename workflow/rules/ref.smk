@@ -1,6 +1,6 @@
 rule get_ref_sequence:
     output:
-        "results/ref/reference_sequence.fasta",
+        get_ref_seq_path(),
     log:
         "logs/get_ref_sequence.log",
     conda:

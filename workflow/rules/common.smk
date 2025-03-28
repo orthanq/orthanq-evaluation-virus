@@ -170,11 +170,25 @@ def get_results(wildcards):
 
 def get_results_real_data():
     if "labmix" in config["samples"]:
-        return "results/evaluation-hiv/plots/scatter_plot.svg"
+        return ["results/evaluation-hiv/plots/orthanq/scatter_plot.svg",
+        "results/evaluation-hiv/plots/orthanq/scatter_plot.html",
+        "results/evaluation-hiv/plots/kallisto/scatter_plot.svg", 
+        "results/evaluation-hiv/plots/kallisto/scatter_plot.html"]
     else:
         return ["results/evaluation-real-data/plots/stacked_barchart.svg",
         "results/evaluation-real-data/plots/stacked_barchart.html",
         "results/evaluation-real-data/tables/all_tools_predictions.csv"]
+
+def get_viral_lineages_path():
+    if "labmix" in config["samples"]:
+        return "results/kallisto_index/hiv_viral_lineages.idx"
+    else:
+        "results/kallisto_index/sarscov2_viral_lineages.idx"
+
+def get_ref_seq_path():
+    if "labmix" in config["samples"]:
+        return "results/ref/hiv_reference_sequence.fasta"
+    return "results/ref/sarscov2_reference_sequence.fasta"
 # #input function for create_sample_sheet_unicovar
 # def get_fastq_input_unicovar():
 #     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
