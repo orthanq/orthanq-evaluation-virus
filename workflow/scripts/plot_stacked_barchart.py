@@ -77,7 +77,7 @@ with open(snakemake.log[0], "w") as f:
                 # Adjust WHO_name 
                 if WHO_name == "Probable Omicron (Unassigned)" or WHO_name == "Omicron (Unassigned)" or WHO_name == "Omicron (BA.1-like)":
                     WHO_name = "omicron"
-                elif WHO_name == "Probable Delta (Unassigned)" or WHO_name == "Delta (B.1.617.2-like)":
+                elif WHO_name == "Probable Delta (Unassigned)" or WHO_name == "Delta (B.1.617.2-like)" or WHO_name == "Delta (AY.4-like)":
                     WHO_name = "delta"
                 
                 data.append([sample, prediction, WHO_name, 1.0, 'pangolin'])
@@ -232,7 +232,7 @@ with open(snakemake.log[0], "w") as f:
         # color=alt.Color('WHO_name:N'),
         color=alt.Color(
         'prediction:N',
-        legend=alt.Legend(symbolLimit=100),
+        legend=None,
         scale=alt.Scale(domain=list(color_mapping.keys()), range=list(color_mapping.values())),
         # legend=alt.Legend(title='Lineage Colors')
     ),
