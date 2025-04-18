@@ -7,7 +7,10 @@ rule plot_barchart:
         truth="resources/truth_both.csv"
     output:
         plot_svg="results/evaluation-real-data/plots/stacked_barchart.svg",
-        plot_html="results/evaluation-real-data/plots/stacked_barchart.html",
+        plot_html=report("results/evaluation-real-data/plots/stacked_barchart.html", category="Co-infection evaluation", labels={
+            "name": "stacked bar chart",
+            "type": "html"
+        }),
         table="results/evaluation-real-data/tables/all_tools_predictions.csv",
     log:
         "logs/evaluation-real-data/plot_stacked_barchart.log"
@@ -16,3 +19,20 @@ rule plot_barchart:
     script:
         "../scripts/plot_stacked_barchart.py" 
 
+rule datavzrd_tool_predictions:
+    input:
+        config="resources/datavzrd/tool_predictions.yaml",
+        tool_predictions="results/evaluation-real-data/tables/all_tools_predictions.csv",
+    output:
+        report(
+            directory("results/evaluation-real-data/datavzrd-report/all_tool_predictions"),
+            htmlindex="index.html",
+            category="Co-infection evaluation", labels={
+            "type": "table",
+            "name": "all tool predictions"
+        }
+        ),
+    log:
+        "logs/datavzrd/tool_predictions.log",
+    wrapper:
+        "v3.10.2/utils/datavzrd"

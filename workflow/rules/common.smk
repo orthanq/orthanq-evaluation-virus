@@ -148,40 +148,52 @@ def fastp_params():
     else:
         return "--detect_adapter_for_pe"
 
-def get_results(wildcards):
+def get_tool_outputs(wildcards):
     final_output=[]
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
         orthanq_csv = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
         orthanq_solutions = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/viral_solutions.html", num=num_list, coverage=["100x", "1000x"])
+        orthanq_lp_datavzrd = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/datavzrd_report", num=num_list, coverage=["100x", "1000x"])
+        orthanq_final_solution=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/final_solution.html", num=num_list, coverage=["100x", "1000x"])
+
         pangolin = expand("results/pangolin/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
         kallisto = expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}", num=num_list, coverage=["100x", "1000x"])
         nextclade = expand("results/nextstrain/results/SimulatedSample{num}-{coverage}", num=num_list, coverage=["100x", "1000x"])
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
         orthanq_csv = expand("results/orthanq/calls/{sample}-{coverage}/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample) 
         orthanq_solutions = expand("results/orthanq/calls/{sample}-{coverage}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+        orthanq_lp_datavzrd = expand("results/orthanq/calls/{sample}-{coverage}/datavzrd_report", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+        orthanq_final_solution=expand("results/orthanq/calls/{sample}-{coverage}/final_solution.html", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+
         pangolin = expand("results/pangolin/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         kallisto = expand("results/kallisto/quant_results_{sample}-{coverage}", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         nextclade = expand("results/nextstrain/results/{sample}", sample=simulated_given_lineages["sample"].unique())
     else:
         orthanq_csv = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"])
         orthanq_solutions = expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=samples["sra"])
+        orthanq_lp_datavzrd = expand("results/orthanq/calls/{sample}/datavzrd_report", sample=samples["sra"])
+        orthanq_final_solution=expand("results/orthanq/calls/{sample}/final_solution.html", sample=samples["sra"])
+
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
-    # final_output.extend(orthanq_csv + orthanq_solutions)
-    final_output.extend(orthanq_csv + orthanq_solutions + kallisto + pangolin + nextclade)
+    #orthanq datavzrd creation takes too long and it was disabled temporarily
+    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + kallisto + pangolin + nextclade)
     return final_output
 
-def get_results_real_data():
+def get_results_real_data(wildcards):
+    tool_outputs = list(get_tool_outputs(wildcards))
     if "labmix" in config["samples"]:
-        return ["results/evaluation-hiv/plots/orthanq/scatter_plot.svg",
+        return tool_outputs + ["results/evaluation-hiv/plots/orthanq/scatter_plot.svg",
         "results/evaluation-hiv/plots/orthanq/scatter_plot.html",
         "results/evaluation-hiv/plots/kallisto/scatter_plot.svg", 
         "results/evaluation-hiv/plots/kallisto/scatter_plot.html"]
     else:
-        return ["results/evaluation-real-data/plots/stacked_barchart.svg",
+        return tool_outputs + ["results/evaluation-real-data/plots/stacked_barchart.svg",
         "results/evaluation-real-data/plots/stacked_barchart.html",
-        "results/evaluation-real-data/tables/all_tools_predictions.csv"]
+        "results/evaluation-real-data/tables/all_tools_predictions.csv",
+        "results/evaluation-real-data/datavzrd-report/all_tool_predictions"]
+        
 
 def get_viral_lineages_path():
     if "labmix" in config["samples"]:
@@ -193,23 +205,4 @@ def get_ref_seq_path():
     if "labmix" in config["samples"]:
         return "results/ref/hiv_reference_sequence.fasta"
     return "results/ref/sarscov2_reference_sequence.fasta"
-# #input function for create_sample_sheet_unicovar
-# def get_fastq_input_unicovar():
-#     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
-#         fqs1 = expand("results/mixed/SimulatedSample{num}-{coverage}.1.fastq", num=num_list, coverage=["100x","1000x"])
-#         fqs2 = expand("results/mixed/SimulatedSample{num}-{coverage}.2.fastq", num=num_list, coverage=["100x", "1000x"])
-#     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
-#         fqs1 = expand("results/mixed/{sample}-{coverage}.1.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
-#         fqs2 = expand("results/mixed/{sample}-{coverage}.2.fastq",  sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
-#     else:
-#         fqs1 = expand("results/trimmed/{sample}.1.fastq.gz", sample=samples["sra"])
-#         fqs2 = expand("results/trimmed/{sample}.2.fastq.gz", sample=samples["sra"])
-        
-#     return [fqs1, fqs2]
-# unicovar_inputs = get_fastq_input_unicovar()
-# print("unicovar_inputs[0]",unicovar_inputs[0])
-# print("unicovar_inputs[1]", unicovar_inputs[1])
 
-# UNCOVAR_SAMPLE_SHEET="uncovar/config/pep/samples.csv"
-# UNCOVAR_CONFIG="uncovar/config/config.yaml"
-# UNCOVAR_PEP_CONFIG="uncovar/config/pep/config.yaml"

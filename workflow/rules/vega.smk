@@ -8,10 +8,7 @@ rule vg2svg_orthanq:
             "sample": "{sample}",
             "figure": "3-field solutions"
         }),
-        lp_solution=report("results/orthanq/calls/{sample}/lp_solution.html",category="Orthanq detailed solutions", subcategory="{sample}", labels={
-            "sample": "{sample}",
-            "figure": "lp solution"
-        }),
+        lp_solution="results/orthanq/calls/{sample}/lp_solution.html",
         final_solution=report("results/orthanq/calls/{sample}/final_solution.html",category="Orthanq detailed solutions", subcategory="{sample}", labels={
             "sample": "{sample}",
             "figure": "final solution"

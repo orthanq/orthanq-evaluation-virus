@@ -19,7 +19,7 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
         input:
             expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
             aggregate_input_get_fractions,
-            get_results,
+            get_tool_outputs,
             expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.svg",coverage=coverage),
             expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.html",coverage=coverage),
             expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.svg",coverage=coverage),
@@ -42,7 +42,7 @@ elif config["simulate_given"] and not config["simulate_pandemics"]:
     rule all:
         input:
             aggregate_input_get_fractions,
-            get_results,
+            get_tool_outputs,
 
 elif not config["simulate_given"] and not config["simulate_pandemics"]:
     ruleorder: orthanq_candidates_generic > orthanq_preprocess
@@ -62,4 +62,4 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
 
     rule all:
         input:
-            get_results_real_data()
+            get_results_real_data

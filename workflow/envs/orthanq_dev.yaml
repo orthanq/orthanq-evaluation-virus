@@ -16,3 +16,5 @@ dependencies:
   - htslib
   - seqtk
   - coin-or-cbc
+  - python #only necessary when using datavzrd on branch
+  - yte #only necessary when using datavzrd on branch

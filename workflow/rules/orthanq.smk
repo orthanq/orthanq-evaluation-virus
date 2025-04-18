@@ -41,7 +41,11 @@ rule orthanq_quantify:
         tsv="results/orthanq/calls/{sample}/{sample}.csv",
         solutions="results/orthanq/calls/{sample}/viral_solutions.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
-        lp_solution="results/orthanq/calls/{sample}/lp_solution.json",
+        lp_solution_jsn="results/orthanq/calls/{sample}/lp_solution.json",
+        # lp_solution_tsv="results/orthanq/calls/{sample}/lp_solution.tsv",
+        # lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), category="Orthanq predictions", labels={
+        #     "type": "datavzrd report"
+        # })
     log:
         "logs/orthanq_call/{sample}.log"
     conda:

@@ -18,6 +18,33 @@ rule scatter_plot:
     script:
         "../scripts/scatter_plot_pandemics_simulation.py"
 
+rule get_scatterplot_input:
+    input:
+        orthanq_svg_100x="results/evaluation-pandemics/plots/orthanq/scatter_plot_100x.svg",
+        orthanq_html_100x=report("results/evaluation-pandemics/plots/orthanq/scatter_plot_100x.html",
+         category="Simulation scatter plots", subcategory="100x", labels={
+            "name": "orthanq",
+            "type": "html"
+         }),
+        kallisto_svg_100x="results/evaluation-pandemics/plots/kallisto/scatter_plot_100x.svg",
+        kallisto_html_100x=report("results/evaluation-pandemics/plots/kallisto/scatter_plot_100x.html",
+        category="Simulation scatter plots", subcategory="100x", labels={
+            "name": "kallisto",
+            "type": "html"
+        }),
+        orthanq_svg_1000x="results/evaluation-pandemics/plots/orthanq/scatter_plot_1000x.svg",
+        orthanq_html_1000x=report("results/evaluation-pandemics/plots/orthanq/scatter_plot_1000x.html",
+         category="Simulation scatter plots", subcategory="1000x", labels={
+            "name": "orthanq",
+            "type": "html"
+         }),
+        kallisto_svg_1000x="results/evaluation-pandemics/plots/kallisto/scatter_plot_1000x.svg",
+        kallisto_html_1000x=report("results/evaluation-pandemics/plots/kallisto/scatter_plot_1000x.html",
+        category="Simulation scatter plots", subcategory="1000x", labels={
+            "name": "kallisto",
+            "type": "html"
+        })
+
 #the downloaded file is updated daily by UCSC
 rule download_clade_to_pangolin:
     output:
