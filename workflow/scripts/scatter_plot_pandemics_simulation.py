@@ -271,12 +271,12 @@ with open(snakemake.log[0], "w") as f:
     print("predicted_fractions_1000x",kallisto_predicted_fractions_1000x)
 
     #svg paths
-    kallisto_sorted_output_svg = sorted(snakemake.output.kallisto_svg, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
+    # kallisto_sorted_output_svg = sorted(snakemake.output.kallisto_svg, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
     kallisto_plot_100x_svg = snakemake.output.kallisto_svg_100x
     kallisto_plot_1000x_svg =snakemake.output.kallisto_svg_1000x
 
     #svg paths
-    kallisto_sorted_output_html = sorted(snakemake.output.kallisto_html, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.html', '')))
+    # kallisto_sorted_output_html = sorted(snakemake.output.kallisto_html, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.html', '')))
     kallisto_plot_100x_html = snakemake.output.kallisto_html_100x
     kallisto_plot_1000x_html = snakemake.output.kallisto_html_1000x
 
