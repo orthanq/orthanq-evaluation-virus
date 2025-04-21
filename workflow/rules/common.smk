@@ -153,7 +153,8 @@ def get_tool_outputs(wildcards):
     if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
         orthanq_csv = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
         orthanq_solutions = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/viral_solutions.html", num=num_list, coverage=["100x", "1000x"])
-        orthanq_lp_datavzrd = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/datavzrd_report", num=num_list, coverage=["100x", "1000x"])
+        orthanq_lp_datavzrd_tsv = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/lp_solution.tsv", num=num_list, coverage=["100x", "1000x"])
+        orthanq_lp_datavzrd_report = expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/datavzrd_report", num=num_list, coverage=["100x", "1000x"])
         orthanq_final_solution=expand("results/orthanq/calls/SimulatedSample{num}-{coverage}/final_solution.html", num=num_list, coverage=["100x", "1000x"])
 
         pangolin = expand("results/pangolin/SimulatedSample{num}-{coverage}.csv", num=num_list, coverage=["100x", "1000x"])
@@ -162,7 +163,8 @@ def get_tool_outputs(wildcards):
     elif config["simulate_given"] and not config["simulate_pandemics"]: #make sure the other is not mistakenly chosen:
         orthanq_csv = expand("results/orthanq/calls/{sample}-{coverage}/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample) 
         orthanq_solutions = expand("results/orthanq/calls/{sample}-{coverage}/viral_solutions.html", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
-        orthanq_lp_datavzrd = expand("results/orthanq/calls/{sample}-{coverage}/datavzrd_report", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+        orthanq_lp_datavzrd_tsv = expand("results/orthanq/calls/{sample}-{coverage}/lp_solution.tsv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
+        orthanq_lp_datavzrd_report = expand("results/orthanq/calls/{sample}-{coverage}/datavzrd_report", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
         orthanq_final_solution=expand("results/orthanq/calls/{sample}-{coverage}/final_solution.html", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
 
         pangolin = expand("results/pangolin/{sample}-{coverage}.csv", sample=simulated_given_lineages["sample"].unique(), coverage=coverage_single_sample)
@@ -171,14 +173,15 @@ def get_tool_outputs(wildcards):
     else:
         orthanq_csv = expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"])
         orthanq_solutions = expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=samples["sra"])
-        orthanq_lp_datavzrd = expand("results/orthanq/calls/{sample}/datavzrd_report", sample=samples["sra"])
+        orthanq_lp_datavzrd_tsv = expand("results/orthanq/calls/{sample}/lp_solution.tsv", sample=samples["sra"])
+        orthanq_lp_datavzrd_report = expand("results/orthanq/calls/{sample}/datavzrd_report", sample=samples["sra"])
         orthanq_final_solution=expand("results/orthanq/calls/{sample}/final_solution.html", sample=samples["sra"])
 
         pangolin = expand("results/pangolin/{sample}.csv", sample=samples["sra"]) 
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     #orthanq datavzrd creation takes too long and it was disabled temporarily
-    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + kallisto + pangolin + nextclade)
+    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + orthanq_lp_datavzrd_tsv + orthanq_lp_datavzrd_report + kallisto + pangolin + nextclade)
     return final_output
 
 def get_results_real_data(wildcards):

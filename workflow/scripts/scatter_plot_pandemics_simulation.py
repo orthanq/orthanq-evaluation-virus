@@ -153,14 +153,14 @@ with open(snakemake.log[0], "w") as f:
     print("predicted_fractions_1000x",predicted_fractions_1000x)
 
     #svg paths
-    sorted_output_svg = sorted(snakemake.output.orthanq_svg, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
-    plot_100x_svg = sorted_output_svg[0]
-    plot_1000x_svg = sorted_output_svg[1]
+    # sorted_output_svg = sorted(snakemake.output.orthanq_svg, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
+    plot_100x_svg = snakemake.output.orthanq_svg_100x
+    plot_1000x_svg = snakemake.output.orthanq_svg_1000x
 
     #svg paths
-    sorted_output_html = sorted(snakemake.output.orthanq_html, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.html', '')))
-    plot_100x_html = sorted_output_html[0]
-    plot_1000x_html = sorted_output_html[1]
+    # sorted_output_html = sorted(snakemake.output.orthanq_html, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.html', '')))
+    plot_100x_html = snakemake.output.orthanq_html_100x
+    plot_1000x_html = snakemake.output.orthanq_html_1000x
 
     for cov in ["100x", "1000x"]:
         print("cov: ", cov)
@@ -272,13 +272,13 @@ with open(snakemake.log[0], "w") as f:
 
     #svg paths
     kallisto_sorted_output_svg = sorted(snakemake.output.kallisto_svg, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.svg', '')))
-    kallisto_plot_100x_svg = kallisto_sorted_output_svg[0]
-    kallisto_plot_1000x_svg = kallisto_sorted_output_svg[1]
+    kallisto_plot_100x_svg = snakemake.output.kallisto_svg_100x
+    kallisto_plot_1000x_svg =snakemake.output.kallisto_svg_1000x
 
     #svg paths
     kallisto_sorted_output_html = sorted(snakemake.output.kallisto_html, key=lambda x: int(x.split('_')[-1].replace('x', '').replace('.html', '')))
-    kallisto_plot_100x_html = kallisto_sorted_output_html[0]
-    kallisto_plot_1000x_html = kallisto_sorted_output_html[1]
+    kallisto_plot_100x_html = snakemake.output.kallisto_html_100x
+    kallisto_plot_1000x_html = snakemake.output.kallisto_html_1000x
 
     for cov in ["100x", "1000x"]:
         print("cov: ", cov)

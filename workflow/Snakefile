@@ -4,8 +4,8 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
     # ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess > uncovar_fastp_pe > uncovar_gzip
     ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
     
-    include: "rules/ref.smk"
     include: "rules/common.smk"
+    include: "rules/ref.smk"
     include: "rules/get_metadata.smk"
     include: "rules/simulation.smk"
     include: "rules/orthanq.smk"
