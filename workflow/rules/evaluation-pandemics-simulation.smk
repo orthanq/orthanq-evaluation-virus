@@ -5,21 +5,10 @@ rule scatter_plot:
         kallisto_prediction=expand("results/kallisto/quant_results_SimulatedSample{num}-{coverage}/abundance.tsv", num=num_list, coverage=coverage),
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
     output:
-        orthanq_svg=expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.svg",coverage=coverage),
-        orthanq_html=expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.html",coverage=coverage),
-        kallisto_svg=expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.svg",coverage=coverage),
-        kallisto_html=expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.html",coverage=coverage),
-    log:
-        "logs/evaluation-pandemics/scatter_plot.log"
-    conda:
-        "../envs/altair.yaml"
-    benchmark:
-        "benchmarks/scatter_plot/scatter_plot.tsv" 
-    script:
-        "../scripts/scatter_plot_pandemics_simulation.py"
-
-rule get_scatterplot_input:
-    input:
+        # orthanq_svg=expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.svg",coverage=coverage),
+        # orthanq_html=expand("results/evaluation-pandemics/plots/orthanq/scatter_plot_{coverage}.html",coverage=coverage),
+        # kallisto_svg=expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.svg",coverage=coverage),
+        # kallisto_html=expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.html",coverage=coverage),
         orthanq_svg_100x="results/evaluation-pandemics/plots/orthanq/scatter_plot_100x.svg",
         orthanq_html_100x=report("results/evaluation-pandemics/plots/orthanq/scatter_plot_100x.html",
          category="Simulation scatter plots", subcategory="100x", labels={
@@ -44,6 +33,14 @@ rule get_scatterplot_input:
             "name": "kallisto",
             "type": "html"
         })
+    log:
+        "logs/evaluation-pandemics/scatter_plot.log"
+    conda:
+        "../envs/altair.yaml"
+    benchmark:
+        "benchmarks/scatter_plot/scatter_plot.tsv" 
+    script:
+        "../scripts/scatter_plot_pandemics_simulation.py"
 
 #the downloaded file is updated daily by UCSC
 rule download_clade_to_pangolin:
