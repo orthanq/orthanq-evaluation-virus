@@ -138,7 +138,7 @@ def get_processed_fastq_input(wildcards):
     sample = wildcards.sample  # Get sample name from wildcards
     if sample in samples["sra"].values:  # Ensure sample exists
         row = samples[samples["sra"] == sample]  # Get the row for the sample
-        if not row["primer"].isna().values[0]:  # Check if primer column has a value
+        if "primer" in row.columns and not row["primer"].isna().values[0]:  # Check if primer column exists (does not exist in lavmix) and has a value
             return get_primer_trimmed_fastq_input(wildcards)  # Use primer-trimmed
     return get_adapter_trimmed_fastq_input(wildcards)  # Use adapter-trimmed by default
 
@@ -186,11 +186,23 @@ def get_tool_outputs(wildcards):
 
 def get_results_real_data(wildcards):
     tool_outputs = list(get_tool_outputs(wildcards))
+    
     if "labmix" in config["samples"]:
-        return tool_outputs + ["results/evaluation-hiv/plots/orthanq/scatter_plot.svg",
-        "results/evaluation-hiv/plots/orthanq/scatter_plot.html",
-        "results/evaluation-hiv/plots/kallisto/scatter_plot.svg", 
-        "results/evaluation-hiv/plots/kallisto/scatter_plot.html"]
+        scatter_plots = [
+            "results/evaluation-hiv/plots/orthanq/scatter_plot.svg",
+            "results/evaluation-hiv/plots/orthanq/scatter_plot.html",
+            "results/evaluation-hiv/plots/kallisto/scatter_plot.svg", 
+            "results/evaluation-hiv/plots/kallisto/scatter_plot.html"
+        ]
+        
+        scatter_plots += expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"]) 
+        scatter_plots += expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=samples["sra"])
+        scatter_plots += expand("results/orthanq/calls/{sample}/lp_solution.tsv", sample=samples["sra"])
+        scatter_plots += expand("results/orthanq/calls/{sample}/datavzrd_report", sample=samples["sra"])
+        scatter_plots += expand("results/orthanq/calls/{sample}/final_solution.html", sample=samples["sra"])
+
+        return scatter_plots
+
     else:
         return tool_outputs + ["results/evaluation-real-data/plots/stacked_barchart.svg",
         "results/evaluation-real-data/plots/stacked_barchart.html",
