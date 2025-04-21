@@ -43,8 +43,12 @@ rule orthanq_quantify:
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
         lp_solution_jsn="results/orthanq/calls/{sample}/lp_solution.json",
         lp_solution_tsv="results/orthanq/calls/{sample}/lp_solution.tsv",
-        lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), htmlindex="index.html", category="Orthanq predictions", labels={
-            "type": "datavzrd report"
+        lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), htmlindex="index.html", 
+            category="Orthanq detailed solutions", 
+            subcategory="{sample}", 
+            labels={
+            "sample": "{sample}",
+            "figure": "lp datavzrd report"
         })
     log:
         "logs/orthanq_call/{sample}.log"
