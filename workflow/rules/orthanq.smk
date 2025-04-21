@@ -42,10 +42,10 @@ rule orthanq_quantify:
         solutions="results/orthanq/calls/{sample}/viral_solutions.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
         lp_solution_jsn="results/orthanq/calls/{sample}/lp_solution.json",
-        # lp_solution_tsv="results/orthanq/calls/{sample}/lp_solution.tsv",
-        # lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), category="Orthanq predictions", labels={
-        #     "type": "datavzrd report"
-        # })
+        lp_solution_tsv="results/orthanq/calls/{sample}/lp_solution.tsv",
+        lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), htmlindex="index.html", category="Orthanq predictions", labels={
+            "type": "datavzrd report"
+        })
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
@@ -53,7 +53,7 @@ rule orthanq_quantify:
     params:
         prior="uniform"
     resources: 
-        mem_mb=5000
+        mem_mb=50000
     threads: 20
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"

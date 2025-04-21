@@ -7,7 +7,8 @@ rule plot_barchart:
         truth="resources/truth_both.csv"
     output:
         plot_svg="results/evaluation-real-data/plots/stacked_barchart.svg",
-        plot_html=report("results/evaluation-real-data/plots/stacked_barchart.html", category="Co-infection evaluation", labels={
+        plot_html=report("results/evaluation-real-data/plots/stacked_barchart.html", 
+            htmlindex="index.html", category="Co-infection evaluation", subcategory="plot",labels={
             "name": "stacked bar chart",
             "type": "html"
         }),
@@ -26,12 +27,10 @@ rule datavzrd_tool_predictions:
     output:
         report(
             directory("results/evaluation-real-data/datavzrd-report/all_tool_predictions"),
-            htmlindex="index.html",
-            category="Co-infection evaluation", labels={
-            "type": "table",
-            "name": "all tool predictions"
-        }
-        ),
+            htmlindex="index.html", category="Co-infection evaluation", subcategory="table", labels={
+            "name": "all tool predictions",
+            "type": "table"
+        }),
     log:
         "logs/datavzrd/tool_predictions.log",
     wrapper:
