@@ -35,7 +35,11 @@ with open(snakemake.log[0], "w") as f:
         x= 'Actual',
         y= 'Predicted',
         )
-        plot = scatterplot + line_plot
+        
+        plot = (scatterplot + line_plot).properties(
+            width=200,
+            height=200
+        )
         return plot
 
     print("------ ORTHANQ -----")
