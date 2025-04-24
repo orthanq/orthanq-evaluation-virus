@@ -2,7 +2,7 @@ configfile: "config/config.yaml"
 
 if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
     # ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess > uncovar_fastp_pe > uncovar_gzip
-    ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
+    ruleorder: orthanq_candidates_sarscov2 > orthanq_candidates_hiv > mason > orthanq_preprocess
     
     include: "rules/common.smk"
     include: "rules/ref.smk"
@@ -27,7 +27,7 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             expand("results/evaluation-pandemics/tables/abundant_lineage_validation_{coverage}.tsv",coverage=coverage),
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
-    ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess
+    ruleorder:  orthanq_candidates_sarscov2 > orthanq_candidates_hiv > mason > orthanq_preprocess
 
     include: "rules/ref.smk"
     include: "rules/common.smk"
@@ -45,7 +45,7 @@ elif config["simulate_given"] and not config["simulate_pandemics"]:
             get_tool_outputs,
 
 elif not config["simulate_given"] and not config["simulate_pandemics"]:
-    ruleorder: orthanq_candidates_generic > orthanq_preprocess
+    ruleorder:  orthanq_candidates_sarscov2 > orthanq_candidates_hiv > orthanq_preprocess
     
     include: "rules/common.smk"
     include: "rules/ref.smk"

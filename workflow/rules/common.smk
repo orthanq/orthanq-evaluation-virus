@@ -182,6 +182,7 @@ def get_tool_outputs(wildcards):
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     #orthanq datavzrd creation takes too long and it was disabled temporarily
     final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + orthanq_lp_datavzrd_tsv + orthanq_lp_datavzrd_report + kallisto + pangolin + nextclade)
+    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + kallisto + pangolin + nextclade)
     return final_output
 
 def get_results_real_data(wildcards):
@@ -197,8 +198,8 @@ def get_results_real_data(wildcards):
         
         scatter_plots += expand("results/orthanq/calls/{sample}/{sample}.csv", sample=samples["sra"]) 
         scatter_plots += expand("results/orthanq/calls/{sample}/viral_solutions.html", sample=samples["sra"])
-        scatter_plots += expand("results/orthanq/calls/{sample}/lp_solution.tsv", sample=samples["sra"])
-        scatter_plots += expand("results/orthanq/calls/{sample}/datavzrd_report", sample=samples["sra"])
+        # scatter_plots += expand("results/orthanq/calls/{sample}/lp_solution.tsv", sample=samples["sra"])
+        # scatter_plots += expand("results/orthanq/calls/{sample}/datavzrd_report", sample=samples["sra"])
         scatter_plots += expand("results/orthanq/calls/{sample}/final_solution.html", sample=samples["sra"])
 
         return scatter_plots
@@ -220,4 +221,3 @@ def get_ref_seq_path():
     if "labmix" in config["samples"]:
         return "results/ref/hiv_reference_sequence.fasta"
     return "results/ref/sarscov2_reference_sequence.fasta"
-

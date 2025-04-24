@@ -1,23 +1,41 @@
-rule orthanq_candidates_generic:
+rule orthanq_candidates_hiv:
     input:
         genome=get_ref_seq_path(),
         lineages=config["viral_lineages_fasta"]
     output:
-        candidates="results/orthanq/candidates/candidates.vcf",
-        candidates_folder=directory("results/orthanq/candidates/"),
+        candidates="results/orthanq/candidates/hiv/candidates.vcf",
+        candidates_folder=directory("results/orthanq/candidates/hiv"),
     log:
-        "logs/orthanq_candidates/candidates_virus.log",
+        "logs/orthanq_candidates/hiv/candidates.log",
     conda:
         "../envs/orthanq_dev.yaml"
     priority: 50
     benchmark:    
-        "benchmarks/orthanq_candidates/orthanq_candidates.tsv" 
+        "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
     shell:
         "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
+rule orthanq_candidates_sarscov2:
+    input:
+        genome=get_ref_seq_path(),
+        lineages=config["viral_lineages_fasta"]
+    output:
+        candidates="results/orthanq/candidates/sarscov2/candidates.vcf",
+        candidates_folder=directory("results/orthanq/candidates/sarscov2"),
+    log:
+        "logs/orthanq_candidates/sarscov2/candidates.log",
+    conda:
+        "../envs/orthanq_dev.yaml"
+    priority: 50
+    benchmark:    
+        "benchmarks/orthanq_candidates/sarscov2/orthanq_candidates.tsv" 
+    shell:
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+
+
 rule orthanq_preprocess:
     input:
-        candidates="results/orthanq/candidates/candidates.vcf", 
+        candidates="results/orthanq/candidates/hiv/candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
         reads=get_processed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_raw_fastq_input,
         genome=get_ref_seq_path()
     output: 
@@ -35,21 +53,21 @@ rule orthanq_preprocess:
 #wrappers should be used once they are ready
 rule orthanq_quantify:
     input:
-        haplotype_variants="results/orthanq/candidates/candidates.vcf", 
+        haplotype_variants="results/orthanq/candidates/hiv/candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
         tsv="results/orthanq/calls/{sample}/{sample}.csv",
         solutions="results/orthanq/calls/{sample}/viral_solutions.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json",
         lp_solution_jsn="results/orthanq/calls/{sample}/lp_solution.json",
-        lp_solution_tsv="results/orthanq/calls/{sample}/lp_solution.tsv",
-        lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), htmlindex="index.html", 
-            category="Orthanq detailed solutions", 
-            subcategory="{sample}", 
-            labels={
-            "sample": "{sample}",
-            "figure": "lp datavzrd report"
-        })
+        # lp_solution_tsv="results/orthanq/calls/{sample}/lp_solution.tsv",
+        # lp_datavzrd=report(directory("results/orthanq/calls/{sample}/datavzrd_report"), htmlindex="index.html", 
+        #     category="Orthanq detailed solutions", 
+        #     subcategory="{sample}", 
+        #     labels={
+        #     "sample": "{sample}",
+        #     "figure": "lp datavzrd report"
+        # })
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
