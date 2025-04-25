@@ -35,6 +35,7 @@ with open(snakemake.log[0], "w") as f:
                 #Delta includes B.1.617.2 and all lineages starting with AY (CITE: Bolze et al 2022)
                 #Omicron lineages refer to BA starting variants, see https://covariants.org/ for other omicron lineages.
                 #B.1.1.161 & B.1.189 (early pandemic lineages), B (very early ancestral lineage)
+                #update after rerun with probable variants 240425; B.1 added but it has zero fraction anyways.
                 #X starting lineages refer to recombinant.
                 #All orthanq results are checked by eye for an unassigned lineage.
                 for lineage in best_results_dict:
