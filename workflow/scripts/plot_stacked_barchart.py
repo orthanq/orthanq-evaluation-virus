@@ -1,3 +1,5 @@
+#check this script upon a rerun with a different version of orthanq.
+
 import pandas as pd
 import altair as alt
 import numpy as np
@@ -27,37 +29,43 @@ with open(snakemake.log[0], "w") as f:
             #remove density and odds columns
             best_results_filtered = best_results.drop(columns=['density', 'odds'])
 
-            #both studies (PRJNA804575 and PRJNA809680) contain only one row with the best density.
+            #IMPORTANT: check every sample for the presence of multiple rows with best prediction upon orthanq verson change and update below accordingly.
+
+            #currently, both studies (PRJNA804575 and PRJNA809680) contain only one row with the best density except one sample ending with 110:
+            #density,odds,AY.4.10,B.1.1,B.1.1.161,BA.1,BA.1.18
+            # 0.33,1.00,0.9875,+0.0000e0,+6.2500e-3,+0.0000e0,+6.2500e-3
+            # 0.33,1.00,0.9875,+2.0833e-3,+5.2083e-3,+0.0000e0,+5.2083e-3
+            # 0.33,1.00,0.9875,+0.0000e0,+6.2500e-3,+1.0417e-3,+5.2083e-3
+            #the numbers are very small hence taking just one of them should not make a difference for the plot.
+            #for this reason, we always take index 0 for now.
+
             #loop over the lineages and fractions and group them into "Delta", "Omicron", "Other" and "Recombinant".
-            if len(best_results_filtered) == 1:
-                best_results_dict = best_results_filtered.iloc[0].to_dict()  # Convert to a dictionary
-                print(best_results_dict)
-                #Delta includes B.1.617.2 and all lineages starting with AY (CITE: Bolze et al 2022)
-                #Omicron lineages refer to BA starting variants, see https://covariants.org/ for other omicron lineages.
-                #B.1.1.161 & B.1.189 (early pandemic lineages), B (very early ancestral lineage)
-                #update after rerun with probable variants 240425; B.1 added but it has zero fraction anyways.
-                #X starting lineages refer to recombinant.
-                #All orthanq results are checked by eye for an unassigned lineage.
-                for lineage in best_results_dict:
-                    if best_results_dict[lineage] != 0.0:
-                        #DELTA 
-                        if lineage.startswith("AY") or lineage == "B.1.617.2":
-                            new_row = pd.DataFrame([[sample, lineage, "delta", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
-                            orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
-                        #OMICRON 
-                        elif lineage.startswith("BA"):
-                            new_row = pd.DataFrame([[sample, lineage, "omicron", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
-                            orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
-                        #RECOMBINANT 
-                        elif lineage.startswith("X"):
-                            new_row = pd.DataFrame([[sample, lineage, "recombinant", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
-                            orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
-                        #OTHER
-                        else:
-                            new_row = pd.DataFrame([[sample, lineage, "other", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
-                            orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
-            else:
-                print("DataFrame has multiple rows or is empty.")
+            best_results_dict = best_results_filtered.iloc[0].to_dict()  # Convert to a dictionary
+            print(best_results_dict)
+            #Delta includes B.1.617.2 and all lineages starting with AY (CITE: Bolze et al 2022)
+            #Omicron lineages refer to BA starting variants, see https://covariants.org/ for other omicron lineages.
+            #B.1.1.161 & B.1.189 (early pandemic lineages), B (very early ancestral lineage)
+            #update after rerun with probable variants 240425; B.1 added but it has zero fraction anyways.
+            #X starting lineages refer to recombinant.
+            #All orthanq results are checked by eye for an unassigned lineage.
+            for lineage in best_results_dict:
+                if best_results_dict[lineage] != 0.0:
+                    #DELTA 
+                    if lineage.startswith("AY") or lineage == "B.1.617.2":
+                        new_row = pd.DataFrame([[sample, lineage, "delta", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
+                        orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
+                    #OMICRON 
+                    elif lineage.startswith("BA"):
+                        new_row = pd.DataFrame([[sample, lineage, "omicron", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
+                        orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
+                    #RECOMBINANT 
+                    elif lineage.startswith("X"):
+                        new_row = pd.DataFrame([[sample, lineage, "recombinant", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
+                        orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
+                    #OTHER
+                    else:
+                        new_row = pd.DataFrame([[sample, lineage, "other", best_results_dict[lineage], 'orthanq']], columns=['sample', 'prediction', 'WHO_name', 'fraction', 'tool'])
+                        orthanq_predictions = pd.concat([orthanq_predictions, new_row], ignore_index=True)
         return orthanq_predictions  
 
     def get_pangolin_results(file_paths):
