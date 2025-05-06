@@ -22,13 +22,13 @@ with open(snakemake.log[0], "w") as f:
 
         # add a diagonal line
         line = pd.DataFrame({
-        'Actual': [0.0, 1.0],
-        'Predicted':  [0.0, 1.0],
+        'Actual': [0.0, 0.4],
+        'Predicted':  [0.0, 0.4],
         })
 
         line_plot = alt.Chart(line).mark_line(color='red').encode(
-        x= 'Actual',
-        y= 'Predicted',
+        x= alt.X('Actual',scale=alt.Scale(domain=[0.0, 0.4])),
+        y= alt.Y('Predicted', scale=alt.Scale(domain=[0.0, 0.4])),
         )
 
         plot = (scatterplot + line_plot).properties(
