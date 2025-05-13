@@ -5,12 +5,10 @@ rule vg2svg_orthanq:
         final_solution="results/orthanq/calls/{sample}/final_solution.json"
     output:
         solutions=report("results/orthanq/calls/{sample}/viral_solutions.html",category="Orthanq detailed solutions", subcategory="{sample}",labels={
-            "sample": "{sample}",
             "figure": "3-field solutions"
         }),
         lp_solution="results/orthanq/calls/{sample}/lp_solution.html",
         final_solution=report("results/orthanq/calls/{sample}/final_solution.html",category="Orthanq detailed solutions", subcategory="{sample}", labels={
-            "sample": "{sample}",
             "figure": "final solution"
         })        
     log:
