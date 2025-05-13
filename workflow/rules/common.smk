@@ -181,7 +181,7 @@ def get_tool_outputs(wildcards):
         kallisto = expand("results/kallisto/quant_results_{sample}", sample=samples["sra"])
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     #orthanq datavzrd creation takes too long and it was disabled temporarily
-    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + orthanq_lp_datavzrd_tsv + orthanq_lp_datavzrd_report + kallisto + pangolin + nextclade)
+    # final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + orthanq_lp_datavzrd_tsv + orthanq_lp_datavzrd_report + kallisto + pangolin + nextclade)
     final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + kallisto + pangolin + nextclade)
     return final_output
 
