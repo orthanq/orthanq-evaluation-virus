@@ -4,11 +4,15 @@ rule vg2svg_orthanq:
         lp_solution="results/orthanq/calls/{sample}/lp_solution.json",
         final_solution="results/orthanq/calls/{sample}/final_solution.json"
     output:
-        solutions=report("results/orthanq/calls/{sample}/viral_solutions.html",category="Orthanq detailed solutions", subcategory="{sample}",labels={
+        solutions=report("results/orthanq/calls/{sample}/viral_solutions.html", 
+        caption="../report/orthanq_plots.rst",
+        category="Orthanq detailed solutions", subcategory="{sample}",labels={
             "figure": "3-field solutions"
         }),
         lp_solution="results/orthanq/calls/{sample}/lp_solution.html",
-        final_solution=report("results/orthanq/calls/{sample}/final_solution.html",category="Orthanq detailed solutions", subcategory="{sample}", labels={
+        final_solution=report("results/orthanq/calls/{sample}/final_solution.html",
+        caption="../report/orthanq_plots.rst",
+        category="Orthanq detailed solutions", subcategory="{sample}", labels={
             "figure": "final solution"
         })        
     log:

@@ -1,5 +1,7 @@
 configfile: "config/config.yaml"
 
+report: "report/workflow.rst"
+
 if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
     # ruleorder: orthanq_candidates_generic > mason > orthanq_preprocess > uncovar_fastp_pe > uncovar_gzip
     ruleorder: orthanq_candidates_sarscov2 > orthanq_candidates_hiv > mason > orthanq_preprocess
