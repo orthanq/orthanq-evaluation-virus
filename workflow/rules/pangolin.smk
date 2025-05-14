@@ -5,6 +5,10 @@ module uncovar_pipeline:
         config
 
 use rule * from uncovar_pipeline as uncovar_*
+        
+use rule assembly_polishing_illumina from uncovar_pipeline as uncovar_assembly_polishing_illumina with:
+    input:
+        f"results/{DATE}/polishing/bcftools-illumina/{{sample}}.fasta",
 
 rule pangolin:
     input:
