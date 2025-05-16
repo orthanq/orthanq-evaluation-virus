@@ -1,0 +1,1 @@
+First 10 best solutions with posterior estimates and fraction compositions for each solution.

@@ -8,10 +8,12 @@ rule plot_barchart:
     output:
         plot_svg="results/evaluation-real-data/plots/stacked_barchart.svg",
         plot_html=report("results/evaluation-real-data/plots/stacked_barchart.html", 
-            htmlindex="index.html", category="Co-infection evaluation", subcategory="plot",labels={
+            htmlindex="index.html", category="Co-infection evaluation", 
+            subcategory="plot",labels={
             "name": "stacked bar chart",
             "type": "html"
-        }),
+        },
+        caption="../report/stackedbarchart.rst"),
         table="results/evaluation-real-data/tables/all_tools_predictions.csv",
     log:
         "logs/evaluation-real-data/plot_stacked_barchart.log"

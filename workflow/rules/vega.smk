@@ -5,15 +5,15 @@ rule vg2svg_orthanq:
         final_solution="results/orthanq/calls/{sample}/final_solution.json"
     output:
         solutions=report("results/orthanq/calls/{sample}/viral_solutions.html", 
-        caption="../report/orthanq_plots.rst",
+        caption="../report/solutions.rst",
         category="Orthanq detailed solutions", subcategory="{sample}",labels={
-            "figure": "3-field solutions"
+            "figure": "solutions plot"
         }),
         lp_solution="results/orthanq/calls/{sample}/lp_solution.html",
         final_solution=report("results/orthanq/calls/{sample}/final_solution.html",
-        caption="../report/orthanq_plots.rst",
+        caption="../report/finalsolution.rst",
         category="Orthanq detailed solutions", subcategory="{sample}", labels={
-            "figure": "final solution"
+            "figure": "final solution plot"
         })        
     log:
         "logs/vg2svg/orthanq/{sample}.log",
