@@ -83,3 +83,16 @@ rule abundant_lineage_validation:
         "benchmarks/evaluation/validation.tsv" 
     script:
         "../scripts/abundant_lineage_validation.py"
+
+rule find_similarities:
+    input:
+        simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
+        candidates="results/orthanq/candidates/candidates.vcf",
+    output:
+        table="results/evaluation-pandemics/tables/lineage_similarities.csv"
+    log:
+        "logs/evaluation-pandemics/similarities.log"
+    conda:
+        "../envs/altair.yaml"
+    script:
+        "../scripts/find_similarities.py"
