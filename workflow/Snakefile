@@ -30,9 +30,9 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
     ruleorder:  orthanq_candidates_sarscov2 > orthanq_candidates_hiv > mason > orthanq_preprocess
-
-    include: "rules/ref.smk"
+    
     include: "rules/common.smk"
+    include: "rules/ref.smk"
     include: "rules/simulation.smk"
     include: "rules/get_metadata.smk"
     include: "rules/orthanq.smk"

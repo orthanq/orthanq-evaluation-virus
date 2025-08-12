@@ -182,7 +182,9 @@ def get_tool_outputs(wildcards):
         nextclade = expand("results/nextstrain/results/{sample}", sample=samples["sra"])
     #orthanq datavzrd creation takes too long and it was disabled temporarily
     # final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + orthanq_lp_datavzrd_tsv + orthanq_lp_datavzrd_report + kallisto + pangolin + nextclade)
-    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + kallisto + pangolin + nextclade)
+    # final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution + kallisto + pangolin + nextclade)
+    #commented out for preparing the supplementary file for proving similarity issue for the paper
+    final_output.extend(orthanq_csv + orthanq_solutions + orthanq_final_solution)
     return final_output
 
 def get_results_real_data(wildcards):
