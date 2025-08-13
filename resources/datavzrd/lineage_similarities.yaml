@@ -1,0 +1,18 @@
+__use_yte__: true
+name: Lineage similarities
+datasets:
+  predictions:
+    path: ?input.table
+    offer-excel: true
+views:
+  predictions:
+    dataset: predictions
+    desc: |
+      ### 
+    page-size: 25
+    # render-table:
+    #   columns:
+        # fraction:
+        #   plot:
+        #     ticks:
+        #       scale: linear
