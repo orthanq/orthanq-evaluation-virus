@@ -89,10 +89,32 @@ rule find_similarities:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
         candidates="results/orthanq/candidates/candidates.vcf",
     output:
-        table="results/evaluation-pandemics/tables/lineage_similarities.csv"
+        table="results/evaluation-pandemics/tables/lineage_similarities.csv",
+        plot_svg="results/evaluation-pandemics/plots/lineage_similarities.svg",
+        plot_html=report("results/evaluation-pandemics/plots/lineage_similarities.html",
+        htmlindex="index.html", category="Lineage similarities", labels={
+            "name": "lineage similarities",
+            "type": "plot"
+        })
     log:
         "logs/evaluation-pandemics/similarities.log"
     conda:
         "../envs/altair.yaml"
     script:
         "../scripts/find_similarities.py"
+
+rule datavzrd_lineage_similarities:
+    input:
+        config="resources/datavzrd/lineage_similarities.yaml",
+        table="results/evaluation-pandemics/tables/lineage_similarities.csv",
+    output:
+        report(
+            directory("results/evaluation-pandemics/datavzrd-report/lineage-similarities"),
+            htmlindex="index.html", category="Lineage similarities", labels={
+            "name": "lineage similarities",
+            "type": "table"
+        }),
+    log:
+        "logs/datavzrd/tool_predictions.log",
+    wrapper:
+        "v3.10.2/utils/datavzrd"

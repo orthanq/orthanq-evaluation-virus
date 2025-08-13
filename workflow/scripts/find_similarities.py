@@ -75,3 +75,26 @@ with open(snakemake.log[0], "w") as f:
     df = pd.DataFrame(results)
     print(df)
     df.to_csv(snakemake.output.table, index=False)
+
+    #bubble plot
+    df["Lineage_Pair"] = df["Lineage1"] + " vs " + df["Lineage2"]
+    bubble_plot = alt.Chart(df).mark_circle().encode(
+        x=alt.X('SimulatedSample:N', title="Sample"),
+        y=alt.Y('Lineage_Pair:N', title="Lineage Pair"),
+        size=alt.Size('Total_Differences:Q', scale=alt.Scale(range=[10, 1000]), legend=alt.Legend(title="Total Differences")),
+        color=alt.Color('Total_Differences:Q', scale=alt.Scale(scheme='viridis'), legend=None),
+        tooltip=[
+            alt.Tooltip('SimulatedSample:N', title="Sample"),
+            alt.Tooltip('Lineage_Pair:N', title="Lineages"),
+            alt.Tooltip('Total_Differences:Q', title="Differences")
+        ]
+    ).properties(
+        width=500,
+        height=300,
+        title="Total Differences Between Lineage Pairs per Sample"
+    )
+
+    bubble_plot
+
+    bubble_plot.save(snakemake.output.plot_svg)
+    bubble_plot.save(snakemake.output.plot_html)

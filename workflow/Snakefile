@@ -27,6 +27,9 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
             expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.svg",coverage=coverage),
             expand("results/evaluation-pandemics/plots/kallisto/scatter_plot_{coverage}.html",coverage=coverage),
             expand("results/evaluation-pandemics/tables/abundant_lineage_validation_{coverage}.tsv",coverage=coverage),
+            "results/evaluation-pandemics/plots/lineage_similarities.html",
+            "results/evaluation-pandemics/plots/lineage_similarities.svg",
+            "results/evaluation-pandemics/datavzrd-report/lineage-similarities"
 
 elif config["simulate_given"] and not config["simulate_pandemics"]:
     ruleorder:  orthanq_candidates_sarscov2 > orthanq_candidates_hiv > mason > orthanq_preprocess
