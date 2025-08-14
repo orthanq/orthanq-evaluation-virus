@@ -36,7 +36,22 @@ with open(snakemake.log[0], "w") as f:
         y= 'Predicted',
         )
         
-        plot = (scatterplot + line_plot).properties(
+        # mean squared error as text
+        print("squared_errors",(data['Actual'] - data['Predicted']) ** 2)
+        mse = np.mean((data['Actual'] - data['Predicted']) ** 2)
+        mse_text = f'MSE: {mse:.4f}'
+
+        text = alt.Chart(pd.DataFrame({
+            'x': [0.05],
+            'y': [0.95],
+            'text': [mse_text]
+        })).mark_text(align='left', baseline='top', fontSize=13).encode(
+            x='x:Q',
+            y='y:Q',
+            text='text:N'
+        )
+
+        plot = (scatterplot + line_plot + text).properties(
             width=200,
             height=200
         )

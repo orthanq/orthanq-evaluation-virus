@@ -249,12 +249,36 @@ with open(snakemake.log[0], "w") as f:
     ).configure_view(
     strokeOpacity=0    
     )
-    # save the chart
-    chart.save(snakemake.output.plot_svg)
-    chart.save(snakemake.output.plot_html)
 
     #write the table
     final_table.to_csv(
         snakemake.output.table, sep="\t", index=False, header=True
     )
     
+    # #calculate MSE for Orthanq and Kallisto
+    #exclude recombinant samples and exclude recombinant and other
+    df = final_table[~final_table['sample'].isin(['SRR18272228', 'SRR18272229'])]
+    df = df[df['WHO_name'].isin(['omicron', 'delta'])]
+
+    #keep only kallisto orthanq and truth
+    df = df[df['tool'].isin(['kallisto', 'orthanq', 'truth'])]
+
+    #sum fractions per sample, WHO_name, and tool 
+    grouped = df.groupby(['sample', 'tool', 'WHO_name'], as_index=False)['fraction'].sum()
+
+    #pivot to compare each tool against truth
+    pivoted = grouped.pivot(index=['sample', 'WHO_name'], columns='tool', values='fraction').fillna(0)
+    print("printed", pivoted)
+    #compute MSE for each tool (vs. truth)
+    mse = {}
+    for tool in ['orthanq', 'kallisto']:
+        if tool in pivoted.columns:
+            squared_error = (pivoted[tool] - pivoted['truth']) ** 2
+            mse_val = np.mean(squared_error)
+            mse[tool] = mse_val
+
+    print("mse values:",mse)
+
+    # save the chart
+    chart.save(snakemake.output.plot_svg)
+    chart.save(snakemake.output.plot_html)
