@@ -87,7 +87,7 @@ rule abundant_lineage_validation:
 rule find_similarities:
     input:
         simulation=expand("results/simulation_input/SimulatedSample{num}.csv", num=num_list),
-        candidates="results/orthanq/candidates/candidates.vcf",
+        candidates="results/orthanq/candidates/sarscov2/candidates.vcf",
     output:
         table="results/evaluation-pandemics/tables/lineage_similarities.csv",
         plot_svg="results/evaluation-pandemics/plots/lineage_similarities.svg",
