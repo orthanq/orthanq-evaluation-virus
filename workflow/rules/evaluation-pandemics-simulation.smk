@@ -90,12 +90,12 @@ rule find_similarities:
         candidates="results/orthanq/candidates/sarscov2/candidates.vcf",
     output:
         table="results/evaluation-pandemics/tables/lineage_similarities.csv",
-        plot_svg="results/evaluation-pandemics/plots/lineage_similarities.svg",
-        plot_html=report("results/evaluation-pandemics/plots/lineage_similarities.html",
-        htmlindex="index.html", category="Lineage similarities", subcategory="plot", labels={
-            "name": "lineage similarities",
-            "type": "plot"
-        })
+        # plot_svg="results/evaluation-pandemics/plots/lineage_similarities.svg",
+        # plot_html=report("results/evaluation-pandemics/plots/lineage_similarities.html",
+        # htmlindex="index.html", category="Lineage similarities", subcategory="plot", labels={
+        #     "name": "lineage similarities",
+        #     "type": "plot"
+        # })
     log:
         "logs/evaluation-pandemics/similarities.log"
     conda:
@@ -115,6 +115,6 @@ rule datavzrd_lineage_similarities:
             "type": "table"
         }),
     log:
-        "logs/datavzrd/tool_predictions.log",
+        "logs/datavzrd/pandemics_similarities.log",
     wrapper:
-        "v3.10.2/utils/datavzrd"
+        "v7.2.0/utils/datavzrd"

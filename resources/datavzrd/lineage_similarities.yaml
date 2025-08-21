@@ -8,11 +8,226 @@ views:
   predictions:
     dataset: predictions
     desc: |
-      ### 
+      ### Similarity of lineages
+      Pairwise differences of samples in terms of variants they contain. Every sample contains three virus variants and there are three combinations for each sample.
     page-size: 25
-    # render-table:
-    #   columns:
-        # fraction:
-        #   plot:
-        #     ticks:
-        #       scale: linear
+    render-table:
+      columns:
+        regex('Lineage_Pair_.+'):
+          display-mode: hidden
+        Diff_1:
+          custom-plot:
+            data: |
+              function(value, row) {
+                return [{"diff": value, "lineage_pair": row["Lineage_Pair_1"]}]
+              }
+            spec: |
+              {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "",
+                "data": { "values": []},
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "diff",
+                    "type": "quantitative",
+                    "scale": {"domain": [0, 125]},
+                    "legend": null
+                  },
+                  "color":{
+                    "field": "diff",
+                    "type": "quantitative",
+                    "scale": {
+                      "domain": [0, 125],
+                      "scheme": "inferno"
+                    },
+                    "legend": null
+                  },
+                  "tooltip": [
+                    {"field": "lineage_pair", "title": "Lineages", "type": "nominal"},
+                    {
+                      "field": "diff",
+                      "title": "Differences",
+                      "type": "quantitative"
+                    }
+                  ]
+                }
+              }
+        Diff_2:
+          custom-plot:
+            data: |
+              function(value, row) {
+                return [{"diff": value, "lineage_pair": row["Lineage_Pair_2"]}]
+              }
+            spec: |
+              {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "",
+                "data": { "values": []},
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "diff",
+                    "type": "quantitative",
+                    "scale": {"domain": [0, 125]},
+                    "legend": null
+                  },
+                  "color":{
+                    "field": "diff",
+                    "type": "quantitative",
+                    "scale": {
+                      "domain": [0, 125],
+                      "scheme": "inferno"
+                    },
+                    "legend": null
+                  },
+                  "tooltip": [
+                    {"field": "lineage_pair", "title": "Lineages", "type": "nominal"},
+                    {
+                      "field": "diff",
+                      "title": "Differences",
+                      "type": "quantitative"
+                    }
+                  ]
+                }
+              }
+        Diff_3:
+          custom-plot:
+            data: |
+              function(value, row) {
+                return [{"diff": value, "lineage_pair": row["Lineage_Pair_3"]}]
+              }
+            spec: |
+              {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "",
+                "data": { "values": []},
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "diff",
+                    "type": "quantitative",
+                    "scale": {"domain": [0, 125]},
+                    "legend": null
+                  },
+                  "color":{
+                    "field": "diff",
+                    "type": "quantitative",
+                    "scale": {
+                      "domain": [0, 125],
+                      "scheme": "inferno"
+                    },
+                    "legend": null
+                  },
+                  "tooltip": [
+                    {"field": "lineage_pair", "title": "Lineages", "type": "nominal"},
+                    {
+                      "field": "diff",
+                      "title": "Differences",
+                      "type": "quantitative"
+                    }
+                  ]
+                }
+              }
+        Shared_1:
+          custom-plot:
+            data: |
+              function(value, row) {
+                return [{"shared": value, "lineage_pair": row["Lineage_Pair_1"]}]
+              }
+            spec: |
+              {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "",
+                "data": { "values": []},
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "shared",
+                    "type": "quantitative",
+                    "scale": {"domain": [0, 125]},
+                    "legend": null
+                  },
+                  "color":{
+                    "field": "shared",
+                    "type": "quantitative",
+                    "scale": {
+                      "domain": [0, 125],
+                      "scheme": "viridis"
+                    },
+                    "legend": null
+                  },
+                  "tooltip": [
+                    {"field": "lineage_pair", "title": "Lineages", "type": "nominal"},
+                    {"field": "shared", "title": "Shared", "type": "quantitative"}
+                  ]
+                }
+              }
+        Shared_2:
+          custom-plot:
+            data: |
+              function(value, row) {
+                return [{"shared": value, "lineage_pair": row["Lineage_Pair_2"]}]
+              }
+            spec: |
+              {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "",
+                "data": { "values": []},
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "shared",
+                    "type": "quantitative",
+                    "scale": {"domain": [0, 125]},
+                    "legend": null
+                  },
+                  "color":{
+                    "field": "shared",
+                    "type": "quantitative",
+                    "scale": {
+                      "domain": [0, 125],
+                      "scheme": "viridis"
+                    },
+                    "legend": null
+                  },
+                  "tooltip": [
+                    {"field": "lineage_pair", "title": "Lineages", "type": "nominal"},
+                    {"field": "shared", "title": "Shared", "type": "quantitative"}
+                  ]
+                }
+              }
+        Shared_3:
+          custom-plot:
+            data: |
+              function(value, row) {
+                return [{"shared": value, "lineage_pair": row["Lineage_Pair_3"]}]
+              }
+            spec: |
+              {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "description": "",
+                "data": { "values": []},
+                "mark": "circle",
+                "encoding": {
+                  "size": {
+                    "field": "shared",
+                    "type": "quantitative",
+                    "scale": {"domain": [0, 125]},
+                    "legend": null
+                  },
+                  "color":{
+                    "field": "shared",
+                    "type": "quantitative",
+                    "scale": {
+                      "domain": [0, 125],
+                      "scheme": "viridis"
+                    },
+                    "legend": null
+                  },
+                  "tooltip": [
+                    {"field": "lineage_pair", "title": "Lineages", "type": "nominal"},
+                    {"field": "shared", "title": "Shared", "type": "quantitative"}
+                  ]
+                }
+              }

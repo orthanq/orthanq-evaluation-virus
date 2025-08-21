@@ -53,7 +53,7 @@ with open(snakemake.log[0], "w") as f:
     results = []
 
     for sim_sample, lineages in sample_lineages.items():
-        for lin1, lin2 in combinations(lineages, 2):
+        for i, (lin1, lin2) in enumerate(combinations(lineages, 2), 1):
             variants1 = lineage_variants.get(lin1, set())
             variants2 = lineage_variants.get(lin2, set())
             
@@ -63,38 +63,76 @@ with open(snakemake.log[0], "w") as f:
             diff = len(unique1) + len(unique2)
 
             results.append({
-                'SimulatedSample': sim_sample,
-                'Lineage1': lin1,
-                'Lineage2': lin2,
-                'Unique_Lineage1': len(unique1),
-                'Unique_Lineage2': len(unique2),
-                'Shared': len(shared),
-                'Total_Differences': diff
+                'Sample': sim_sample,
+                'Pair_Index': i,
+                'Lineage_Pair': f"{lin1} vs {lin2}",
+                'Total_Differences': diff,
+                'Shared': len(shared)
             })
-    # convert to dataframe and write to file
+
+    # Convert to dataframe
     df = pd.DataFrame(results)
-    print(df)
-    df.to_csv(snakemake.output.table, index=False)
 
-    #bubble plot
-    df["Lineage_Pair"] = df["Lineage1"] + " vs " + df["Lineage2"]
-    bubble_plot = alt.Chart(df).mark_circle().encode(
-        x=alt.X('SimulatedSample:N', title="Sample"),
-        y=alt.Y('Lineage_Pair:N', title="Lineage Pair"),
-        size=alt.Size('Total_Differences:Q', scale=alt.Scale(range=[10, 1000]), legend=alt.Legend(title="Total Differences")),
-        color=alt.Color('Total_Differences:Q', scale=alt.Scale(scheme='viridis'), legend=None),
-        tooltip=[
-            alt.Tooltip('SimulatedSample:N', title="Sample"),
-            alt.Tooltip('Lineage_Pair:N', title="Lineages"),
-            alt.Tooltip('Total_Differences:Q', title="Differences")
-        ]
-    ).properties(
-        width=500,
-        height=300,
-        title="Total Differences Between Lineage Pairs per Sample"
-    )
+    # Pivot to wide format
+    pairs_wide = df.pivot(index='Sample', columns='Pair_Index', values='Lineage_Pair')
+    diffs_wide = df.pivot(index='Sample', columns='Pair_Index', values='Total_Differences')
+    shared_wide = df.pivot(index='Sample', columns='Pair_Index', values='Shared')
 
-    bubble_plot
+    # Rename columns
+    pairs_wide.columns = [f"Lineage_Pair_{i}" for i in pairs_wide.columns]
+    diffs_wide.columns = [f"Diff_{i}" for i in diffs_wide.columns]
+    shared_wide.columns = [f"Shared_{i}" for i in shared_wide.columns]
 
-    bubble_plot.save(snakemake.output.plot_svg)
-    bubble_plot.save(snakemake.output.plot_html)
+    # Concatenate all together
+    final_df = pd.concat([pairs_wide, diffs_wide, shared_wide], axis=1).reset_index()
+
+    # Save output
+    print(final_df)
+    final_df.to_csv(snakemake.output.table, index=False)
+
+    # for sim_sample, lineages in sample_lineages.items():
+    #     for lin1, lin2 in combinations(lineages, 2):
+    #         variants1 = lineage_variants.get(lin1, set())
+    #         variants2 = lineage_variants.get(lin2, set())
+            
+    #         shared = variants1 & variants2
+    #         unique1 = variants1 - variants2
+    #         unique2 = variants2 - variants1
+    #         diff = len(unique1) + len(unique2)
+
+    #         results.append({
+    #             'SimulatedSample': sim_sample,
+    #             'Lineage1': lin1,
+    #             'Lineage2': lin2,
+    #             'Unique_Lineage1': len(unique1),
+    #             'Unique_Lineage2': len(unique2),
+    #             'Shared': len(shared),
+    #             'Total_Differences': diff
+    #         })
+    # # convert to dataframe and write to file
+    # df = pd.DataFrame(results)
+    # print(df)
+    # df.to_csv(snakemake.output.table, index=False)
+
+    # #bubble plot
+    # df["Lineage_Pair"] = df["Lineage1"] + " vs " + df["Lineage2"]
+    # bubble_plot = alt.Chart(df).mark_circle().encode(
+    #     x=alt.X('SimulatedSample:N', title="Sample"),
+    #     y=alt.Y('Lineage_Pair:N', title="Lineage Pair"),
+    #     size=alt.Size('Total_Differences:Q', scale=alt.Scale(range=[10, 1000]), legend=alt.Legend(title="Total Differences")),
+    #     color=alt.Color('Total_Differences:Q', scale=alt.Scale(scheme='viridis'), legend=None),
+    #     tooltip=[
+    #         alt.Tooltip('SimulatedSample:N', title="Sample"),
+    #         alt.Tooltip('Lineage_Pair:N', title="Lineages"),
+    #         alt.Tooltip('Total_Differences:Q', title="Differences")
+    #     ]
+    # ).properties(
+    #     width=500,
+    #     height=300,
+    #     title="Total Differences Between Lineage Pairs per Sample"
+    # )
+
+    # bubble_plot
+
+    # bubble_plot.save(snakemake.output.plot_svg)
+    # bubble_plot.save(snakemake.output.plot_html)
