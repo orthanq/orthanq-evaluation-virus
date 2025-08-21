@@ -92,7 +92,7 @@ rule find_similarities:
         table="results/evaluation-pandemics/tables/lineage_similarities.csv",
         plot_svg="results/evaluation-pandemics/plots/lineage_similarities.svg",
         plot_html=report("results/evaluation-pandemics/plots/lineage_similarities.html",
-        htmlindex="index.html", category="Lineage similarities", labels={
+        htmlindex="index.html", category="Lineage similarities", subcategory="plot", labels={
             "name": "lineage similarities",
             "type": "plot"
         })
@@ -110,7 +110,7 @@ rule datavzrd_lineage_similarities:
     output:
         report(
             directory("results/evaluation-pandemics/datavzrd-report/lineage-similarities"),
-            htmlindex="index.html", category="Lineage similarities", labels={
+            htmlindex="index.html", category="Lineage similarities", subcategory="table", labels={
             "name": "lineage similarities",
             "type": "table"
         }),
