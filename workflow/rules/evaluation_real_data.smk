@@ -36,4 +36,4 @@ rule datavzrd_tool_predictions:
     log:
         "logs/datavzrd/tool_predictions.log",
     wrapper:
-        "v3.10.2/utils/datavzrd"
+        "v7.2.0/utils/datavzrd"
