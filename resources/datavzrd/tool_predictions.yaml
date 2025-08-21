@@ -1,0 +1,45 @@
+__use_yte__: true
+name: All tool predictions
+datasets:
+  predictions:
+    separator: "\t"
+    path: ?input.tool_predictions
+    offer-excel: true
+views:
+  predictions:
+    dataset: predictions
+    desc: |
+      ### Tool predictions
+      Table that is used to create the stacked barchart for SARS-CoV-2 variant predictions for Orthanq, Kallisto, Pangolin 
+      and Nextclade for two studies that include 13 samples with co-infection by Delta and Omicron variants of SARS-CoV-2.
+    page-size: 25
+    render-table:
+      columns:
+        sample:
+          link-to-url:
+            SRA:
+              url: "https://www.ncbi.nlm.nih.gov/sra/{value}"
+        tool:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: set3
+              legend:
+                title: tool
+        WHO_name:
+          plot:
+            heatmap:
+              scale: ordinal
+              color-scheme: accent
+              legend:
+                title: WHO name                
+        fraction:
+          plot:
+            heatmap:
+              scale: linear
+              range:
+                - white
+                - blue
+              legend:
+                title: fraction
+    
