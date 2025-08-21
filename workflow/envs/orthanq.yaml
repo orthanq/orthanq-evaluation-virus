@@ -3,5 +3,5 @@ channels:
   - bioconda
 dependencies:
   - orthanq =1.14.0
-  - vg =1.63.1
+  - vg =1.56.0
   - varlociraptor ==8.4.7
