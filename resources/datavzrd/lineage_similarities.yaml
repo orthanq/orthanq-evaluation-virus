@@ -1,15 +1,16 @@
 __use_yte__: true
 name: Lineage similarities
+default-view: similarities
 datasets:
-  predictions:
+  similarities:
     path: ?input.table
     offer-excel: true
 views:
-  predictions:
-    dataset: predictions
+  similarities:
+    dataset: similarities
     desc: |
       ### Similarity of lineages
-      Pairwise differences of samples in terms of variants they contain. Every sample contains three virus variants and there are three combinations for each sample.
+      Pairwise differences of samples in terms of variants they contain. Every sample contains three virus variants and there are three combinations for each sample. The size and color represent the number of genomic differences. Column names starting with 'Diff_x' indicate the number of genomic variant differences between each pair of virus variants. Column names starting with 'Shared_x' indicate the number of shared genomic variants between each pair of virus variants. Tooltips appear when hovering over the bubbles, showing the names of the virus variant pair and the numerical values from the corresponding column.
     page-size: 25
     render-table:
       columns:
