@@ -22,7 +22,7 @@ https://github.com/cbg-ethz/5-virus-mix/blob/master/data/REF.fasta
 The Bioconda instllation of Orthanq requires:
     - varlociraptor ==8.4.7
     - vg ==1.63.1
-But, Orthanq the evaluation was run with the versions contained in `orthanq_virus_eval.yaml`:
+But, the evaluation was run with the versions contained in `orthanq_virus_eval.yaml`:
   - varlociraptor=8.4.7
   - vg=1.50.1
 The version of Orthanq can be from 1.12 - 1.14 but the versions of the tools should be fixed to above versions for reproducibility.
