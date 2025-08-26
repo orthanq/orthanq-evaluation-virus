@@ -12,7 +12,7 @@ rule orthanq_candidates_hiv:
     priority: 50
     benchmark:    
         "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
-    shell:
+    shell: #a local build of orthanq should be between versions 1.12 - 1.14 with dependency versions defined in orthanq_virus_eval.yaml.
         "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 rule orthanq_candidates_sarscov2:
