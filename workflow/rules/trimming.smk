@@ -94,3 +94,60 @@ rule extract_fastqs:
         "../envs/bwa.yaml"
     shell:
         "samtools fastq -1 {output.f1} -2 {output.f2} -s {output.singles} <(samtools sort -n {input}) 2> {log}"
+
+
+##remove LTRs - required for the labmix sample
+rule align_minimap2:
+    input:
+        ref="results/ref/hiv_reference_sequence.fasta",
+        f1="results/sra/SRR961514_1.fastq.gz",
+        f2="results/sra/SRR961514_2.fastq.gz"
+    output:
+        "results/minimap2_aligned/SRR961514_sorted.bam"
+    log:
+        "logs/prep_minimap2/SRR961514.log",
+    conda:
+        "../envs/minimap2.yaml"
+    shell:
+        "minimap2 -ax sr {input.ref} {input.f1} {input.f2} | samtools view -bh | samtools sort > {output} 2> {log}"
+
+rule index_bam:
+    input:
+        "results/minimap2_aligned/SRR961514_sorted.bam"
+    output:
+        "results/minimap2_aligned/SRR961514_sorted.bam.bai"
+    log:
+        "logs/labmix/index.log"
+    conda:
+        "../envs/bwa.yaml"
+    shell:
+        "samtools index {input}"
+
+rule exclude_repeat_reads:
+    input:
+        bam="results/minimap2_aligned/SRR961514_sorted.bam",
+        bai="results/minimap2_aligned/SRR961514_sorted.bam.bai",
+        bed="resources/labmix/repeat_regions.bed"
+    output:
+        "results/filtered/SRR961514_filtered.bam"
+    log:
+        "logs/exclude_repeat_reads.log"
+    conda:
+        "../envs/bedtools.yaml"
+    shell:
+        """
+        bedtools intersect -v -abam {input.bam} -b {input.bed} > {output} 2> {log}
+        """
+
+rule bam_to_fastq:
+    input:
+        "results/filtered/SRR961514_filtered.bam"
+    output:
+        fq1="results/fastq/SRR961514_filtered.fq1",
+        fq2="results/fastq/SRR961514_filtered.fq2",
+    log:
+        "logs/bam_to_fastq.log"
+    conda:
+        "../envs/bwa.yaml"
+    shell:
+        "samtools fastq -1 {output.fq1} -2 {output.fq2} -s /dev/null -n {input}  2> {log}"

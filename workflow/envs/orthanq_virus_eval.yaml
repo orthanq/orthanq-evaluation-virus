@@ -16,5 +16,5 @@ dependencies:
   - htslib
   - seqtk
   - coin-or-cbc
-  - python #only necessary when using datavzrd on branch
+  - python =3.10.13 #only necessary when using datavzrd on branch, if this python version is not used it can complain with "libpython3.10.so.1.0: cannot open shared object file"
   - yte #only necessary when using datavzrd on branch

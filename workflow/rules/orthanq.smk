@@ -12,8 +12,8 @@ rule orthanq_candidates_hiv:
     priority: 50
     benchmark:    
         "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
-    shell: #a local build of orthanq should be between versions 1.12 - 1.14 with dependency versions defined in orthanq_virus_eval.yaml.
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+    shell:
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 rule orthanq_candidates_sarscov2:
     input:
@@ -30,7 +30,7 @@ rule orthanq_candidates_sarscov2:
     benchmark:    
         "benchmarks/orthanq_candidates/sarscov2/orthanq_candidates.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 
 rule orthanq_preprocess:
@@ -48,7 +48,7 @@ rule orthanq_preprocess:
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
@@ -80,4 +80,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /projects/koesterlab/orthanq/orthanq/target/release/orthanq call virus --haplotype-variants {input.haplotype_variants} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"
+        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --haplotype-variants {input.haplotype_variants} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"

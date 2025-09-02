@@ -1,5 +1,5 @@
 configfile: "config/config.yaml"
-
+ruleorder: get_sra > uncovar_gzip
 report: "report/workflow.rst"
 
 if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the other is not mistakenly chosen
