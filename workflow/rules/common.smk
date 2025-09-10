@@ -147,7 +147,7 @@ def get_processed_fastq_input(wildcards):
 
 def fastp_params():
     if "labmix" in config["samples"]:
-        return "--detect_adapter_for_pe --phred64 --qualified_quality_phred 30 --cut_by_quality3 --cut_by_quality5"
+        return "--qualified_quality_phred 30 --cut_by_quality3 --cut_by_quality5"
     else:
         return "--detect_adapter_for_pe"
 
