@@ -10,3 +10,13 @@ rule get_ref_sequence:
         "benchmarks/ncbi_datasets/get_ref_sequence.tsv" 
     shell:
         "esearch -db nucleotide -query {params} | efetch -format fasta > {output} 2> {log}"
+
+rule genome_faidx:
+    input:
+        ref,
+    output:
+        ref_fai,
+    log:
+        "logs/genome-faidx.log",
+    wrapper:
+        "v7.2.0/bio/samtools/faidx"

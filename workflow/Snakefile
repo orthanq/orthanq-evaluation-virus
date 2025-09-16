@@ -54,6 +54,7 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
     
     include: "rules/common.smk"
     include: "rules/ref.smk"
+    include: "rules/prepare_hiv_genomes.smk"
     include: "rules/sra.smk"
     include: "rules/trimming.smk"
     include: "rules/get_metadata.smk"
@@ -67,4 +68,6 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
 
     rule all:
         input:
-            get_results_real_data
+            get_results_real_data,
+            "results/hiv_genomes/hiv_final.fasta"
+            

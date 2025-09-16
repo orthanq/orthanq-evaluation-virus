@@ -1,7 +1,8 @@
 rule orthanq_candidates_hiv:
     input:
         genome=get_ref_seq_path(),
-        lineages=config["viral_lineages_fasta"]
+        genome_fai=get_ref_seq_path() + ".fai",
+        lineages="results/hiv_genomes/hiv_final.fasta"
     output:
         candidates="results/orthanq/candidates/hiv/candidates.vcf",
         candidates_folder=directory("results/orthanq/candidates/hiv"),
@@ -18,6 +19,7 @@ rule orthanq_candidates_hiv:
 rule orthanq_candidates_sarscov2:
     input:
         genome=get_ref_seq_path(),
+        genome_fai=get_ref_seq_path() + ".fai",
         lineages=config["viral_lineages_fasta"]
     output:
         candidates="results/orthanq/candidates/sarscov2/candidates.vcf",
@@ -37,7 +39,8 @@ rule orthanq_preprocess:
     input:
         candidates="results/orthanq/candidates/hiv/candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
         reads=get_processed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_raw_fastq_input,
-        genome=get_ref_seq_path()
+        genome=get_ref_seq_path(),
+        genome_fai=get_ref_seq_path() + ".fai"
     output: 
         bcf="results/orthanq/preprocess/{sample}.bcf",
         bam="results/orthanq/preprocess/{sample}_sorted.bam"

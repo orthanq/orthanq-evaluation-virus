@@ -12,6 +12,13 @@ num_list = [num+1 for num in range(num_samples)]
 # #just a pseudodate used in uncovar workflow, hence pangolin output
 DATE="13062024"
 
+# labmix: read accesion ids from file
+def read_accessions(file):
+    with open(file) as f:
+        return [line.strip() for line in f if line.strip()]
+
+ACCESSIONS = read_accessions("resources/labmix/accs_without_HXB2.txt")
+
 #modify sample tables to calculate required number of reads per lineage
 def generate_numreads(lineages, n_reads):
     lineages['num_reads'] = lineages['fraction']*n_reads 
@@ -131,7 +138,8 @@ def get_adapter_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
     files = ["results/fastp-trimmed/pe/{sample}.1.fastq", "results/fastp-trimmed/pe/{sample}.2.fastq"]
     if "labmix" in config["samples"]:
-        files = ["results/fastq/SRR961514_filtered.fq1", "results/fastq/SRR961514_filtered.fq2"] #use ["results/sra/SRR961514_1.fastq.gz", "results/sra/SRR961514_2.fastq.gz"] for raw data prediction of orthanq and kallisto
+        # files = ["results/fastq/SRR961514_filtered.fq1", "results/fastq/SRR961514_filtered.fq2"]
+        files =  ["results/sra/SRR961514_1.fastq.gz", "results/sra/SRR961514_2.fastq.gz"] #use ["results/sra/SRR961514_1.fastq.gz", "results/sra/SRR961514_2.fastq.gz"] for raw data prediction of orthanq and kallisto
         return files
     return files
 
@@ -222,7 +230,16 @@ def get_viral_lineages_path():
     else:
         return "results/kallisto_index/sarscov2_viral_lineages.idx"
 
+# get ref sequence
 def get_ref_seq_path():
     if "labmix" in config["samples"]:
         return "results/ref/hiv_reference_sequence.fasta"
     return "results/ref/sarscov2_reference_sequence.fasta"
+
+# in complicance with get_ref_seq_path()
+if "labmix" in config["samples"]:
+    ref = "results/ref/hiv_reference_sequence.fasta"
+else:
+    ref = "results/ref/sarscov2_reference_sequence.fasta"
+
+ref_fai = ref + ".fai"
