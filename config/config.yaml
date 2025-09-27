@@ -23,11 +23,8 @@ samples: config/samples_labmix.tsv
 # reference_accession: NC_045512 
 reference_accession: K03455.1
 
-#lineages path (set when analyuzing different virus species)
-# for hiv SET !!!
-viral_lineages_fasta: resources/lineages/hiv/hiv_5_virus_mix.fasta
 #for sarscov2
-# viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
+viral_lineages_fasta: resources/lineages/pango-consensus-sequences_genome-nuc.fasta
 
 ##tool configurations
 #art simulation
