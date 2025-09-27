@@ -9,7 +9,7 @@ rule orthanq_candidates_sarscov2:
     log:
         "logs/orthanq_candidates/sarscov2/candidates.log",
     conda:
-        "../envs/orthanq_virus_eval.yaml"
+        "../envs/orthanq.yaml"
     priority: 50
     benchmark:    
         "benchmarks/orthanq_candidates/sarscov2/orthanq_candidates.tsv" 
@@ -29,7 +29,7 @@ rule orthanq_preprocess:
     log:
         "logs/orthanq_preprocess/{sample}.log",
     conda:
-        "../envs/orthanq_virus_eval.yaml"
+        "../envs/orthanq.yaml"
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     threads: 20
@@ -57,7 +57,7 @@ rule orthanq_quantify:
     log:
         "logs/orthanq_call/{sample}.log"
     conda:
-        "../envs/orthanq_virus_eval.yaml"
+        "../envs/orthanq.yaml"
     params:
         prior="uniform"
     resources: 
