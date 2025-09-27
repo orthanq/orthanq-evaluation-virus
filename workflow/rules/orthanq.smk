@@ -1,23 +1,7 @@
-rule orthanq_candidates_hiv:
-    input:
-        genome=get_ref_seq_path(),
-        lineages=config["viral_lineages_fasta"]
-    output:
-        candidates="results/orthanq/candidates/hiv/candidates.vcf",
-        candidates_folder=directory("results/orthanq/candidates/hiv"),
-    log:
-        "logs/orthanq_candidates/hiv/candidates.log",
-    conda:
-        "../envs/orthanq_virus_eval.yaml"
-    priority: 50
-    benchmark:    
-        "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
-    shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
-
 rule orthanq_candidates_sarscov2:
     input:
         genome=get_ref_seq_path(),
+        genome_fai=get_ref_seq_path() + ".fai",
         lineages=config["viral_lineages_fasta"]
     output:
         candidates="results/orthanq/candidates/sarscov2/candidates.vcf",
@@ -30,14 +14,15 @@ rule orthanq_candidates_sarscov2:
     benchmark:    
         "benchmarks/orthanq_candidates/sarscov2/orthanq_candidates.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 
 rule orthanq_preprocess:
     input:
-        candidates="results/orthanq/candidates/hiv/candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
+        candidates="results/orthanq/candidates/hiv/subsampled_candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
         reads=get_processed_fastq_input if not config["simulate_given"] and not config["simulate_pandemics"] else get_raw_fastq_input,
-        genome=get_ref_seq_path()
+        genome=get_ref_seq_path(),
+        genome_fai=get_ref_seq_path() + ".fai"
     output: 
         bcf="results/orthanq/preprocess/{sample}.bcf",
         bam="results/orthanq/preprocess/{sample}_sorted.bam"
@@ -47,13 +32,14 @@ rule orthanq_preprocess:
         "../envs/orthanq_virus_eval.yaml"
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
+    threads: 20
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam 2> {log}"
+        "orthanq virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam --threads {threads} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
     input:
-        haplotype_variants="results/orthanq/candidates/hiv/candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
+        haplotype_variants="results/orthanq/candidates/hiv/subsampled_candidates.vcf" if "labmix" in config["samples"] else "results/orthanq/candidates/sarscov2/candidates.vcf", 
         haplotype_calls="results/orthanq/preprocess/{sample}.bcf"
     output:
         tsv="results/orthanq/calls/{sample}/{sample}.csv",
@@ -80,4 +66,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --haplotype-variants {input.haplotype_variants} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"
+        "orthanq call virus --haplotype-variants {input.haplotype_variants} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"

@@ -2,4 +2,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - orthanq =1.15.0
+  - vembrane =2.4.0

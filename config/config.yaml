@@ -18,10 +18,10 @@ n_reads_1000x: 200000 #for 1000x
 samples: config/samples_labmix.tsv
 
 #NCBI accession ID for the reference genome sequence (set when analyuzing different virus species)
-#for hiv NC_001802.1
+#for hiv NC_001802.1 or K03455.1 (with more repeats)
 #for SARS-CoV-2: NC_045512 
 # reference_accession: NC_045512 
-reference_accession: NC_001802.1 
+reference_accession: K03455.1
 
 #lineages path (set when analyuzing different virus species)
 # for hiv SET !!!
