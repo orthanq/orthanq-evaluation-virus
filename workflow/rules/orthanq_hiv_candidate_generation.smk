@@ -9,7 +9,7 @@ rule orthanq_candidates_hiv:
     log:
         "logs/orthanq_candidates/hiv/candidates.log",
     conda:
-        "../envs/orthanq_virus_eval.yaml"
+        "../envs/orthanq.yaml"
     priority: 50
     benchmark:    
         "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
