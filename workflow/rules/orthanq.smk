@@ -14,7 +14,7 @@ rule orthanq_candidates_sarscov2:
     benchmark:    
         "benchmarks/orthanq_candidates/sarscov2/orthanq_candidates.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 
 rule orthanq_preprocess:
@@ -34,7 +34,7 @@ rule orthanq_preprocess:
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     threads: 20
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam --threads {threads} 2> {log}"
+        "orthanq virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam --threads {threads} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
@@ -66,4 +66,4 @@ rule orthanq_quantify:
     benchmark:    
         "benchmarks/orthanq_quantify/{sample}.tsv"
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq call virus --haplotype-variants {input.haplotype_variants} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"
+        "orthanq call virus --haplotype-variants {input.haplotype_variants} --haplotype-calls {input.haplotype_calls} --prior {params.prior} --output {output.tsv} 2> {log}"

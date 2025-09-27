@@ -14,7 +14,7 @@ rule orthanq_candidates_hiv:
     benchmark:    
         "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
     shell:
-        "LD_LIBRARY_PATH=$CONDA_PREFIX/lib /home/hamdiyeuzuner/Documents/orthanq/target/release/orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
 
 rule vembrane_subsample:
     input:
