@@ -58,6 +58,7 @@ elif not config["simulate_given"] and not config["simulate_pandemics"]:
     include: "rules/sra.smk"
     include: "rules/trimming.smk"
     include: "rules/get_metadata.smk"
+    include: "rules/orthanq_hiv_candidate_generation.smk"
     include: "rules/orthanq.smk"
     include: "rules/pangolin.smk"
     include: "rules/kallisto.smk"

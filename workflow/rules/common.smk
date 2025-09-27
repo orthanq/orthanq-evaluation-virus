@@ -137,10 +137,6 @@ def get_primer_trimmed_fastq_input(wildcards):
 def get_adapter_trimmed_fastq_input(wildcards):
     sample = wildcards.sample
     files = ["results/fastp-trimmed/pe/{sample}.1.fastq", "results/fastp-trimmed/pe/{sample}.2.fastq"]
-    if "labmix" in config["samples"]:
-        # files = ["results/fastq/SRR961514_filtered.fq1", "results/fastq/SRR961514_filtered.fq2"]
-        files =  ["results/sra/SRR961514_1.fastq.gz", "results/sra/SRR961514_2.fastq.gz"] #use ["results/sra/SRR961514_1.fastq.gz", "results/sra/SRR961514_2.fastq.gz"] for raw data prediction of orthanq and kallisto
-        return files
     return files
 
 #do primer trimming if primer column exists, if not, just do adapter trimming
