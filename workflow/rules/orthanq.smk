@@ -34,7 +34,7 @@ rule orthanq_preprocess:
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
     threads: 20
     shell:
-        "orthanq virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam --threads {threads} 2> {log}"
+        "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam --threads {threads} 2> {log}"
 
 #wrappers should be used once they are ready
 rule orthanq_quantify:
