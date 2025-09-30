@@ -1,6 +1,6 @@
 rule kallisto_index:
     input:
-        lineages="results/hiv_genomes/hiv_final.fasta"
+        lineages="results/hiv_genomes/hiv_final.fasta" if "labmix" in config["samples"] else config["viral_lineages_fasta"]
     output:
         index=get_viral_lineages_path(),
     params:
