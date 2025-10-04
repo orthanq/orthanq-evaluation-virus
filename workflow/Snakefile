@@ -7,6 +7,8 @@ if config["simulate_pandemics"] and not config["simulate_given"]: #make sure the
     ruleorder: orthanq_candidates_sarscov2 > orthanq_candidates_hiv > mason > orthanq_preprocess
     
     include: "rules/common.smk"
+    include: "rules/sra.smk" #just to supress the rule order error with simulate_pandemics true
+    include: "rules/orthanq_hiv_candidate_generation.smk" #just to supress the rule order error with simulate_pandemics true
     include: "rules/ref.smk"
     include: "rules/get_metadata.smk"
     include: "rules/simulation.smk"

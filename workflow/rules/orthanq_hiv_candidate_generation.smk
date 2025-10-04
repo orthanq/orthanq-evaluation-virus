@@ -11,10 +11,11 @@ rule orthanq_candidates_hiv:
     conda:
         "../envs/orthanq.yaml"
     priority: 50
+    threads: 40
     benchmark:    
         "benchmarks/orthanq_candidates/hiv/orthanq_candidates.tsv" 
     shell:
-        "orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --output {output.candidates_folder} 2> {log}"
+        "orthanq candidates virus --genome {input.genome} --lineages {input.lineages} --threads {threads} --output {output.candidates_folder} 2> {log}"
 
 rule vembrane_subsample:
     input:

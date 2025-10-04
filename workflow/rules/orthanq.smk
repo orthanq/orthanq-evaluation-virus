@@ -32,7 +32,7 @@ rule orthanq_preprocess:
         "../envs/orthanq.yaml"
     benchmark:    
         "benchmarks/orthanq_preprocess/{sample}.tsv" 
-    threads: 20
+    threads: 40
     shell:
         "orthanq preprocess virus --genome {input.genome} --candidates {input.candidates} --output {output.bcf} --reads {input.reads[0]} {input.reads[1]} --output-bam --threads {threads} 2> {log}"
 
